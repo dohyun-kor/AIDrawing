@@ -1,0 +1,10 @@
+<resources>
+    <style name="CardViewTopRoundCorners" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <!-- 상단 모서리 둥글게 -->
+        <item name="cornerSizeTopLeft">40dp</item>
+        <item name="cornerSizeTopRight">40dp</item>
+        <!-- 하단 모서리는 0으로 설정 -->
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+</resources>

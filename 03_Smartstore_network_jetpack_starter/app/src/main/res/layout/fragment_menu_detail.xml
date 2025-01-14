@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/coffee_light_white"
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:id="@+id/menuImage"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@color/EdiyaCoffeeBack"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+         />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="150dp"
+        app:cardBackgroundColor="@color/white80"
+        app:layout_constraintBottom_toBottomOf="@+id/btnAddList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/menuImage"
+        app:shapeAppearanceOverlay="@style/CardViewTopRoundCorners">
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <TextView
+        android:id="@+id/txtMenuName"
+        style="@style/common_cafe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text=""
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="@+id/materialCardView2"
+        app:layout_constraintTop_toTopOf="@+id/materialCardView2" />
+
+
+    <TextView
+        android:id="@+id/size"
+        style="@style/common_cafe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="size"
+        android:textColor="@color/main_theme"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menudetail" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/size20"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/sub_theme"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@+id/size25"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@+id/materialCardView2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/size">
+
+        <ImageView
+            android:id="@+id/image500"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/size20" />
+
+        <TextView
+            style="@style/common_korean"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/lightgray"
+            android:textSize="12sp"
+            android:text="₩500" />
+
+        <TextView
+            android:id="@+id/TallText"
+            style="@style/common_cafe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="Tall"
+            android:textSize="15sp" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/size25"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/coffee_light_white"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@+id/size35"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/size20"
+        app:layout_constraintTop_toBottomOf="@+id/size">
+
+        <ImageView
+            android:id="@+id/image1000"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/size25" />
+
+        <TextView
+            style="@style/common_korean"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/lightgray"
+            android:textSize="12sp"
+            android:text="₩1000" />
+
+        <TextView
+            android:id="@+id/GrandeText"
+            style="@style/common_cafe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="Grande"
+            android:textSize="15sp" />
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/size35"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:backgroundTint="@color/coffee_light_white"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/size25"
+        app:layout_constraintTop_toBottomOf="@+id/size">
+
+        <ImageView
+            android:id="@+id/image1500"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/size35" />
+
+        <TextView
+            style="@style/common_korean"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:textSize="12sp"
+            android:textColor="@color/lightgray"
+            android:text="₩1500" />
+
+        <TextView
+            android:id="@+id/VentiText"
+            style="@style/common_cafe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="Venti"
+            android:textSize="15sp" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <!--    <ScrollView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:layout_weight="1"-->
+    <!--        tools:layout_editor_absoluteX="-4dp"-->
+    <!--        tools:layout_editor_absoluteY="327dp">-->
+
+    <!--        <androidx.recyclerview.widget.RecyclerView-->
+    <!--            android:id="@+id/recyclerViewMenuDetail"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            android:layout_marginHorizontal="5dp"-->
+    <!--            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
+    <!--    </ScrollView>-->
+
+    <Button
+        android:id="@+id/btnAddList"
+        style="@style/common_cafe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/main_theme"
+        android:text="Add to Cart"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/menudetail"
+        style="@style/common_korean"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        android:text="Americano is espresso mixed with water for a clean taste."
+        android:textColor="@color/subtext"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/txtMenuName"
+        app:layout_constraintTop_toBottomOf="@+id/txtMenuName" />
+
+    <TextView
+        android:id="@+id/shot"
+        style="@style/common_cafe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="shot"
+        android:textColor="@color/main_theme"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/size25" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/singleshot"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="5dp"
+        app:cardBackgroundColor="@color/sub_theme"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shot">
+
+        <TextView
+            android:id="@+id/textsingle"
+            style="@style/parkinsans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Single"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₩500"
+            android:layout_gravity="top|right"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:textSize="12sp"
+            android:textColor="@color/lightgray"
+            />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/doubleshot"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="50dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/materialCardView2"
+        app:layout_constraintTop_toTopOf="@+id/singleshot">
+
+        <TextView
+            android:id="@+id/textDouble"
+            style="@style/parkinsans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Double"
+            android:textSize="20sp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₩1000"
+            android:layout_gravity="top|right"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:textSize="12sp"
+            android:textColor="@color/lightgray"
+            />
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/singleshot">
+
+        <TextView
+            android:id="@+id/menucnt"
+            style="@style/common_cafe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="1"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/btnAddCount"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|center"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/shoppingadd"
+            tools:layout_editor_absoluteX="33dp"
+            tools:layout_editor_absoluteY="49dp" />
+
+        <ImageButton
+            android:id="@+id/btnMinusCount"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="start|center"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/shoppingminus"
+            tools:layout_editor_absoluteX="85dp"
+            tools:layout_editor_absoluteY="53dp" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/textView11"
+        style="@style/parkinsans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:text="Total"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnAddList"
+        app:layout_constraintStart_toStartOf="@+id/singleshot" />
+
+    <TextView
+        android:id="@+id/totalprice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100$"
+        style="@style/parkinsans"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView11"
+        app:layout_constraintEnd_toEndOf="@+id/doubleshot" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/gocomment"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="90dp"
+        app:cardBackgroundColor="@color/white80"
+        app:cardCornerRadius="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/size35"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:src="@drawable/gocomment" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/backbtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        app:cardCornerRadius="100dp"
+        app:layout_constraintStart_toStartOf="@+id/materialCardView2"
+        app:layout_constraintTop_toTopOf="@+id/menuImage">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/arrow_back" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

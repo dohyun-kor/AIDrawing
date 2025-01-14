@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.game.RouletteFragment">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:lottie_fileName="background.json"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:translationZ="0dp" /> <!-- Z축 순서: 0 -->
+
+    <!-- 룰렛 뷰 -->
+    <com.ssafy.smartstore_jetpack.ui.game.CustomRouletteView
+        android:id="@+id/rouletteView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:translationZ="1dp"
+        />
+
+    <!-- Spin 버튼 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/spinButton"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            app:cardBackgroundColor="@color/sub_theme"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Spin"
+                android:textSize="20sp"
+                style="@style/parkinsans"
+
+                />
+
+
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="180dp"
+        android:src="@drawable/baseline_arrow_drop_down_24"
+        android:translationZ="1dp"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_marginHorizontal="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/coinImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/coin" />
+
+            <TextView
+                android:id="@+id/mycoin_roulette"
+                style="@style/parkinsans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="20dp"
+                android:text="0 coins"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

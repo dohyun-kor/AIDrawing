@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="16dp">
+
+
+
+    <!-- 기존의 내용들 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:backgroundTint="@color/coffee_light_white">
+
+        <SearchView
+            android:id="@+id/search_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:iconifiedByDefault="false"
+            android:queryHint="제품을 입력하세요."
+            />
+
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/recyclerViewNoticeOrder"-->
+<!--            android:background="@drawable/textview_regular"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="120dp"-->
+<!--            android:layout_marginBottom="20dp"-->
+<!--            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>-->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/all"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/itim"
+                    android:text="All"/>
+                <Button
+                    android:id="@+id/coffee"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:textSize="9sp"
+                    android:fontFamily="@font/itim"
+                    android:backgroundTint="@color/sub_theme"
+                    android:text="Coffee"/>
+                <Button
+                    android:id="@+id/ade"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/itim"
+                    android:backgroundTint="@color/sub_theme"
+                    android:text="Ade"/>
+                <Button
+                    android:id="@+id/food"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/itim"
+                    android:backgroundTint="@color/sub_theme"
+                    android:text="Food"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_below="@+id/menu"
+            tools:layout_height="1500dp" />
+    </LinearLayout>
+
+    <!-- FloatingActionButton 위치를 고정하기 위해 FrameLayout을 사용 -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/homefab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_chat_24"
+        android:layout_gravity="end|bottom"
+        android:backgroundTint="@color/sub_theme"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"/>
+
+</FrameLayout>
