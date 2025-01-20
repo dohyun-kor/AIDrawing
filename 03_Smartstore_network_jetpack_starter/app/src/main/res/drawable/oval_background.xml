@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/white80" /> <!-- 배경을 투명으로 설정 -->
-    <corners android:radius="100dp"/> <!-- 타원 모양을 만들기 위해 큰 radius 설정 -->
-</shape>
