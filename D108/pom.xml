@@ -11,7 +11,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>testDALLE</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>D108</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -46,6 +46,14 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		
+		<!-- SpringFox Swagger 2 의존성 -->
+	    <dependency>
+	        <groupId>io.springfox</groupId>
+	        <artifactId>springfox-boot-starter</artifactId>
+	        <version>3.0.0</version>
+	    </dependency>
+	    
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -67,6 +75,13 @@
 	        <groupId>org.apache.httpcomponents.client5</groupId>
 	        <artifactId>httpclient5</artifactId>
 	    </dependency>
+	    
+        <!-- WebSocket 의존성 추가 -->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-websocket</artifactId>
+	    </dependency>
+	    
 	</dependencies>
 
 	<build>

@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -8,6 +10,7 @@ plugins {
 android {
     namespace = "com.example.gametset"
     compileSdk = 35
+
 
     defaultConfig {
         applicationId = "com.example.gametset"
@@ -40,6 +43,18 @@ android {
         enable = true
     }
 
+
+
+    packagingOptions {
+        resources.excludes += "META-INF/spring.tooling"  // META-INF/spring.tooling 파일 제외
+        resources.excludes += "META-INF/spring.handlers"  // META-INF/spring.handlers 파일 제외
+        resources.excludes += "META-INF/spring.schemas"
+        resources.excludes += "META-INF/spring.license.txt"
+        resources.excludes += "META-INF/license.txt"
+        resources.excludes += "META-INF/notice.txt"
+    }
+
+
 }
 
 dependencies {
@@ -70,14 +85,20 @@ dependencies {
     kapt("androidx.room:room-compiler:2.5.2")
 
     // Firebase (Optional, for real-time database, authentication, etc.)
-    implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-database-ktx")
-    implementation("com.google.firebase:firebase-analytics-ktx")
+//    implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
+//    implementation("com.google.firebase:firebase-auth-ktx")
+//    implementation("com.google.firebase:firebase-database-ktx")
+//    implementation("com.google.firebase:firebase-analytics-ktx")
 
     // TensorFlow Lite (Optional, for AI-based features like drawing or analysis)
     implementation("org.tensorflow:tensorflow-lite:2.13.0")
     implementation("org.tensorflow:tensorflow-lite-gpu:2.13.0")
+
+    implementation("com.squareup.okhttp3:okhttp:4.9.3") // OkHttp 라이브러리
+    implementation("org.java-websocket:Java-WebSocket:1.5.2") // WebSocket 지원
+    implementation("org.springframework:spring-websocket:5.3.16") // Spring WebSocket 지원
+    implementation("org.springframework:spring-messaging:5.3.16") // Spring Messaging 지원
+
 
     // Testing Libraries
     testImplementation(libs.junit)

@@ -1,11 +1,11 @@
-package com.example.dalle;
+package com.example.websocket;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DalleApplication {
+public class Application {
     public static void main(String[] args) {
-        SpringApplication.run(DalleApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 }
