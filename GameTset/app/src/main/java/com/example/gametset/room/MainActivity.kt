@@ -69,13 +69,13 @@ class MainActivity : AppCompatActivity() {
             override fun onMessage(webSocket: WebSocket, text: String) {
                 runOnUiThread {
                     // 서버로부터 받은 메시지를 처리
-                    Toast.makeText(this@MainActivity, "Received message: $text", Toast.LENGTH_SHORT)
-                        .show()
+//                    Toast.makeText(this@MainActivity, "Received message: $text", Toast.LENGTH_SHORT)
+//                        .show()
                     wordAdapter.addWord(text, binding.wordRecyclerView)
                     // WebSocket 메시지에 따라 그림 그리기 애니메이션 시작
                     when (text) {
-                        "START_DRAW" -> startDrawingAnimation()
-                        "CLEAR_DRAW" -> binding.drawingView.clearDrawing()
+                        "그림그리기" -> startDrawingAnimation()
+                        "그림판청소" -> binding.drawingView.clearDrawing()
                     }
                 }
             }
