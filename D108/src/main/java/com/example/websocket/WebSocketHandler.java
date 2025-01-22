@@ -1,46 +1,109 @@
 package com.example.websocket;
 
-import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import org.springframework.stereotype.Component;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
 
-    private final ConcurrentHashMap<String, WebSocketSession> clients = new ConcurrentHashMap<>();
+    // 방 별로 그림 데이터 저장 (방 ID -> 그림 데이터 리스트)
+    private final Map<String, List<String>> roomDrawings = new ConcurrentHashMap<>();
+    
+    // 현재 접속 중인 클라이언트 세션 (세션 ID -> 세션 객체)
+    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        clients.put(session.getId(), session);
-        System.out.println("WebSocket 연결됨: " + session.getId());
-    }
-
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        clients.remove(session.getId());
-        System.out.println("WebSocket 연결 종료: " + session.getId());
+        sessions.put(session.getId(), session);
+        System.out.println("사용자 연결됨: " + session.getId());
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        String id = session.getId();
-        System.out.println("수신된 메시지: " + message.getPayload());
+        try {
+            String payload = message.getPayload();
+            System.out.println("수신된 메시지: " + payload);
 
-        clients.forEach((key, clientSession) -> {
-            if (!key.equals(id)) {  // 같은 아이디가 아니면 메시지를 전달
-                try {
-                    synchronized (clientSession) { 
-                        clientSession.sendMessage(message);
+            Map<String, String> data = parseJson(payload);
+            String roomId = data.get("roomId");
+
+            if ("draw".equals(data.get("event"))) {
+                roomDrawings.putIfAbsent(roomId, new ArrayList<>());
+                roomDrawings.get(roomId).add(payload);
+                System.out.println("YES!!!!");
+            } else if ("join".equals(data.get("event"))) {
+                sendExistingDrawings(session, roomId);
+            } else if ("clearDrawing".equals(data.get("event"))) {
+                roomDrawings.remove(roomId); // 해당 방의 그림 데이터 삭제
+                broadcastMessageToRoom(roomId, payload); // 모든 클라이언트에게 알림
+            }
+
+            // 모든 클라이언트에게 그림 데이터 브로드캐스트 (Thread-safe)
+            synchronized (this) {
+                for (WebSocketSession client : sessions.values()) {
+                    if (client.isOpen() && client.getId() != session.getId()) {
+                        client.sendMessage(new TextMessage(payload));
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
-        });
+        } catch (Exception e) {
+            System.err.println("WebSocket 메시지 처리 중 오류 발생: " + e.getMessage());
+            session.close(CloseStatus.SERVER_ERROR);
+        }
+    }
+
+    private void sendExistingDrawings(WebSocketSession session, String roomId) throws IOException {
+        if (roomDrawings.containsKey(roomId)) {
+            for (String drawing : roomDrawings.get(roomId)) {
+                session.sendMessage(new TextMessage(drawing));
+            }
+        }
+    }
+
+    private void broadcastMessageToRoom(String roomId, String message) throws IOException {
+        synchronized (this) {
+            for (WebSocketSession client : sessions.values()) {
+                if (client.isOpen()) {
+                    try {
+                        client.sendMessage(new TextMessage(message));
+                    } catch (IOException e) {
+                        System.err.println("🚨 WebSocket 메시지 전송 중 오류 발생: " + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        sessions.remove(session.getId());
+        System.out.println("사용자 연결 종료: " + session.getId() + " 상태: " + status);
+    }
+
+    @Override
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+        System.err.println("WebSocket 오류 발생: " + exception.getMessage());
+        if (session.isOpen()) {
+            session.close(CloseStatus.SERVER_ERROR);
+        }
+        sessions.remove(session.getId());
+    }
+
+    private Map<String, String> parseJson(String json) {
+        Map<String, String> map = new HashMap<>();
+        json = json.replaceAll("[{}\"]", "");
+        for (String pair : json.split(",")) {
+            String[] keyValue = pair.split(":");
+            if (keyValue.length == 2) {
+                map.put(keyValue[0].trim(), keyValue[1].trim());
+            }
+        }
+        return map;
     }
 }
+

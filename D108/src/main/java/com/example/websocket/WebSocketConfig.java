@@ -6,7 +6,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-//@Component
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
@@ -19,11 +18,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
     	registry.addHandler(webSocketHandler(), "/ws")
-//        .setAllowedOrigins("http://localhost:9987", "http://192.168.100.203:9987", "ws://192.168.100.203:9987")
-//        .setAllowedOrigins("*")
     	.setAllowedOriginPatterns("*");
-//        .withSockJS();
-
     }
 
 }
