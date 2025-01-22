@@ -104,4 +104,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation ("com.google.code.gson:gson:2.8.8")  // Gson 라이브러리 추가
 }
