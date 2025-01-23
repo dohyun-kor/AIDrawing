@@ -52,10 +52,11 @@ class DrawingView @JvmOverloads constructor(
                     isAntiAlias = true
                 }
                 paths.add(Pair(path, newPaint))
+                sendDrawData(event.x, event.y, MOVE_MODE)
             }
             MotionEvent.ACTION_MOVE -> {
                 path.lineTo(event.x, event.y)
-                sendDrawData(event.x, event.y)
+                sendDrawData(event.x, event.y, DRAW_MODE)
             }
         }
         invalidate()
@@ -63,42 +64,67 @@ class DrawingView @JvmOverloads constructor(
     }
 
 
-    private fun sendDrawData(x: Float, y: Float) {
+    private fun sendDrawData(x: Float, y: Float, mode: Int) {
         val json = JSONObject()
         json.put("event", "draw")
         json.put("x", x)
         json.put("y", y)
         json.put("roomId", "roomId123")
-        json.put("color", "#000000") // 기본 검정색
 
-        webSocket?.send(json.toString()) // `webSocket?.send()`를 사용하여 전달받은 WebSocket을 통해 전송
+        // Color Int 값을 HEX 문자열로 변환
+        val colorHex = String.format("#%06X", 0xFFFFFF and drawPaint.color)
+        json.put("color", colorHex)
+
+        json.put("mode", mode)
+
+        webSocket?.send(json.toString()) // WebSocket을 통해 데이터 전송
     }
+
 
     fun clearDrawing() {
         paths.clear()
         path.reset()
         invalidate()
-        sendClearDrawing()
     }
 
-    fun drawFromServer(x: Float, y: Float, color: String) {
+    fun drawFromServer(x: Float, y: Float, color: String, mode: Int) {
         val serverPaint = Paint().apply {
             this.color = Color.parseColor(color)
             this.style = Paint.Style.STROKE
             this.strokeWidth = 10f
+            isAntiAlias = true
         }
 
-        path = Path()
-        path.moveTo(x, y)
-        paths.add(Pair(path, serverPaint))
+        if (mode == MOVE_MODE || paths.isEmpty() || path.isEmpty) {
+            // 새로운 경로 생성 (색상이 바뀌었을 가능성도 있음)
+            path = Path()
+            path.moveTo(x, y)
+            paths.add(Pair(path, serverPaint)) // 새 경로와 새로운 색상을 저장
+        } else {
+            // 가장 최근의 path에 대해 색상 업데이트
+            if (paths.isNotEmpty()) {
+                paths[paths.size - 1] = Pair(paths.last().first, serverPaint)
+            }
+            // 기존 경로에 이어서 선을 그림 (이때도 새로운 색상 적용)
+            path.lineTo(x, y)
+
+        }
+
         invalidate()
     }
 
-    private fun sendClearDrawing() {
+
+
+    fun sendClearDrawing() {
         val json = JSONObject()
         json.put("event", "clearDrawing")
         json.put("roomId", "roomId123")
         Log.d(TAG, "sendClearDrawing: $json")
         webSocket?.send(json.toString()) // 전달받은 WebSocket을 통해 메시지 전송
+    }
+
+    companion object{
+        val DRAW_MODE = 1;
+        val MOVE_MODE = 2;
     }
 }

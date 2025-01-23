@@ -34,7 +34,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
             if ("draw".equals(data.get("event"))) {
                 roomDrawings.putIfAbsent(roomId, new ArrayList<>());
                 roomDrawings.get(roomId).add(payload);
-                System.out.println("YES!!!!");
             } else if ("join".equals(data.get("event"))) {
                 sendExistingDrawings(session, roomId);
             } else if ("clearDrawing".equals(data.get("event"))) {

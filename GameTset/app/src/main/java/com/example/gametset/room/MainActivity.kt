@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         // Clear 버튼 클릭 시 그림판 지우기
         binding.clearButton.setOnClickListener {
-            binding.drawingView.clearDrawing()
+            binding.drawingView.sendClearDrawing()
         }
 
         binding.apply {
@@ -105,8 +105,9 @@ class MainActivity : AppCompatActivity() {
                                 val x = json.optDouble("x", -1.0).toFloat()
                                 val y = json.optDouble("y", -1.0).toFloat()
                                 val color = json.optString("color", "#000000")
+                                val mode = json.optInt("mode", 1)
                                 if (x >= 0 && y >= 0) {
-                                    binding.drawingView.drawFromServer(x, y, color)
+                                    binding.drawingView.drawFromServer(x, y, color, mode)
                                 }
                             }
                             "clearDrawing" -> binding.drawingView.clearDrawing()
