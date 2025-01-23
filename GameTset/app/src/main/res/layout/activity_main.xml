@@ -58,6 +58,88 @@
             app:layout_constraintTop_toBottomOf="@+id/pen"
             android:background="@color/white"/>
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="32dp"
+            android:background="@drawable/round_backgroud_border_black"
+            android:backgroundTint="@color/red"
+            app:layout_constraintBottom_toBottomOf="@+id/pen"
+            app:layout_constraintStart_toEndOf="@+id/pen"
+            app:layout_constraintTop_toTopOf="@+id/pen"/>
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/round_backgroud_border_black"
+            android:backgroundTint="@color/orange"
+            app:layout_constraintBottom_toBottomOf="@+id/pen"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/pen" />
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/round_backgroud_border_black"
+            android:backgroundTint="@color/yellow"
+            app:layout_constraintBottom_toBottomOf="@+id/pen"
+            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintTop_toTopOf="@+id/pen" />
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/round_backgroud_border_black"
+            android:backgroundTint="@color/green"
+            app:layout_constraintBottom_toBottomOf="@+id/pen"
+            app:layout_constraintStart_toEndOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/pen" />
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/round_backgroud_border_black"
+            android:backgroundTint="@color/blue"
+            app:layout_constraintBottom_toBottomOf="@+id/pen"
+            app:layout_constraintStart_toEndOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="@+id/pen" />
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/round_backgroud_border_black"
+            android:backgroundTint="@color/navy_blue"
+            app:layout_constraintBottom_toBottomOf="@+id/pen"
+            app:layout_constraintStart_toEndOf="@+id/imageView5"
+            app:layout_constraintTop_toTopOf="@+id/pen" />
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/round_backgroud_border_black"
+            android:backgroundTint="@color/purple"
+            app:layout_constraintBottom_toBottomOf="@+id/pen"
+            app:layout_constraintStart_toEndOf="@+id/imageView6"
+            app:layout_constraintTop_toTopOf="@+id/pen" />
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/round_backgroud_border_black"
+            android:backgroundTint="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/pen"
+            app:layout_constraintStart_toEndOf="@+id/imageView7"
+            app:layout_constraintTop_toTopOf="@+id/pen" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView

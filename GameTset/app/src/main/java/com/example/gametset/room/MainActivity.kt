@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.gametset.R
 import com.example.gametset.databinding.ActivityMainBinding
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -53,6 +55,34 @@ class MainActivity : AppCompatActivity() {
         // Clear 버튼 클릭 시 그림판 지우기
         binding.clearButton.setOnClickListener {
             binding.drawingView.clearDrawing()
+        }
+
+        binding.apply {
+            imageView.setOnClickListener{
+                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.red)
+            }
+            imageView2.setOnClickListener {
+                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.orange)
+            }
+            imageView3.setOnClickListener {
+                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.yellow)
+            }
+            imageView4.setOnClickListener {
+                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.green)
+            }
+            imageView5.setOnClickListener {
+                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.blue)
+            }
+            imageView6.setOnClickListener {
+                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.navy_blue)
+            }
+            imageView7.setOnClickListener {
+                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.purple)
+            }
+            imageView8.setOnClickListener {
+                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.black)
+            }
+
         }
     }
 

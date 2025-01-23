@@ -2,8 +2,6 @@ package com.example.gametset.room
 
 import android.content.Context
 import android.graphics.*
-import android.os.Handler
-import android.os.Looper
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -17,7 +15,7 @@ class DrawingView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : View(context, attrs) {
 
-    private val paint = Paint().apply {
+    val drawPaint = Paint().apply {
         color = Color.BLACK
         style = Paint.Style.STROKE
         strokeWidth = 10f
@@ -34,8 +32,10 @@ class DrawingView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        paths.forEach { (path, paint) -> canvas.drawPath(path, paint) }
-        canvas.drawPath(path, paint)
+        paths.forEach { (path, paint) ->
+            canvas.drawPath(path, paint)
+        }
+        canvas.drawPath(path, drawPaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -43,7 +43,15 @@ class DrawingView @JvmOverloads constructor(
             MotionEvent.ACTION_DOWN -> {
                 path = Path()
                 path.moveTo(event.x, event.y)
-                paths.add(Pair(path, paint))
+
+                // 새로운 Paint 객체 생성
+                val newPaint = Paint().apply {
+                    color = drawPaint.color
+                    style = Paint.Style.STROKE
+                    strokeWidth = 10f
+                    isAntiAlias = true
+                }
+                paths.add(Pair(path, newPaint))
             }
             MotionEvent.ACTION_MOVE -> {
                 path.lineTo(event.x, event.y)
@@ -53,6 +61,7 @@ class DrawingView @JvmOverloads constructor(
         invalidate()
         return true
     }
+
 
     private fun sendDrawData(x: Float, y: Float) {
         val json = JSONObject()
