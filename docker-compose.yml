@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # docker-compose.yml에 Jenkins 서비스 추가
+  jenkins:
+    image: jenkins/jenkins:lts
+    networks:
+      - app-network
+    ports:
+      - "8080:8080"
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Nginx 전체 설정 파일
+      - ./nginx/conf.d:/etc/nginx/conf.d          # 서버 블록 설정
+      - ./certbot/www:/var/www/certbot            # Certbot 인증서 검증용
+      - ./certbot/conf:/etc/letsencrypt           # SSL 인증서 저장
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    # 초기 인증서 발급을 위한 명령어 (최초 1회 실행 후 주석 처리)
+    command: >
+      certonly --webroot 
+      -w /var/www/certbot 
+      -d i12d108.p.ssafy.io 
+      --email dororo737@gmail.com 
+      --agree-tos --non-interactive
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew; done;'"  # 자동 갱신
+    depends_on:
+      - nginx
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # .env 파일에서 설정
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql  # 데이터 영속화
+    networks:
+      - app-network
+    healthcheck:  # DB 연결 상태 확인
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    image: d-108-fork/backend:latest  # Jenkins에서 푸시한 이미지 이름
+    container_name: backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_PROFILES_ACTIVE: prod  # 프로덕션 프로필
+    networks:
+      - app-network
+    depends_on:
+      mysql:
+        condition: service_healthy  # DB 건강 상태 확인 후 시작
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge
