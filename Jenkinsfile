@@ -23,8 +23,8 @@ pipeline {
         stage('Build') {
             agent {  // 이 스테이지에서만 Docker 컨테이너 사용
                 docker {
-                    image 'maven:3.8.6-openjdk-17'  # Maven + JDK 17 포함된 이미지
-                    args '-v $HOME/.m2:/root/.m2'   # Maven 캐시 볼륨 마운트
+                    image 'maven:3.8.6-openjdk-17'
+                    args '-v $HOME/.m2:/root/.m2'
                 }
             }
         stage('Docker Build & Push') {
