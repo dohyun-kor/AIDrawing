@@ -77,27 +77,43 @@ pipeline {
             steps {
                 echo "Deploying to ${EC2_HOST} as ${EC2_USER}"
 
-                // EC2 서버에서 Git Clone을 위해 Git 자격 증명 사용
-                withCredentials([usernamePassword(credentialsId: 'gitlab_dororo737', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-                    // SSH 접속을 위해 SSH 자격 증명 사용
-                    sshagent([SSH_CREDENTIALS]) {
-                        sh """
-                            ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<-EOF
-                                # 1) 기존 폴더 삭제
-                                rm -rf ${DOCKER_COMPOSE_PATH}
+                // Git, SSH 자격 증명 사용
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'gitlab_dororo737',
+                        usernameVariable: 'GIT_USERNAME',
+                        passwordVariable: 'GIT_PASSWORD'
+                    )
+                ]) {
+                    // -------------------------------------------------------------
+                    // 1) URL 인코딩
+                    //    java.net.URLEncoder를 사용하여, 아이디/비밀번호에 포함된
+                    //    특수문자(@ 등)를 %40, %2F 등으로 치환
+                    // -------------------------------------------------------------
+                    script {
+                        def safeUsername = java.net.URLEncoder.encode("${GIT_USERNAME}", "UTF-8")
+                        def safePassword = java.net.URLEncoder.encode("${GIT_PASSWORD}", "UTF-8")
 
-                                # 2) 레포지토리 Clone
-                                git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
+                        // SSH 비밀번호/Key를 사용하여 EC2에 접속
+                        sshagent([SSH_CREDENTIALS]) {
+                            sh """
+                                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<-EOF
+                                    # 1) 기존 폴더 삭제
+                                    rm -rf ${DOCKER_COMPOSE_PATH}
 
-                                # 3) docker-compose를 이용해 Pull 및 실행
-                                cd ${DOCKER_COMPOSE_PATH}
-                                docker-compose pull backend
-                                docker-compose up -d backend
+                                    # 2) Git 레포지토리 Clone
+                                    git clone https://${safeUsername}:${safePassword}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
 
-                                # 4) 정상 동작 확인
-                                docker ps | grep backend || echo "backend 컨테이너가 실행되지 않았습니다."
-                            EOF
-                        """
+                                    # 3) docker-compose 이용해 Pull & 실행
+                                    cd ${DOCKER_COMPOSE_PATH}
+                                    docker-compose pull backend
+                                    docker-compose up -d backend
+
+                                    # 4) 정상 동작 여부 확인
+                                    docker ps | grep backend || echo "backend 컨테이너가 실행되지 않았습니다."
+                                EOF
+                            """
+                        }
                     }
                 }
             }
