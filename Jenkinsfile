@@ -13,10 +13,12 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            steps {
-                git branch: 'master', url: 'https://lab.ssafy.com/dororo737/d-108-fork.git'
-            }
-        }
+                    steps {
+                        git branch: 'master',
+                        url: 'https://lab.ssafy.com/dororo737/d-108-fork.git',
+                        credentialsId: 'gitlab_dororo737'  // 자격증명 ID 명시적 지정
+                    }
+                }
 
         stage('Build') {
             steps {
