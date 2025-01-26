@@ -14,6 +14,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // Git 레포지토리를 Jenkins 워크스페이스에 체크아웃
                 git branch: 'master',
                     url: 'https://lab.ssafy.com/dororo737/d-108-fork.git',
                     credentialsId: 'gitlab_dororo737'
@@ -22,43 +23,49 @@ pipeline {
 
         stage('Build') {
             agent {
+                // 빌드를 위한 Docker 컨테이너 사용 (Maven 최신 버전)
                 docker {
                     image 'maven:3.9.9-eclipse-temurin-17'
                     args '-v $HOME/.m2:/root/.m2 -v $WORKSPACE:/workspace --group-add 999'
                 }
             }
             environment {
+                // Maven 설정 폴더 지정
                 MAVEN_CONFIG = "/root/.m2"
             }
             steps {
+                // 빌드 작업 실행
                 dir('D108') {
+                    // 테스트 스킵하고 패키징
                     sh 'mvn clean package -DskipTests'
                 }
-                // Optionally, verify that target/ exists
+                // 빌드 아티팩트 확인
                 sh 'ls -la D108/target'
-                // 빌드 아티팩트 스태시
+                // 빌드 결과물 스태시
                 stash includes: 'D108/target/*.jar', name: 'jarFiles'
             }
         }
 
         stage('Docker Build & Push') {
             steps {
-                // 스태시에서 빌드 아티팩트 언스태시
+                // 스태시된 빌드 아티팩트 언스태시
                 unstash 'jarFiles'
 
-                dir('D108'){
-                    // 디렉토리 내용 확인 (디버깅 용도)
+                dir('D108') {
+                    // 디렉토리 상태 확인
                     sh 'ls -la'
                     sh 'ls -la target'
 
                     script {
+                        // Docker Registry 인증 설정
                         docker.withRegistry('https://index.docker.io/v1/', REGISTRY_CREDENTIAL) {
+                            // 이미지 빌드
                             def app = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", ".")
-                            // Docker 로그인 상태 확인 (디버깅 용도)
+                            // Docker 정보 확인
                             sh 'docker info'
-
-                            // Docker 이미지 푸시
+                            // 이미지 푸시
                             app.push()
+                            // latest 태그로도 푸시
                             app.push('latest')
                         }
                     }
@@ -66,40 +73,29 @@ pipeline {
             }
         }
 
-        stage('Deploy') { // 중첩된 stages 블록 제거 및 동일 수준으로 이동
+        stage('Deploy') {
             steps {
                 echo "Deploying to ${EC2_HOST} as ${EC2_USER}"
 
-                // Jenkins의 Git 자격 증명을 사용하여 EC2 서버에서 git clone 수행
+                // EC2 서버에서 Git Clone을 위해 Git 자격 증명 사용
                 withCredentials([usernamePassword(credentialsId: 'gitlab_dororo737', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                    // SSH 접속을 위해 SSH 자격 증명 사용
                     sshagent([SSH_CREDENTIALS]) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<-EOF
-                                set -e
-                                echo "현재 디렉토리: \$(pwd)"
+                                # 1) 기존 폴더 삭제
+                                rm -rf ${DOCKER_COMPOSE_PATH}
 
-                                # 디렉토리가 Git 리포지토리인지 확인
-                                if [ -d "${DOCKER_COMPOSE_PATH}" ]; then
-                                    if [ -d "${DOCKER_COMPOSE_PATH}/.git" ]; then
-                                        echo "디렉토리가 이미 Git 리포지토리입니다. 최신으로 업데이트합니다."
-                                        cd ${DOCKER_COMPOSE_PATH}
-                                        git pull
-                                    else
-                                        echo "디렉토리가 존재하지만 Git 리포지토리가 아닙니다. 디렉토리를 삭제하고 클론합니다."
-                                        rm -rf ${DOCKER_COMPOSE_PATH}
-                                        git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
-                                    fi
-                                else
-                                    echo "디렉토리가 존재하지 않습니다. 레포지토리를 클론합니다."
-                                    git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
-                                fi
+                                # 2) 레포지토리 Clone
+                                git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
 
+                                # 3) docker-compose를 이용해 Pull 및 실행
                                 cd ${DOCKER_COMPOSE_PATH}
-                                echo "Docker Compose 파일 존재 여부 확인: \$(ls -la | grep docker-compose.yml)"
                                 docker-compose pull backend
                                 docker-compose up -d backend
-                                echo "Docker 컨테이너 상태 확인:"
-                                docker ps | grep backend
+
+                                # 4) 정상 동작 확인
+                                docker ps | grep backend || echo "backend 컨테이너가 실행되지 않았습니다."
                             EOF
                         """
                     }
@@ -111,8 +107,10 @@ pipeline {
     post {
         success {
             script {
+                // 마지막 커밋 작성자 정보
                 def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
                 def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
+                // Mattermost 등 알림 전송
                 mattermostSend (
                     color: 'good',
                     message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
