@@ -36,12 +36,17 @@ pipeline {
             }
             // Optionally, verify that target/ exists
             sh 'ls -la D108/target'
+            // 빌드 아티팩트 스태시
+            stash includes: 'D108/target/*.jar', name: 'jarFiles'
           }
         }
 
 
         stage('Docker Build & Push') {
             steps {
+                // 스태시에서 빌드 아티팩트 언스태시
+                unstash 'jarFiles'
+
                 dir('D108'){
                     // 디렉토리 내용 확인 (디버깅 용도)
                     sh 'ls -la'
