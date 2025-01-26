@@ -28,7 +28,9 @@ pipeline {
             }
           }
           steps {
-            sh 'mvn clean package -DskipTests'
+            dir('D108'){
+                sh 'mvn clean package -DskipTests'
+            }
           }
         }
 
