@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "d-108-fork/backend"
+        DOCKER_IMAGE = "dororo737/d-108-fork"
         DOCKER_TAG = "latest"
         REGISTRY_CREDENTIAL = "REGISTRY_CREDENTIAL"
         SSH_CREDENTIALS = "SSH_CREDENTIALS"
@@ -55,6 +55,10 @@ pipeline {
                     script {
                         docker.withRegistry('https://index.docker.io/v1/', REGISTRY_CREDENTIAL) {
                             def app = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", ".")
+                            // Docker 로그인 상태 확인 (디버깅 용도)
+                            sh 'docker info'
+
+                            // Docker 이미지 푸시
                             app.push()
                             app.push('latest')
                         }
