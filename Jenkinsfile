@@ -89,24 +89,24 @@ pipeline {
                         def safePassword = java.net.URLEncoder.encode("${GIT_PASSWORD}", "UTF-8")
 
                         sshagent([SSH_CREDENTIALS]) {
-                            // 수정된 부분: Heredoc 구문 오류 및 Docker Compose 버전 문제 해결
+                            // 수정된 Heredoc 구문 (들여쓰기 제거)
                             sh """
                                 ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} /bin/bash <<'EOS'
-                                    # 1) 기존 폴더 삭제
-                                    rm -rf ${DOCKER_COMPOSE_PATH}
+# 1) 기존 폴더 삭제
+rm -rf ${DOCKER_COMPOSE_PATH}
 
-                                    # 2) Git Clone (인코딩된 계정 정보 사용)
-                                    git clone https://${safeUsername}:${safePassword}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
+# 2) Git Clone (인코딩된 계정 정보 사용)
+git clone https://${safeUsername}:${safePassword}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
 
-                                    # 3) Docker Compose V2로 업데이트 후 실행
-                                    cd ${DOCKER_COMPOSE_PATH}
-                                    /usr/local/bin/docker-compose pull backend
-                                    /usr/local/bin/docker-compose up -d --force-recreate backend
+# 3) Docker Compose V2 실행
+cd ${DOCKER_COMPOSE_PATH}
+/usr/local/bin/docker-compose pull backend
+/usr/local/bin/docker-compose up -d --force-recreate backend
 
-                                    # 4) 실행 확인
-                                    sleep 5
-                                    docker ps | grep backend || echo "Container check failed"
-                            EOS
+# 4) 실행 확인
+sleep 5
+docker ps | grep backend || echo "Container check failed"
+EOS
                             """
                         }
                     }
