@@ -8,7 +8,7 @@ pipeline {
         SSH_CREDENTIALS = "SSH_CREDENTIALS"
         EC2_USER = "ubuntu"
         EC2_HOST = "i12d108.p.ssafy.io"
-        DOCKER_COMPOSE_PATH = '/opt/d-108-fork'
+        DOCKER_COMPOSE_PATH = '/home/ubuntu/d-108-fork'
     }
 
     stages {
