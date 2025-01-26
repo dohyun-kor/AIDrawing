@@ -97,7 +97,7 @@ pipeline {
                         // SSH 비밀번호/Key를 사용하여 EC2에 접속
                         sshagent([SSH_CREDENTIALS]) {
                             sh """
-                                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<-EOF
+                                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<EOF
                                     # 1) 기존 폴더 삭제
                                     rm -rf ${DOCKER_COMPOSE_PATH}
 
@@ -106,8 +106,8 @@ pipeline {
 
                                     # 3) docker-compose 이용해 Pull & 실행
                                     cd ${DOCKER_COMPOSE_PATH}
-                                    docker-compose pull backend
-                                    docker-compose up -d backend
+                                    docker-compose pull d-108-fork
+                                    docker-compose up -d d-108-fork
 
                                     # 4) 정상 동작 여부 확인
                                     docker ps | grep backend || echo "backend 컨테이너가 실행되지 않았습니다."
