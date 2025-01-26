@@ -36,10 +36,13 @@ pipeline {
 
         stage('Docker Build & Push') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', REGISTRY_CREDENTIAL) {
-                        def app = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
-                        app.push()
+                dir('D108'){
+                    script {
+                        docker.withRegistry('https://index.docker.io/v1/', REGISTRY_CREDENTIAL) {
+                            def app = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", ".")
+                            app.push()
+                            app.push('latest')
+                        }
                     }
                 }
             }
