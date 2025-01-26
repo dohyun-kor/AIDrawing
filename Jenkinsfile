@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "d-108-fork/backend"
         DOCKER_TAG = "latest"
-        REGISTRY_CREDENTIAL = "DockerHub"
+        REGISTRY_CREDENTIAL = "REGISTRY_CREDENTIAL"
         SSH_CREDENTIALS = "SSH_CREDENTIALS"
         EC2_USER = "ubuntu"
         EC2_HOST = "i12d108.p.ssafy.io"
