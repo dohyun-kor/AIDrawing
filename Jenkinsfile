@@ -5,10 +5,11 @@ pipeline {
         DOCKER_IMAGE = "dororo737/d-108-fork"
         DOCKER_TAG = "latest"
         REGISTRY_CREDENTIAL = "REGISTRY_CREDENTIAL"
-        SSH_CREDENTIALS = "SSH_CREDENTIALS"
+        SSH_CREDENTIALS = "gitlab_jenkins_ssh_key"
         EC2_USER = "ubuntu"
         EC2_HOST = "i12d108.p.ssafy.io"
-        DOCKER_COMPOSE_PATH = "~/d-108-fork"
+        DOCKER_COMPOSE_PATH = '/opt/d-108-fork'
+        REPO_URL = 'git@gitlab.com:dororo737/d-108-fork.git' // 실제 레포지토리 URL로 변경
     }
 
         stages {
@@ -67,21 +68,35 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sshagent([SSH_CREDENTIALS]) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<-EOF
-                            set -e
-                            cd ${DOCKER_COMPOSE_PATH}
-                            docker-compose pull d-108-fork
-                            docker-compose up -d d-108-fork
-                        EOF
-                    """
+        stages {
+            stage('Deploy') {
+                steps {
+                    echo "Deploying to ${EC2_HOST} as ${EC2_USER}"
+                    sshagent([SSH_CREDENTIALS]) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<-EOF
+                                set -e
+                                echo "현재 디렉토리: \$(pwd)"
+                                if [ ! -d "${DOCKER_COMPOSE_PATH}" ]; then
+                                    echo "디렉토리가 존재하지 않습니다. 레포지토리를 클론합니다."
+                                    git clone https://lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
+                                else
+                                    echo "디렉토리가 이미 존재합니다. 최신으로 업데이트합니다."
+                                    cd ${DOCKER_COMPOSE_PATH}
+                                    git pull
+                                fi
+                                cd ${DOCKER_COMPOSE_PATH}
+                                echo "Docker Compose 파일 존재 여부 확인: \$(ls -la | grep docker-compose.yml)"
+                                docker-compose pull backend
+                                docker-compose up -d backend
+                                echo "Docker 컨테이너 상태 확인:"
+                                docker ps | grep backend
+                            EOF
+                        """
+                    }
                 }
             }
         }
-    }
 
     post {
         success {
