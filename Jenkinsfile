@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = "dororo737/d-108-fork"
         DOCKER_TAG = "latest"
         REGISTRY_CREDENTIAL = "REGISTRY_CREDENTIAL"
-        SSH_CREDENTIALS = "gitlab_jenkins_ssh_key"
+        SSH_CREDENTIALS = "SSH_CREDENTIALS"
         EC2_USER = "ubuntu"
         EC2_HOST = "i12d108.p.ssafy.io"
         DOCKER_COMPOSE_PATH = '/opt/d-108-fork'
