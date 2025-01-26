@@ -71,7 +71,8 @@ pipeline {
             steps {
                 sshagent([SSH_CREDENTIALS]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << EOF
+                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<-EOF
+                            set -e
                             cd ${DOCKER_COMPOSE_PATH}
                             docker-compose pull backend
                             docker-compose up -d backend
