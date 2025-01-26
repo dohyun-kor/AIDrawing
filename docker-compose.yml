@@ -64,6 +64,9 @@ services:
 
   backend:
     image: dororo737/d-108-fork:latest  # Jenkins에서 푸시한 이미지 이름
+    volumes:
+      - ./data:/var/lib/mysql  # 호스트 경로:컨테이너 경로
+      - ./config:/app/config
     container_name: backend
     restart: unless-stopped
     environment:

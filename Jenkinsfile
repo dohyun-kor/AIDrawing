@@ -77,7 +77,6 @@ pipeline {
             steps {
                 echo "Deploying to ${EC2_HOST} as ${EC2_USER}"
 
-                // Git, SSH 자격 증명 사용
                 withCredentials([
                     usernamePassword(
                         credentialsId: 'gitlab_dororo737',
@@ -85,33 +84,29 @@ pipeline {
                         passwordVariable: 'GIT_PASSWORD'
                     )
                 ]) {
-                    // -------------------------------------------------------------
-                    // 1) URL 인코딩
-                    //    java.net.URLEncoder를 사용하여, 아이디/비밀번호에 포함된
-                    //    특수문자(@ 등)를 %40, %2F 등으로 치환
-                    // -------------------------------------------------------------
                     script {
                         def safeUsername = java.net.URLEncoder.encode("${GIT_USERNAME}", "UTF-8")
                         def safePassword = java.net.URLEncoder.encode("${GIT_PASSWORD}", "UTF-8")
 
-                        // SSH 비밀번호/Key를 사용하여 EC2에 접속
                         sshagent([SSH_CREDENTIALS]) {
+                            // 수정된 부분: Heredoc 구문 오류 및 Docker Compose 버전 문제 해결
                             sh """
-                                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<EOF
+                                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} /bin/bash <<'EOS'
                                     # 1) 기존 폴더 삭제
                                     rm -rf ${DOCKER_COMPOSE_PATH}
 
-                                    # 2) Git 레포지토리 Clone
+                                    # 2) Git Clone (인코딩된 계정 정보 사용)
                                     git clone https://${safeUsername}:${safePassword}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
 
-                                    # 3) docker-compose 이용해 Pull & 실행
+                                    # 3) Docker Compose V2로 업데이트 후 실행
                                     cd ${DOCKER_COMPOSE_PATH}
-                                    docker-compose pull backend
-                                    docker-compose up -d backend
+                                    /usr/local/bin/docker-compose pull backend
+                                    /usr/local/bin/docker-compose up -d --force-recreate backend
 
-                                    # 4) 정상 동작 여부 확인
-                                    docker ps | grep backend || echo "backend 컨테이너가 실행되지 않았습니다."
-                                EOF
+                                    # 4) 실행 확인
+                                    sleep 5
+                                    docker ps | grep backend || echo "Container check failed"
+                            EOS
                             """
                         }
                     }
