@@ -66,30 +66,43 @@ pipeline {
             }
         }
 
-        stage('Deploy') { // 중첩된 stages 블록을 제거하고 동일한 수준으로 이동
+        stage('Deploy') { // 중첩된 stages 블록 제거 및 동일 수준으로 이동
             steps {
                 echo "Deploying to ${EC2_HOST} as ${EC2_USER}"
-                sshagent([SSH_CREDENTIALS]) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<-EOF
-                            set -e
-                            echo "현재 디렉토리: \$(pwd)"
-                            if [ ! -d "${DOCKER_COMPOSE_PATH}" ]; then
-                                echo "디렉토리가 존재하지 않습니다. 레포지토리를 클론합니다."
-                                git clone https://lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
-                            else
-                                echo "디렉토리가 이미 존재합니다. 최신으로 업데이트합니다."
+
+                // Jenkins의 Git 자격 증명을 사용하여 EC2 서버에서 git clone 수행
+                withCredentials([usernamePassword(credentialsId: 'gitlab_dororo737', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                    sshagent([SSH_CREDENTIALS]) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<-EOF
+                                set -e
+                                echo "현재 디렉토리: \$(pwd)"
+
+                                # 디렉토리가 Git 리포지토리인지 확인
+                                if [ -d "${DOCKER_COMPOSE_PATH}" ]; then
+                                    if [ -d "${DOCKER_COMPOSE_PATH}/.git" ]; then
+                                        echo "디렉토리가 이미 Git 리포지토리입니다. 최신으로 업데이트합니다."
+                                        cd ${DOCKER_COMPOSE_PATH}
+                                        git pull
+                                    else
+                                        echo "디렉토리가 존재하지만 Git 리포지토리가 아닙니다. 디렉토리를 삭제하고 클론합니다."
+                                        rm -rf ${DOCKER_COMPOSE_PATH}
+                                        git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
+                                    fi
+                                else
+                                    echo "디렉토리가 존재하지 않습니다. 레포지토리를 클론합니다."
+                                    git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
+                                fi
+
                                 cd ${DOCKER_COMPOSE_PATH}
-                                git pull
-                            fi
-                            cd ${DOCKER_COMPOSE_PATH}
-                            echo "Docker Compose 파일 존재 여부 확인: \$(ls -la | grep docker-compose.yml)"
-                            docker-compose pull backend
-                            docker-compose up -d backend
-                            echo "Docker 컨테이너 상태 확인:"
-                            docker ps | grep backend
-                        EOF
-                    """
+                                echo "Docker Compose 파일 존재 여부 확인: \$(ls -la | grep docker-compose.yml)"
+                                docker-compose pull backend
+                                docker-compose up -d backend
+                                echo "Docker 컨테이너 상태 확인:"
+                                docker ps | grep backend
+                            EOF
+                        """
+                    }
                 }
             }
         }
