@@ -21,15 +21,15 @@ pipeline {
         }
 
         stage('Build') {
-            agent { // 이 스테이지에서만 Docker 컨테이너 사용
-                docker {
-                    image 'maven:3.8.6-openjdk-17'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
+          agent {
+            docker {
+              image 'maven:3.8.6-jdk-17'
+              args '-v $HOME/.m2:/root/.m2 --group-add 999'
             }
-            steps { // steps 블록 누락됨
-                sh 'mvn clean package -DskipTests'
-            }
+          }
+          steps {
+            sh 'mvn clean package -DskipTests'
+          }
         }
 
         stage('Docker Build & Push') {
