@@ -74,8 +74,8 @@ pipeline {
                         ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} <<-EOF
                             set -e
                             cd ${DOCKER_COMPOSE_PATH}
-                            docker-compose pull backend
-                            docker-compose up -d backend
+                            docker-compose pull d-108-fork
+                            docker-compose up -d d-108-fork
                         EOF
                     """
                 }
