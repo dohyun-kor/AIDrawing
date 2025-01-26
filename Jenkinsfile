@@ -13,20 +13,25 @@ pipeline {
 
     stages {
         stage('Checkout') {
-                    steps {
-                        git branch: 'master',
-                        url: 'https://lab.ssafy.com/dororo737/d-108-fork.git',
-                        credentialsId: 'gitlab_dororo737'  // 자격증명 ID 명시적 지정
-                    }
-                }
+            steps {
+                git branch: 'master',
+                url: 'https://lab.ssafy.com/dororo737/d-108-fork.git',
+                credentialsId: 'gitlab_dororo737'
+            }
+        }
 
         stage('Build') {
-            agent {  // 이 스테이지에서만 Docker 컨테이너 사용
+            agent { // 이 스테이지에서만 Docker 컨테이너 사용
                 docker {
                     image 'maven:3.8.6-openjdk-17'
                     args '-v $HOME/.m2:/root/.m2'
                 }
             }
+            steps { // steps 블록 누락됨
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
         stage('Docker Build & Push') {
             steps {
                 script {
@@ -56,23 +61,25 @@ pipeline {
     post {
         success {
             script {
-                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
-                mattermostSend (color: 'good',
-                message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
-                endpoint: '{endpoint입력}',
-                channel: '{channel입력}'
+                def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
+                def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (
+                    color: 'good',
+                    message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
+                    endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
+                    channel: 'D108jenkins'
                 )
             }
         }
         failure {
             script {
-                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
-                mattermostSend (color: 'danger',
-                message: "빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
-                endpoint: '{endpoint입력}',
-                channel: '{channel입력}'
+                def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
+                def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (
+                    color: 'danger',
+                    message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
+                    endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
+                    channel: 'D108jenkins'
                 )
             }
         }
