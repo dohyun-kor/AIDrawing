@@ -11,28 +11,34 @@ pipeline {
         DOCKER_COMPOSE_PATH = "~/d-108-fork"
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'master',
-                url: 'https://lab.ssafy.com/dororo737/d-108-fork.git',
-                credentialsId: 'gitlab_dororo737'
+        stages {
+            stage('Checkout') {
+                steps {
+                    git branch: 'master',
+                    url: 'https://lab.ssafy.com/dororo737/d-108-fork.git',
+                    credentialsId: 'gitlab_dororo737'
+                }
             }
-        }
 
         stage('Build') {
           agent {
             docker {
               image 'maven:3.9.9-eclipse-temurin-17'
-              args '-v $HOME/.m2:/root/.m2 --group-add 999'
+              args '-v $HOME/.m2:/root/.m2 -v $WORKSPACE:/workspace --group-add 999'
             }
+          }
+          environment {
+            MAVEN_CONFIG = "/root/.m2"
           }
           steps {
-            dir('D108'){
-                sh 'mvn clean package -DskipTests'
+            dir('D108') {
+              sh 'mvn clean package -DskipTests'
             }
+            // Optionally, verify that target/ exists
+            sh 'ls -la D108/target'
           }
         }
+
 
         stage('Docker Build & Push') {
             steps {
