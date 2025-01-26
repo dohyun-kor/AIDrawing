@@ -43,6 +43,10 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 dir('D108'){
+                    // 디렉토리 내용 확인 (디버깅 용도)
+                    sh 'ls -la'
+                    sh 'ls -la target'
+
                     script {
                         docker.withRegistry('https://index.docker.io/v1/', REGISTRY_CREDENTIAL) {
                             def app = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", ".")

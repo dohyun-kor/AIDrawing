@@ -2,8 +2,7 @@
 FROM openjdk:17-jdk-slim
 
 # 애플리케이션 JAR 파일을 컨테이너로 복사
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+COPY target/*.jar app.jar
 
 # 애플리케이션 포트 설정
 EXPOSE 8080
