@@ -45,6 +45,8 @@ services:
     volumes:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
+    ports:
+      - "8082:80"
     # 초기 인증서 발급을 위한 명령어 (최초 1회 실행 후 주석 처리)
     command: >
       certonly --webroot
@@ -54,7 +56,7 @@ services:
       --agree-tos --non-interactive
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew; done;'"  # 자동 갱신
     depends_on:
-      - backend
+      - nginx
     restart: unless-stopped
 
   nginx:
@@ -72,7 +74,6 @@ services:
     networks:
       - app-network
     depends_on:
-      - certbot
       - backend
 
 volumes:
