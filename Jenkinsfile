@@ -40,9 +40,9 @@ pipeline {
                     sh 'mvn clean package -DskipTests'
                 }
                 // 빌드 아티팩트 확인
-                sh 'ls -la target'
+                sh 'ls -la D108/target'
                 // 빌드 결과물 스태시
-                stash includes: 'target/*.jar', name: 'jarFiles'
+                stash includes: 'D108/target/*.jar', name: 'jarFiles'
             }
         }
 
@@ -65,8 +65,6 @@ pipeline {
                             sh 'docker info'
                             // 이미지 푸시
                             app.push()
-                            // latest 태그로도 푸시
-                            app.push('latest')
                         }
                     }
                 }
@@ -100,8 +98,8 @@ git clone https://${safeUsername}:${safePassword}@lab.ssafy.com/dororo737/d-108-
 
 # 3) Docker Compose V2 실행
 cd ${DOCKER_COMPOSE_PATH}
-docker-compose pull backend
-docker-compose up -d --force-recreate backend
+docker-compose pull
+docker-compose up -d --force-recreate
 
 # 4) 실행 확인
 sleep 5
