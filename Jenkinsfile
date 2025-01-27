@@ -101,7 +101,7 @@ docker compose down
 # Git에서 최신 코드 가져오기 (강제 재설정)
 git fetch origin master
 git reset --hard origin/master
-git clean -fd -e certbot/conf -e certbot/www
+git clean -fd
 else
 echo "저장소 미존재, 새로 Clone..."
 

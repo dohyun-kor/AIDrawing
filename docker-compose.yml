@@ -39,41 +39,6 @@ services:
       mysql:
         condition: service_healthy  # DB 건강 상태 확인 후 시작
 
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
-    # 초기 인증서 발급을 위한 명령어 (최초 1회 실행 후 주석 처리)
-    command: >
-      certonly --webroot
-      -w /var/www/certbot
-      -d d108.duckdns.org
-      --email dororo737@gmail.com
-      --agree-tos --non-interactive
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew; done;'"  # 자동 갱신
-    depends_on:
-      - nginx
-    restart: unless-stopped
-
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Nginx 전체 설정 파일
-      - ./nginx/conf.d:/etc/nginx/conf.d          # 서버 블록 설정
-      - ./certbot/www:/var/www/certbot            # Certbot 인증서 검증용
-      - ./certbot/conf:/etc/letsencrypt           # SSL 인증서 저장
-    networks:
-      - app-network
-    depends_on:
-      - backend
-
 volumes:
   mysql_data:
 
