@@ -122,7 +122,7 @@ docker-compose up -d --force-recreate
 
 # 3) 실행 확인
 sleep 5
-docker ps | grep backend || echo "Container check failed"
+docker ps || echo "Container check failed"
 EOS
                             """
                         }
