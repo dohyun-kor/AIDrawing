@@ -73,7 +73,7 @@ services:
       - app-network
     depends_on:
       - certbot
-      -
+
   # 4) Jenkins
   jenkins:
     image: jenkins/jenkins:lts
