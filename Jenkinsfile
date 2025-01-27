@@ -89,23 +89,54 @@ pipeline {
                         sshagent([SSH_CREDENTIALS]) {
                             // 수정된 Heredoc 구문 (들여쓰기 제거)
                             sh """
-                                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} /bin/bash <<EOS
-# 1) 기존 폴더 삭제
-rm -rf ${DOCKER_COMPOSE_PATH}
+ssh -o StrictHostKeyChecking=no ubuntu@i12d108.p.ssafy.io /bin/bash <<'EOS'
+# 환경 변수 설정 (필요 시)
+export GIT_PASSWORD=${GIT_PASSWORD}
 
-# 2) Git Clone (인코딩된 계정 정보 사용)
-git clone https://${safeUsername}:${safePassword}@lab.ssafy.com/dororo737/d-108-fork.git ${DOCKER_COMPOSE_PATH}
+# 1) 디렉토리 존재 여부 확인 및 Git 작업
+if [ -d "/home/ubuntu/d-108-fork" ]; then
+echo "디렉토리가 존재합니다. 최신 변경 사항을 pull 합니다."
+cd /home/ubuntu/d-108-fork || { echo "디렉토리 이동 실패"; exit 1; }
 
-# 3) Docker Compose V2 실행
-cd ${DOCKER_COMPOSE_PATH}
-ls -al
-docker-compose pull
-docker-compose up -d --force-recreate
+# Git Pull 실행
+git pull https://dororo737%40gmail.com:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git
+if [ $? -ne 0 ]; then
+  echo "Git pull 실패"
+  exit 1
+fi
+else
+echo "디렉토리가 존재하지 않습니다. 리포지토리를 clone 합니다."
 
-# 4) 실행 확인
+# Git Clone 실행
+git clone https://dororo737%40gmail.com:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git /home/ubuntu/d-108-fork
+if [ $? -ne 0 ]; then
+  echo "Git clone 실패"
+  exit 1
+fi
+fi
+
+# 2) Docker Compose V2 실행
+cd /home/ubuntu/d-108-fork || { echo "디렉토리 이동 실패"; exit 1; }
+
+# Docker Compose 파일 확인
+if [ ! -f "docker-compose.yml" ] && [ ! -f "docker-compose.yaml" ]; then
+echo "docker-compose 파일이 존재하지 않습니다."
+exit 1
+fi
+
+# Docker Compose 명령어 실행 (필요 시 sudo 추가)
+sudo docker-compose pull
+sudo docker-compose up -d --force-recreate
+if [ $? -ne 0 ]; then
+echo "Docker Compose 실행 실패"
+exit 1
+fi
+
+# 3) 실행 확인
 sleep 5
 docker ps | grep backend || echo "Container check failed"
 EOS
+
                             """
                         }
                     }
