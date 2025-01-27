@@ -89,52 +89,41 @@ pipeline {
                         sshagent([SSH_CREDENTIALS]) {
                             // 수정된 Heredoc 구문 (들여쓰기 제거)
                             sh """
-ssh -o StrictHostKeyChecking=no ubuntu@i12d108.p.ssafy.io /bin/bash <<EOS
+                                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} /bin/bash <<EOS
+# 1) Git Repository 존재 여부 확인
+if [ -d "${DOCKER_COMPOSE_PATH}/.git" ]; then
+echo "기존 저장소 발견, 최신 코드 Pull..."
+cd "${DOCKER_COMPOSE_PATH}"
 
-# 1) 디렉토리 존재 여부 확인 및 Git 작업
-if [ -d "/home/ubuntu/d-108-fork" ]; then
-echo "디렉토리가 존재합니다. 최신 변경 사항을 pull 합니다."
-cd /home/ubuntu/d-108-fork || { echo "디렉토리 이동 실패"; exit 1; }
+# 실행 중인 컨테이너 정지
+docker-compose down
 
-# Git Pull 실행
-git pull https://dororo737@gmail.com:${safePassword}@lab.ssafy.com/dororo737/d-108-fork.git
-if [ $? -ne 0 ]; then
-  echo "Git pull 실패"
-  exit 1
-fi
+# Git에서 최신 코드 가져오기 (강제 재설정)
+git fetch origin master
+git reset --hard origin/master
+git clean -fd
 else
-echo "디렉토리가 존재하지 않습니다. 리포지토리를 clone 합니다."
+echo "저장소 미존재, 새로 Clone..."
 
-# Git Clone 실행
-git clone https://dororo737@gmail.com:${safePassword}@lab.ssafy.com/dororo737/d-108-fork.git /home/ubuntu/d-108-fork
-if [ $? -ne 0 ]; then
-  echo "Git clone 실패"
-  exit 1
-fi
+# 기존 디렉토리 제거 (비 Git 저장소일 경우)
+if [ -d "${DOCKER_COMPOSE_PATH}" ]; then
+    echo "비 Git 디렉토리 제거..."
+    sudo rm -rf "${DOCKER_COMPOSE_PATH}"
 fi
 
-# 2) Docker Compose V2 실행
-cd /home/ubuntu/d-108-fork || { echo "디렉토리 이동 실패"; exit 1; }
-
-# Docker Compose 파일 확인
-if [ ! -f "docker-compose.yml" ] && [ ! -f "docker-compose.yaml" ]; then
-echo "docker-compose 파일이 존재하지 않습니다."
-exit 1
+# 새 저장소 Clone
+git clone -b master https://${safeUsername}:${safePassword}@lab.ssafy.com/dororo737/d-108-fork.git "${DOCKER_COMPOSE_PATH}"
 fi
 
-# Docker Compose 명령어 실행 (필요 시 sudo 추가)
-sudo docker-compose pull
-sudo docker-compose up -d --force-recreate
-if [ $? -ne 0 ]; then
-echo "Docker Compose 실행 실패"
-exit 1
-fi
+# 2) Docker Compose 실행
+cd "${DOCKER_COMPOSE_PATH}"
+docker-compose pull
+docker-compose up -d --force-recreate
 
 # 3) 실행 확인
 sleep 5
 docker ps | grep backend || echo "Container check failed"
 EOS
-
                             """
                         }
                     }
