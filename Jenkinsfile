@@ -99,7 +99,7 @@ echo "디렉토리가 존재합니다. 최신 변경 사항을 pull 합니다."
 cd /home/ubuntu/d-108-fork || { echo "디렉토리 이동 실패"; exit 1; }
 
 # Git Pull 실행
-git pull https://dororo737%40gmail.com:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git
+git pull https://dororo737@gmail.com:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git
 if [ $? -ne 0 ]; then
   echo "Git pull 실패"
   exit 1
@@ -108,7 +108,7 @@ else
 echo "디렉토리가 존재하지 않습니다. 리포지토리를 clone 합니다."
 
 # Git Clone 실행
-git clone https://dororo737%40gmail.com:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git /home/ubuntu/d-108-fork
+git clone https://dororo737@gmail.com:${GIT_PASSWORD}@lab.ssafy.com/dororo737/d-108-fork.git /home/ubuntu/d-108-fork
 if [ $? -ne 0 ]; then
   echo "Git clone 실패"
   exit 1
