@@ -60,7 +60,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-#    restart: unless-stopped
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -73,6 +73,7 @@ services:
       - app-network
     depends_on:
       - certbot
+      - backend
 
 volumes:
   mysql_data:
