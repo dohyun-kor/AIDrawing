@@ -74,15 +74,6 @@ services:
     depends_on:
       - certbot
 
-  # 4) Jenkins
-  jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
-    ports:
-      - "8080:8080"  # Jenkins 웹
-      - "50000:50000" # 에이전트 연결
-    restart: always
-
 volumes:
   mysql_data:
 
