@@ -40,9 +40,9 @@ pipeline {
                     sh 'mvn clean package -DskipTests'
                 }
                 // 빌드 아티팩트 확인
-                sh 'ls -la D108/target'
+                sh 'ls -la target'
                 // 빌드 결과물 스태시
-                stash includes: 'D108/target/*.jar', name: 'jarFiles'
+                stash includes: 'target/*.jar', name: 'jarFiles'
             }
         }
 
@@ -91,7 +91,7 @@ pipeline {
                         sshagent([SSH_CREDENTIALS]) {
                             // 수정된 Heredoc 구문 (들여쓰기 제거)
                             sh """
-                                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} /bin/bash <<'EOS'
+                                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} /bin/bash <<EOS
 # 1) 기존 폴더 삭제
 rm -rf ${DOCKER_COMPOSE_PATH}
 
@@ -100,8 +100,8 @@ git clone https://${safeUsername}:${safePassword}@lab.ssafy.com/dororo737/d-108-
 
 # 3) Docker Compose V2 실행
 cd ${DOCKER_COMPOSE_PATH}
-/usr/local/bin/docker-compose pull backend
-/usr/local/bin/docker-compose up -d --force-recreate backend
+docker-compose pull backend
+docker-compose up -d --force-recreate backend
 
 # 4) 실행 확인
 sleep 5
