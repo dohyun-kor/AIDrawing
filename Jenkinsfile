@@ -96,12 +96,12 @@ echo "기존 저장소 발견, 최신 코드 Pull..."
 cd "${DOCKER_COMPOSE_PATH}"
 
 # 실행 중인 컨테이너 정지
-docker-compose down
+docker compose down
 
 # Git에서 최신 코드 가져오기 (강제 재설정)
 git fetch origin master
 git reset --hard origin/master
-git clean -fd -e certbot/conf -e certbot/www
+git clean -fd
 else
 echo "저장소 미존재, 새로 Clone..."
 
@@ -117,8 +117,8 @@ fi
 
 # 2) Docker Compose 실행
 cd "${DOCKER_COMPOSE_PATH}"
-docker-compose pull
-docker-compose up -d --force-recreate
+docker compose pull
+docker compose up -d --force-recreate
 
 # 3) 실행 확인
 sleep 5
