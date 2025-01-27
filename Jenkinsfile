@@ -89,7 +89,7 @@ pipeline {
                         sshagent([SSH_CREDENTIALS]) {
                             // 수정된 Heredoc 구문 (들여쓰기 제거)
                             sh """
-ssh -o StrictHostKeyChecking=no ubuntu@i12d108.p.ssafy.io /bin/bash <<'EOS'
+ssh -o StrictHostKeyChecking=no ubuntu@i12d108.p.ssafy.io /bin/bash <<EOS
 
 # 1) 디렉토리 존재 여부 확인 및 Git 작업
 if [ -d "/home/ubuntu/d-108-fork" ]; then
