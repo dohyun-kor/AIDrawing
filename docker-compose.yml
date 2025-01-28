@@ -14,7 +14,7 @@ services:
     networks:
       - app-network
     healthcheck:  # DB 연결 상태 확인
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD"]
       interval: 5s
       timeout: 3s
       retries: 5
