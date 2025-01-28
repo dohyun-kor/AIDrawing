@@ -39,6 +39,18 @@ services:
       mysql:
         condition: service_healthy  # DB 건강 상태 확인 후 시작
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8082:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    depends_on:
+      - mysql
+      -
 volumes:
   mysql_data:
 
