@@ -22,7 +22,7 @@ services:
   backend:
     image: dororo737/d-108-fork:latest  # Jenkins에서 푸시한 이미지 이름
     ports:
-      - "8081:8080"
+      - "8081:9987"
     volumes:
       - ./config:/app/config
     container_name: backend
