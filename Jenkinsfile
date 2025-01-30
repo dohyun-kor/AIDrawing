@@ -16,7 +16,7 @@ pipeline {
             steps {
                 // Git 레포지토리를 Jenkins 워크스페이스에 체크아웃
                 git branch: 'master',
-                    url: 'https://lab.ssafy.com/dororo737/d-108-fork.git',
+                    url: 'https://lab.ssafy.com/dnen14/d108.git',
                     credentialsId: 'gitlab_dororo737'
             }
         }
