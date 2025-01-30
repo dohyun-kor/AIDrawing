@@ -86,7 +86,7 @@ pipeline {
                     sshagent([SSH_CREDENTIALS]) {
                         // SCP를 사용하여 docker-compose.yml 전송
                         sh """
-                            scp -o StrictHostKeyChecking=no D108/docker-compose.yml ${EC2_USER}@${EC2_HOST}:${DOCKER_COMPOSE_PATH}/docker-compose.yml
+                            scp -o StrictHostKeyChecking=no docker-compose.yml ${EC2_USER}@${EC2_HOST}:${DOCKER_COMPOSE_PATH}/docker-compose.yml
                         """
 
                         // EC2 서버에서 Docker Compose 실행
