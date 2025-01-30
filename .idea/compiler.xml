@@ -11,11 +11,13 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
         <module name="testDALLE" />
+        <module name="D108" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="D108" options="-parameters" />
       <module name="testDALLE" options="-parameters" />
     </option>
   </component>
