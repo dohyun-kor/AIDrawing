@@ -1,7 +1,9 @@
 package com.example.model.dao;
 
 import com.example.model.dto.User;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper  // MyBatis Mapper 설정
 public interface UserDao {
 
     /**
