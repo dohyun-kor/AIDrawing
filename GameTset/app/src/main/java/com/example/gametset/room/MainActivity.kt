@@ -20,7 +20,6 @@ private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var simulatedPaths: List<Path>
     private lateinit var webSocket: WebSocket
     private lateinit var wordAdapter: WordAdapter
     private val wordList = mutableListOf<String>()
