@@ -76,7 +76,7 @@ pipeline {
 
         stage('Deploy') {
             when {
-                expreession {env.TRIGGER_TYPE == 'push'}
+                expression {env.TRIGGER_TYPE == 'push'}
             }
             steps {
                 echo "Deploying to ${EC2_HOST} as ${EC2_USER}"
@@ -126,31 +126,22 @@ EOS
                }
 
                 // Mattermost 등 알림 전송
-                mattermostSend (
-                    color: 'good',
-                    message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${env.PUSHER_NAME} \n(<${env.BUILD_URL}|상세보기>)",
-                    endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
-                    channel: 'D108jenkins'
-                )
-            }
+            mattermostSend (
+                color: 'good',
+                message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${env.PUSHER_NAME} \n${triggerMessage}\n(<${env.BUILD_URL}|상세보기>)",
+                endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
+                channel: 'D108jenkins'
+            )
         }
-        failure {
-            script {
-                def triggerMessage = ""
-                if (env.TRIGGER_TYPE == 'push') {
-                    triggerMessage = "푸시 이벤트에 의해 트리거됨"
-                } else if (env.TRIGGER_TYPE == 'merge_request') {
-                    triggerMessage = "머지 리퀘스트 이벤트에 의해 트리거됨"
-                } else {
-                    triggerMessage = "트리거 유형: ${env.TRIGGER_TYPE}"
-                }
-                mattermostSend (
-                    color: 'danger',
-                    message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${env.PUSHER_NAME} (${env.PUSHER_EMAIL})\n(<${env.BUILD_URL}|상세보기>)",
-                    endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
-                    channel: 'D108jenkins'
-                )
-            }
+    }
+    failure {
+        script {
+            mattermostSend (
+                color: 'danger',
+                message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${env.PUSHER_NAME} \n(<${env.BUILD_URL}|상세보기>)",
+                endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
+                channel: 'D108jenkins'
+            )
         }
     }
 }
