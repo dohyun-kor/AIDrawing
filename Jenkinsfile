@@ -14,10 +14,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Git 레포지토리를 Jenkins 워크스페이스에 체크아웃
-                git branch: 'master',
-                    url: 'https://lab.ssafy.com/dnen14/d108.git',
-                    credentialsId: 'gitlab_dororo737'
+                checkout scm
             }
         }
 
