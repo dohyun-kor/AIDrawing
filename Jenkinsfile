@@ -9,6 +9,8 @@ pipeline {
         EC2_USER = "ubuntu"
         EC2_HOST = "i12d108.p.ssafy.io"
         DOCKER_COMPOSE_PATH = '/home/ubuntu/d-108-fork'
+        // Generic Webhook Trigger에서 설정한 환경 변수
+        PUSHER_NAME = "${PUSHER_NAME}"
     }
 
     stages {
@@ -110,13 +112,10 @@ EOS
     post {
         success {
             script {
-                // 마지막 커밋 작성자 정보
-                def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
-                def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
                 // Mattermost 등 알림 전송
                 mattermostSend (
                     color: 'good',
-                    message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
+                    message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${env.PUSHER_NAME} \n(<${env.BUILD_URL}|상세보기>)",
                     endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
                     channel: 'D108jenkins'
                 )
@@ -124,11 +123,9 @@ EOS
         }
         failure {
             script {
-                def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
-                def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
                 mattermostSend (
                     color: 'danger',
-                    message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
+                    message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${env.PUSHER_NAME} (${env.PUSHER_EMAIL})\n(<${env.BUILD_URL}|상세보기>)",
                     endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
                     channel: 'D108jenkins'
                 )
