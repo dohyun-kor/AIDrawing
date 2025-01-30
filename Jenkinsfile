@@ -75,6 +75,7 @@ pipeline {
             steps {
                 echo "Deploying to ${EC2_HOST} as ${EC2_USER}"
 
+                // Docker Compose 파일을 Jenkins 워크스페이스에서 EC2 서버로 전송
                 withCredentials([
                     usernamePassword(
                         credentialsId: 'gitlab_dororo737',
@@ -82,49 +83,24 @@ pipeline {
                         passwordVariable: 'GIT_PASSWORD'
                     )
                 ]) {
-                    script {
-                        def safeUsername = java.net.URLEncoder.encode("${GIT_USERNAME}", "UTF-8")
-                        def safePassword = java.net.URLEncoder.encode("${GIT_PASSWORD}", "UTF-8")
+                    sshagent([SSH_CREDENTIALS]) {
+                        // SCP를 사용하여 docker-compose.yml 전송
+                        sh """
+                            scp -o StrictHostKeyChecking=no D108/docker-compose.yml ${EC2_USER}@${EC2_HOST}:${DOCKER_COMPOSE_PATH}/docker-compose.yml
+                        """
 
-                        sshagent([SSH_CREDENTIALS]) {
-                            // 수정된 Heredoc 구문 (들여쓰기 제거)
-                            sh """
-                                ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} /bin/bash <<EOS
-# 1) Git Repository 존재 여부 확인
-if [ -d "${DOCKER_COMPOSE_PATH}/.git" ]; then
-echo "기존 저장소 발견, 최신 코드 Pull..."
-cd "${DOCKER_COMPOSE_PATH}"
+                        // EC2 서버에서 Docker Compose 실행
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} /bin/bash <<EOS
+                            cd "${DOCKER_COMPOSE_PATH}"
+                            docker compose pull
+                            docker compose up -d --force-recreate
 
-# 실행 중인 컨테이너 정지
-docker compose down
-
-# Git에서 최신 코드 가져오기 (강제 재설정)
-git fetch origin master
-git reset --hard origin/master
-else
-echo "저장소 미존재, 새로 Clone..."
-
-# 기존 디렉토리 제거 (비 Git 저장소일 경우)
-if [ -d "${DOCKER_COMPOSE_PATH}" ]; then
-    echo "비 Git 디렉토리 제거..."
-    sudo rm -rf "${DOCKER_COMPOSE_PATH}"
-fi
-
-# 새 저장소 Clone
-git clone -b master https://${safeUsername}:${safePassword}@lab.ssafy.com/dororo737/d-108-fork.git "${DOCKER_COMPOSE_PATH}"
-fi
-
-# 2) Docker Compose 실행
-cd "${DOCKER_COMPOSE_PATH}"
-docker compose pull
-docker compose up -d --force-recreate
-
-# 3) 실행 확인
-sleep 5
-docker ps || echo "Container check failed"
-EOS
-                            """
-                        }
+                            # 실행 확인
+                            sleep 5
+                            docker ps || echo "Container check failed"
+                            EOS
+                        """
                     }
                 }
             }
