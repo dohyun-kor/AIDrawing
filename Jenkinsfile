@@ -114,7 +114,7 @@ EOS
                 def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
                 def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
                 // Mattermost 등 알림 전송
-                mattermostSend (
+                mattermostSend(
                     color: 'good',
                     message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
                     endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
@@ -126,7 +126,7 @@ EOS
             script {
                 def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
                 def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
-                mattermostSend (
+                mattermostSend(
                     color: 'danger',
                     message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
                     endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
