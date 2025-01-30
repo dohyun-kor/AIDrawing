@@ -1,5 +1,8 @@
 package com.example.websocket;
 
+import com.example.model.dto.User;
+import com.example.model.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.springframework.stereotype.Component;
@@ -10,6 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
 
+
+    UserService uService;
     // 방 별로 그림 데이터 저장 (방 ID -> 그림 데이터 리스트)
     private final Map<String, List<String>> roomDrawings = new ConcurrentHashMap<>();
     
@@ -20,6 +25,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.put(session.getId(), session);
         System.out.println("사용자 연결됨: " + session.getId());
+        User newuser = new User("dnen14@naver.com","ssafy","ssafy","ssafyKing");
+        uService.join(newuser);
     }
 
     @Override
