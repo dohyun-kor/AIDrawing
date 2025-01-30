@@ -92,14 +92,14 @@ pipeline {
                         // EC2 서버에서 Docker Compose 실행
                         sh """
                             ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} /bin/bash <<EOS
-                            cd "${DOCKER_COMPOSE_PATH}"
-                            docker compose pull
-                            docker compose up -d --force-recreate
+cd "${DOCKER_COMPOSE_PATH}"
+docker compose pull
+docker compose up -d --force-recreate
 
-                            # 실행 확인
-                            sleep 5
-                            docker ps || echo "Container check failed"
-                            EOS
+# 실행 확인
+sleep 5
+docker ps || echo "Container check failed"
+EOS
                         """
                     }
                 }
@@ -107,32 +107,32 @@ pipeline {
         }
     }
 
-//     post {
-//         success {
-//             script {
-//                 // 마지막 커밋 작성자 정보
-//                 def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
-//                 def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
-//                 // Mattermost 등 알림 전송
-//                 mattermostSend (
-//                     color: 'good',
-//                     message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
-//                     endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
-//                     channel: 'D108jenkins'
-//                 )
-//             }
-//         }
-//         failure {
-//             script {
-//                 def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
-//                 def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
-//                 mattermostSend (
-//                     color: 'danger',
-//                     message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
-//                     endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
-//                     channel: 'D108jenkins'
-//                 )
-//             }
-//         }
-//     }
+    post {
+        success {
+            script {
+                // 마지막 커밋 작성자 정보
+                def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
+                def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
+                // Mattermost 등 알림 전송
+                mattermostSend (
+                    color: 'good',
+                    message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
+                    endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
+                    channel: 'D108jenkins'
+                )
+            }
+        }
+        failure {
+            script {
+                def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
+                def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (
+                    color: 'danger',
+                    message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
+                    endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
+                    channel: 'D108jenkins'
+                )
+            }
+        }
+    }
 }
