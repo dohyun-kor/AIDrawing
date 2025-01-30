@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "GameTset"
+rootProject.name = "mobile_D108"
 include(":app")
  
