@@ -37,7 +37,7 @@ pipeline {
                 // 빌드 작업 실행
                 dir('D108') {
                     // 테스트 스킵하고 패키징
-                    sh 'mvn clean package -DskipTests'
+                    sh 'mvn clean package'
                 }
                 // 빌드 아티팩트 확인
                 sh 'ls -la D108/target'
