@@ -9,10 +9,6 @@ pipeline {
         EC2_USER = "ubuntu"
         EC2_HOST = "i12d108.p.ssafy.io"
         DOCKER_COMPOSE_PATH = '/home/ubuntu/d-108-fork'
-        // Generic Webhook Trigger에서 설정한 환경 변수
-        PUSHER_NAME = "${PUSHER_NAME}"
-        TRIGGER_TYPE = "${TRIGGER_TYPE}"
-        REF = "${REF}"
     }
 
     stages {
@@ -76,9 +72,6 @@ pipeline {
         }
 
         stage('Deploy') {
-            when {
-                expression {env.TRIGGER_TYPE == 'push'}
-            }
             steps {
                 echo "Deploying to ${EC2_HOST} as ${EC2_USER}"
 
@@ -117,28 +110,25 @@ EOS
     post {
         success {
             script {
-               def triggerMessage = ""
-               if (env.TRIGGER_TYPE == 'push') {
-                   triggerMessage = "푸시 이벤트에 의해 트리거됨"
-               } else if (env.TRIGGER_TYPE == 'merge_request') {
-                   triggerMessage = "머지 리퀘스트 이벤트에 의해 트리거됨"
-               } else {
-                   triggerMessage = "트리거 유형: ${env.TRIGGER_TYPE}"
-               }
-
+                // 마지막 커밋 작성자 정보
+                def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
+                def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
                 // Mattermost 등 알림 전송
-            mattermostSend (
-                color: 'good',
-                message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${env.PUSHER_NAME} \n${triggerMessage}\n(<${env.BUILD_URL}|상세보기>)",
-                endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
-                channel: 'D108jenkins'
-            )
+                mattermostSend (
+                    color: 'good',
+                    message: "✅ 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
+                    endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
+                    channel: 'D108jenkins'
+                )
+            }
         }
         failure {
             script {
+                def Author_ID = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim()
+                def Author_Email = sh(script: "git log -1 --pretty=%ae", returnStdout: true).trim()
                 mattermostSend (
                     color: 'danger',
-                    message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${env.PUSHER_NAME} \n(<${env.BUILD_URL}|상세보기>)",
+                    message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${Author_ID} (${Author_Email})\n(<${env.BUILD_URL}|상세보기>)",
                     endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
                     channel: 'D108jenkins'
                 )
