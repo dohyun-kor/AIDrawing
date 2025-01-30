@@ -87,8 +87,8 @@ class MainActivity : AppCompatActivity() {
 
     // WebSocket 연결 설정
     private fun setupWebSocketConnection() {
-//        val serverUrl = "wss://i12d108.p.ssafy.io/api/ws"
-        val serverUrl = "ws://172.30.1.90:9987/api/ws"
+        val serverUrl = "wss://i12d108.p.ssafy.io/api/ws"
+//        val serverUrl = "ws://172.30.1.90:9987/api/ws"
 
         val client = OkHttpClient()
         val request = Request.Builder().url(serverUrl).build()
