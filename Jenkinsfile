@@ -12,6 +12,7 @@ pipeline {
         // Generic Webhook Trigger에서 설정한 환경 변수
         PUSHER_NAME = "${PUSHER_NAME}"
         TRIGGER_TYPE = "${TRIGGER_TYPE}"
+        REF = "${REF}"
     }
 
     stages {
@@ -133,15 +134,15 @@ EOS
                 channel: 'D108jenkins'
             )
         }
-    }
-    failure {
-        script {
-            mattermostSend (
-                color: 'danger',
-                message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${env.PUSHER_NAME} \n(<${env.BUILD_URL}|상세보기>)",
-                endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
-                channel: 'D108jenkins'
-            )
+        failure {
+            script {
+                mattermostSend (
+                    color: 'danger',
+                    message: "❌ 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER}\n작성자: ${env.PUSHER_NAME} \n(<${env.BUILD_URL}|상세보기>)",
+                    endpoint: 'https://meeting.ssafy.com/hooks/sqycn54qc7nh5eho11em34w36w',
+                    channel: 'D108jenkins'
+                )
+            }
         }
     }
 }
