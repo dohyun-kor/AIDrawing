@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
     // WebSocket 연결 설정
     private fun setupWebSocketConnection() {
-        val serverUrl = "ws://192.168.100.203:9987/ws"
+        val serverUrl = "wss://i12d108.p.ssafy.io/api/ws"
 
         val client = OkHttpClient()
         val request = Request.Builder().url(serverUrl).build()
@@ -133,6 +133,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
                 super.onOpen(webSocket, response)
+                Log.d(TAG, "onOpen: Open Success")
                 sendMessage("Hello from Android!")
             }
         })
