@@ -2,53 +2,61 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "dororo737/d-108-fork"
+        DOCKER_IMAGE = "dororo737/d-108"
         DOCKER_TAG = "latest"
         REGISTRY_CREDENTIAL = "REGISTRY_CREDENTIAL"
         SSH_CREDENTIALS = "SSH_CREDENTIALS"
         EC2_USER = "ubuntu"
         EC2_HOST = "i12d108.p.ssafy.io"
-        DOCKER_COMPOSE_PATH = '/home/ubuntu/d-108-fork'
+        DOCKER_COMPOSE_PATH = '/home/ubuntu/d-108'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Git 레포지토리를 Jenkins 워크스페이스에 체크아웃
-                git branch: 'master',
-                    url: 'https://lab.ssafy.com/dororo737/d-108-fork.git',
-                    credentialsId: 'gitlab_dororo737'
+                // 호스트 에이전트에서 Git 저장소 체크아웃
+                checkout scm
             }
         }
 
         stage('Build') {
+            // 빌드를 위한 Docker 컨테이너 (Maven 최신 버전)
             agent {
-                // 빌드를 위한 Docker 컨테이너 사용 (Maven 최신 버전)
                 docker {
                     image 'maven:3.9.9-eclipse-temurin-17'
+                    // ~/.m2 볼륨 마운트, 워크스페이스 마운트 등
                     args '-v $HOME/.m2:/root/.m2 -v $WORKSPACE:/workspace --group-add 999'
                 }
             }
             environment {
-                // Maven 설정 폴더 지정
+                // Maven 설정 폴더
                 MAVEN_CONFIG = "/root/.m2"
             }
             steps {
-                // 빌드 작업 실행
+                // D108 디렉토리로 이동하여 Maven 빌드 실행
                 dir('D108') {
-                    // 테스트 스킵하고 패키징
+                    // 패키징
                     sh 'mvn clean package'
                 }
-                // 빌드 아티팩트 확인
+                // 빌드 결과물 확인
                 sh 'ls -la D108/target'
-                // 빌드 결과물 스태시
+                // JAR 파일 스태시
                 stash includes: 'D108/target/*.jar', name: 'jarFiles'
             }
         }
 
         stage('Docker Build & Push') {
+            // DOOD 방식 컨테이너 사용 (docker CLI 이미지를 사용)
+            // :latest 대신 stable 태그 등 적절한 이미지를 사용할 수 있습니다.
+            agent {
+                docker {
+                    image 'docker:24.0.2-cli'
+                    // 호스트의 Docker 소켓을 마운트하여 호스트 데몬 사용
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
-                // 스태시된 빌드 아티팩트 언스태시
+                // 스태시된 JAR 파일 언스태시
                 unstash 'jarFiles'
 
                 dir('D108') {
@@ -59,10 +67,14 @@ pipeline {
                     script {
                         // Docker Registry 인증 설정
                         docker.withRegistry('https://index.docker.io/v1/', REGISTRY_CREDENTIAL) {
-                            // 이미지 빌드
+                            // docker build (DOOD)
+                            // 컨테이너 내부에서 실행되지만, 실제로는 호스트 도커 데몬에서 빌드
                             def app = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", ".")
-                            // Docker 정보 확인
+
+                            // 빌드된 이미지는 호스트 데몬에 등록됨
+                            // docker info를 통해 확인
                             sh 'docker info'
+
                             // 이미지 푸시
                             app.push()
                         }
@@ -75,7 +87,7 @@ pipeline {
             steps {
                 echo "Deploying to ${EC2_HOST} as ${EC2_USER}"
 
-                // Docker Compose 파일을 Jenkins 워크스페이스에서 EC2 서버로 전송
+                // Docker Compose 파일을 EC2 서버로 전송 후, docker compose를 통해 배포
                 withCredentials([
                     usernamePassword(
                         credentialsId: 'gitlab_dororo737',
