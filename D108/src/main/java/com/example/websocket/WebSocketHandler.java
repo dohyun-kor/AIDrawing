@@ -26,6 +26,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.put(session.getId(), session);
         System.out.println("사용자 연결됨: " + session.getId());
+        System.out.println("여기까진 나오나?");
         User newuser = new User("dnen14@naver.com","ssafy","ssafy","ssafyKing");
         uService.join(newuser);
         System.out.println("유저 정보 :" + newuser);
