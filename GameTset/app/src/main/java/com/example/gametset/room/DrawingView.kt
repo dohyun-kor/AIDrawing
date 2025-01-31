@@ -24,6 +24,16 @@ class DrawingView @JvmOverloads constructor(
         isAntiAlias = true
     }
 
+    // 지우개 모드 활성화 여부
+    var eraserEnabled = false
+    // 지우개 모드에서 사용할 Paint 객체
+    val erasePaint = Paint().apply {
+        color = Color.WHITE  // 여기서 배경색과 같은 색을 설정
+        style = Paint.Style.STROKE
+        strokeWidth = 10f
+        isAntiAlias = true
+    }
+
     // 현재 그리는 경로를 저장할 Path 객체
     private var path = Path()
     // 저장된 경로와 해당 경로의 Paint 객체를 저장할 리스트
@@ -56,12 +66,7 @@ class DrawingView @JvmOverloads constructor(
                 path.moveTo(event.x, event.y)
 
                 // 새로운 Paint 객체 생성 및 경로와 Paint 객체를 리스트에 추가
-                val newPaint = Paint().apply {
-                    color = drawPaint.color
-                    style = Paint.Style.STROKE
-                    strokeWidth = 10f
-                    isAntiAlias = true
-                }
+                val newPaint = if (eraserEnabled) erasePaint else Paint(drawPaint)
                 paths.add(Pair(path, newPaint))
                 sendDrawData(event.x, event.y, MOVE_MODE)
             }
@@ -86,7 +91,7 @@ class DrawingView @JvmOverloads constructor(
             put("x", scaledX)
             put("y", scaledY)
             put("roomId", "roomId123")
-            put("color", String.format("#%06X", 0xFFFFFF and drawPaint.color))
+            put("color", String.format("#%06X", 0xFFFFFF and (if (eraserEnabled) erasePaint.color else drawPaint.color)))
             put("mode", mode)
         }
 

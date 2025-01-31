@@ -47,24 +47,17 @@
             app:layout_constraintTop_toTopOf="parent"
             android:background="@color/white"/>
 
+
         <ImageButton
             android:id="@+id/eraser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:background="@color/white"
             android:src="@drawable/baseline_adb_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pen"
-            android:background="@color/white"/>
-
-        <SeekBar
-            android:id="@+id/verticalSeekBar"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:max="50"
-            app:layout_constraintStart_toStartOf="@+id/eraser"
-            app:layout_constraintTop_toBottomOf="@+id/eraser" />
+            app:layout_constraintTop_toBottomOf="@+id/pen" />
 
         <ImageView
             android:id="@+id/penColorRed"
@@ -148,6 +141,14 @@
             app:layout_constraintStart_toEndOf="@+id/penColorPurple"
             app:layout_constraintTop_toTopOf="@+id/pen" />
 
+        <SeekBar
+            android:id="@+id/verticalSeekBar"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:max="50"
+            app:layout_constraintStart_toStartOf="@+id/eraser"
+            app:layout_constraintTop_toBottomOf="@+id/eraser" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -187,4 +188,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
