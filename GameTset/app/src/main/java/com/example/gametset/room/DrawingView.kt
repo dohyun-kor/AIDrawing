@@ -11,10 +11,12 @@ import org.json.JSONObject
 
 private const val TAG = "DrawingView_싸피"
 
+// 커스텀 뷰인 DrawingView 클래스 정의
 class DrawingView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : View(context, attrs) {
 
+    // 그림을 그리기 위한 Paint 객체 생성
     val drawPaint = Paint().apply {
         color = Color.BLACK
         style = Paint.Style.STROKE
@@ -22,29 +24,38 @@ class DrawingView @JvmOverloads constructor(
         isAntiAlias = true
     }
 
+    // 현재 그리는 경로를 저장할 Path 객체
     private var path = Path()
+    // 저장된 경로와 해당 경로의 Paint 객체를 저장할 리스트
     private val paths = mutableListOf<Pair<Path, Paint>>()
-    private var webSocket: WebSocket? = null // WebSocket을 `MainActivity`에서 전달받도록 변경
+    // WebSocket 객체 (MainActivity에서 전달받음)
+    private var webSocket: WebSocket? = null
 
+    // WebSocket 객체를 설정하는 메소드
     fun setWebSocket(socket: WebSocket) {
         this.webSocket = socket
     }
 
+    // 뷰에 그림을 그리는 메소드
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        // 저장된 모든 경로를 그리기
         paths.forEach { (path, paint) ->
             canvas.drawPath(path, paint)
         }
+        // 현재 경로를 그리기
         canvas.drawPath(path, drawPaint)
     }
 
+    // 터치 이벤트를 처리하는 메소드
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                // 새로운 경로 생성 및 터치 위치로 이동
                 path = Path()
                 path.moveTo(event.x, event.y)
 
-                // 새로운 Paint 객체 생성
+                // 새로운 Paint 객체 생성 및 경로와 Paint 객체를 리스트에 추가
                 val newPaint = Paint().apply {
                     color = drawPaint.color
                     style = Paint.Style.STROKE
@@ -55,39 +66,50 @@ class DrawingView @JvmOverloads constructor(
                 sendDrawData(event.x, event.y, MOVE_MODE)
             }
             MotionEvent.ACTION_MOVE -> {
+                // 경로에 선 추가
                 path.lineTo(event.x, event.y)
                 sendDrawData(event.x, event.y, DRAW_MODE)
             }
         }
+        // 뷰를 다시 그리기
         invalidate()
         return true
     }
 
-
+    // WebSocket을 통해 그리기 데이터를 전송하는 메소드
     private fun sendDrawData(x: Float, y: Float, mode: Int) {
-        val json = JSONObject()
-        json.put("event", "draw")
-        json.put("x", x)
-        json.put("y", y)
-        json.put("roomId", "roomId123")
+        val scaledX = x / width
+        val scaledY = y / height
 
-        // Color Int 값을 HEX 문자열로 변환
-        val colorHex = String.format("#%06X", 0xFFFFFF and drawPaint.color)
-        json.put("color", colorHex)
+        val json = JSONObject().apply {
+            put("event", "draw")
+            put("x", scaledX)
+            put("y", scaledY)
+            put("roomId", "roomId123")
+            put("color", String.format("#%06X", 0xFFFFFF and drawPaint.color))
+            put("mode", mode)
+        }
 
-        json.put("mode", mode)
-
-        webSocket?.send(json.toString()) // WebSocket을 통해 데이터 전송
+        webSocket?.send(json.toString())
     }
 
-
+    // 그림을 지우는 메소드
     fun clearDrawing() {
         paths.clear()
         path.reset()
         invalidate()
     }
 
+    // 서버에서 전달받은 색상으로 색상을 업데이트하는 메소드
+    fun updateColorFromServer(color: String) {
+        drawPaint.color = Color.parseColor(color)
+    }
+
+    // 서버에서 받은 데이터로 그림을 그리는 메소드
     fun drawFromServer(x: Float, y: Float, color: String, mode: Int) {
+        val restoredX = x * width
+        val restoredY = y * height
+
         val serverPaint = Paint().apply {
             this.color = Color.parseColor(color)
             this.style = Paint.Style.STROKE
@@ -96,35 +118,31 @@ class DrawingView @JvmOverloads constructor(
         }
 
         if (mode == MOVE_MODE || paths.isEmpty() || path.isEmpty) {
-            // 새로운 경로 생성 (색상이 바뀌었을 가능성도 있음)
             path = Path()
-            path.moveTo(x, y)
-            paths.add(Pair(path, serverPaint)) // 새 경로와 새로운 색상을 저장
+            path.moveTo(restoredX, restoredY)
+            paths.add(Pair(path, serverPaint))
         } else {
-            // 가장 최근의 path에 대해 색상 업데이트
             if (paths.isNotEmpty()) {
                 paths[paths.size - 1] = Pair(paths.last().first, serverPaint)
             }
-            // 기존 경로에 이어서 선을 그림 (이때도 새로운 색상 적용)
-            path.lineTo(x, y)
-
+            path.lineTo(restoredX, restoredY)
         }
 
         invalidate()
     }
 
-
-
+    // WebSocket을 통해 그림 지우기 명령을 전송하는 메소드
     fun sendClearDrawing() {
-        val json = JSONObject()
-        json.put("event", "clearDrawing")
-        json.put("roomId", "roomId123")
+        val json = JSONObject().apply {
+            put("event", "clearDrawing")
+            put("roomId", "roomId123")
+        }
         Log.d(TAG, "sendClearDrawing: $json")
-        webSocket?.send(json.toString()) // 전달받은 WebSocket을 통해 메시지 전송
+        webSocket?.send(json.toString())
     }
 
-    companion object{
-        val DRAW_MODE = 1;
-        val MOVE_MODE = 2;
+    companion object {
+        const val DRAW_MODE = 1
+        const val MOVE_MODE = 2
     }
 }

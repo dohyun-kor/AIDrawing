@@ -17,11 +17,18 @@ import org.json.JSONObject
 
 private const val TAG = "MainActivity_싸피"
 
+// MainActivity 클래스 정의
 class MainActivity : AppCompatActivity() {
 
+    // 뷰 바인딩 객체
     private lateinit var binding: ActivityMainBinding
+    // 시뮬레이션된 경로 목록
+    private lateinit var simulatedPaths: List<Path>
+    // WebSocket 객체
     private lateinit var webSocket: WebSocket
+    // 어댑터 객체
     private lateinit var wordAdapter: WordAdapter
+    // 단어 목록
     private val wordList = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,43 +63,51 @@ class MainActivity : AppCompatActivity() {
             binding.drawingView.sendClearDrawing()
         }
 
+        // 색상 선택 버튼 클릭 이벤트 처리
         binding.apply {
             imageView.setOnClickListener{
-                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.red)
+                drawingView.drawPaint.color = ContextCompat.getColor(this@MainActivity, R.color.red)
+                sendColorChangeMessage("#FF0000") // 빨간색으로 변경
             }
             imageView2.setOnClickListener {
-                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.orange)
+                drawingView.drawPaint.color = ContextCompat.getColor(this@MainActivity, R.color.orange)
+                sendColorChangeMessage("#FF7F50")
             }
             imageView3.setOnClickListener {
-                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.yellow)
+                drawingView.drawPaint.color = ContextCompat.getColor(this@MainActivity, R.color.yellow)
+                sendColorChangeMessage("#FFFF00")
             }
             imageView4.setOnClickListener {
-                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.green)
+                drawingView.drawPaint.color = ContextCompat.getColor(this@MainActivity, R.color.green)
+                sendColorChangeMessage("#ADFF2F")
             }
             imageView5.setOnClickListener {
-                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.blue)
+                drawingView.drawPaint.color = ContextCompat.getColor(this@MainActivity, R.color.blue)
+                sendColorChangeMessage("#0000FF")
             }
             imageView6.setOnClickListener {
-                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.navy_blue)
+                drawingView.drawPaint.color = ContextCompat.getColor(this@MainActivity, R.color.navy_blue)
+                sendColorChangeMessage("#000080")
             }
             imageView7.setOnClickListener {
-                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.purple)
+                drawingView.drawPaint.color = ContextCompat.getColor(this@MainActivity, R.color.purple)
+                sendColorChangeMessage("#800080")
             }
             imageView8.setOnClickListener {
-                drawingView.drawPaint.color= ContextCompat.getColor(this@MainActivity, R.color.black)
+                drawingView.drawPaint.color = ContextCompat.getColor(this@MainActivity, R.color.black)
+                sendColorChangeMessage("#FF000000")
             }
-
         }
     }
 
     // WebSocket 연결 설정
     private fun setupWebSocketConnection() {
-        val serverUrl = "wss://i12d108.p.ssafy.io/api/ws"
-//        val serverUrl = "ws://172.30.1.90:9987/api/ws"
+        val serverUrl = "ws://192.168.100.203:9987/ws"
 
         val client = OkHttpClient()
         val request = Request.Builder().url(serverUrl).build()
 
+        // WebSocket 리스너 설정
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onMessage(webSocket: WebSocket, text: String) {
                 runOnUiThread {
@@ -110,6 +125,12 @@ class MainActivity : AppCompatActivity() {
                                     binding.drawingView.drawFromServer(x, y, color, mode)
                                 }
                             }
+
+                            "colorChange" -> {
+                                val color = json.optString("color", "#000000")
+                                binding.drawingView.updateColorFromServer(color)
+                            }
+
                             "clearDrawing" -> binding.drawingView.clearDrawing()
                             else -> wordAdapter.addWord(text, binding.wordRecyclerView)
                         }
@@ -119,7 +140,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: okhttp3.Response?) {
                 super.onFailure(webSocket, t, response)
@@ -133,7 +153,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
                 super.onOpen(webSocket, response)
-                Log.d(TAG, "onOpen: Open Success")
                 sendMessage("Hello from Android!")
             }
         })
@@ -142,6 +161,16 @@ class MainActivity : AppCompatActivity() {
     // 메시지 전송
     private fun sendMessage(message: String) {
         webSocket.send(message)
+    }
+
+    // MainActivity에서 색상 변경 시 호출
+    private fun sendColorChangeMessage(color: String) {
+        val json = JSONObject().apply {
+            put("event", "colorChange")
+            put("color", color)
+            put("roomId", "roomId123")
+        }
+        webSocket.send(json.toString())
     }
 
     // 앱 종료 시 WebSocket 연결 종료
