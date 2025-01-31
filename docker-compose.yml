@@ -2,6 +2,8 @@ services:
   # docker-compose.yml에 Jenkins 서비스 추가
   mysql:
     image: mysql:8.0
+    ports:
+      - "3306:3306"
     container_name: mysql
     restart: unless-stopped
     environment:
