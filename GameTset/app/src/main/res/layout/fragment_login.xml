@@ -256,7 +256,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageButton"
             app:layout_constraintEnd_toStartOf="@+id/imageButton"
             app:layout_constraintStart_toEndOf="@+id/imageView11"
-            app:layout_constraintTop_toTopOf="@+id/imageButton"/>
+            app:layout_constraintTop_toTopOf="@+id/imageButton" />
 
         <ImageButton
             android:id="@+id/imageButton2"
@@ -277,7 +277,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageButton2"
             app:layout_constraintEnd_toStartOf="@+id/imageButton2"
             app:layout_constraintStart_toEndOf="@+id/imageView13"
-            app:layout_constraintTop_toTopOf="@+id/imageButton2"/>
+            app:layout_constraintTop_toTopOf="@+id/imageButton2" />
 
         <ImageView
             android:id="@+id/imageView13"
@@ -287,7 +287,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/textView10"
             app:layout_constraintEnd_toStartOf="@+id/textView10"
             app:layout_constraintStart_toEndOf="@+id/imageButton2"
-            app:layout_constraintTop_toTopOf="@+id/textView10"/>
+            app:layout_constraintTop_toTopOf="@+id/textView10" />
 
         <ImageView
             android:id="@+id/login_text_underbar3"
@@ -299,6 +299,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageButton" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="aaaaaaaaaaaa"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_text_underbar3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
