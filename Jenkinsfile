@@ -105,9 +105,9 @@ pipeline {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} /bin/bash <<EOS
 cd "${DOCKER_COMPOSE_PATH}"
-docker compose down
 docker compose pull
 docker compose up -d --force-recreate
+docker system prune -f
 
 # 실행 확인
 sleep 5
