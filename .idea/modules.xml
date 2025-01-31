@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/d-108-fork.iml" filepath="$PROJECT_DIR$/.idea/d-108-fork.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/d108.iml" filepath="$PROJECT_DIR$/.idea/d108.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mobile_D108.iml" filepath="$PROJECT_DIR$/.idea/modules/mobile_D108.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/mobile_D108.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/mobile_D108.app.iml" />
     </modules>
   </component>
 </project>

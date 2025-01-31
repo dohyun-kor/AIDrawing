@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":app" external.linked.project.path="$MODULE_DIR$/../../../GameTset/app" external.root.project.path="$MODULE_DIR$/../../../GameTset" external.system.id="GRADLE" external.system.module.group="mobile_D108" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet external-system-id="GRADLE" type="kotlin-language" name="Kotlin">
+      <configuration version="5" platform="JVM 1.8" allPlatforms="JVM [1.8]" useProjectSettings="false">
+        <compilerSettings />
+        <compilerArguments>
+          <stringArguments>
+            <stringArg name="jvmTarget" arg="1.8" />
+            <stringArg name="apiVersion" arg="1.9" />
+            <stringArg name="languageVersion" arg="1.9" />
+          </stringArguments>
+          <arrayArguments>
+            <arrayArg name="pluginClasspaths" />
+            <arrayArg name="pluginOptions" />
+          </arrayArguments>
+        </compilerArguments>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../GameTset/app">
+      <excludeFolder url="file://$MODULE_DIR$/../../../GameTset/app/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../GameTset/app/build" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../GameTset/app/build/generated/source/kapt/debug" />
+    <content url="file://$MODULE_DIR$/../../../GameTset/app/build/generated/source/kapt/debugAndroidTest" />
+    <content url="file://$MODULE_DIR$/../../../GameTset/app/build/generated/source/kapt/debugUnitTest" />
+    <content url="file://$MODULE_DIR$/../../../GameTset/app/build/generated/source/kapt/release" />
+    <content url="file://$MODULE_DIR$/../../../GameTset/app/build/generated/source/kapt/releaseUnitTest" />
+    <content url="file://$MODULE_DIR$/../../../GameTset/app/build/generated/source/kaptKotlin/debug" />
+    <content url="file://$MODULE_DIR$/../../../GameTset/app/build/generated/source/kaptKotlin/debugAndroidTest" />
+    <content url="file://$MODULE_DIR$/../../../GameTset/app/build/generated/source/kaptKotlin/debugUnitTest" />
+    <content url="file://$MODULE_DIR$/../../../GameTset/app/build/generated/source/kaptKotlin/release" />
+    <content url="file://$MODULE_DIR$/../../../GameTset/app/build/generated/source/kaptKotlin/releaseUnitTest" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="Gradle: kaptGeneratedClasses">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../GameTset/app/build/tmp/kapt3/classes/debug" />
+          <root url="file://$MODULE_DIR$/../../../GameTset/app/build/tmp/kapt3/classes/debugAndroidTest" />
+          <root url="file://$MODULE_DIR$/../../../GameTset/app/build/tmp/kapt3/classes/debugUnitTest" />
+          <root url="file://$MODULE_DIR$/../../../GameTset/app/build/tmp/kapt3/classes/release" />
+          <root url="file://$MODULE_DIR$/../../../GameTset/app/build/tmp/kapt3/classes/releaseUnitTest" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>

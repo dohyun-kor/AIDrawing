@@ -52,7 +52,7 @@ pipeline {
                 docker {
                     image 'docker:24.0.2-cli'
                     // 호스트의 Docker 소켓을 마운트하여 호스트 데몬 사용
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
                 }
             }
             steps {
