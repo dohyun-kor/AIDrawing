@@ -8,3 +8,6 @@
 
 25-02-02 06:32
     ec2 /opt/gerrit/etc/secure.config 파일 설정 변경
+
+25-02-02 07:05
+    ec2 gerrit 서버 재시작 
