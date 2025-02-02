@@ -14,3 +14,6 @@
 
 25-02-02 14:23
     gerrit pull test를 위한 branch 생성
+
+25-02-02 14:57
+    loacl - gerrit - gitlab을 통한 pipeline 테스트
