@@ -11,3 +11,6 @@
 
 25-02-02 07:05
     ec2 gerrit 서버 재시작 
+
+25-02-02 14:23
+    gerrit pull test를 위한 branch 생성
