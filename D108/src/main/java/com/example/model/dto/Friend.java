@@ -16,23 +16,6 @@ public class Friend implements Serializable {
         PENDING,    // 'pending'
         ACCEPTED,   // 'accepted'
         BLOCKED;    // 'blocked'
-
-        // Optional: 메타 데이터를 다루기 위한 문자열 반환 (DB 값과 매핑)
-        @Override
-        public String toString() {
-            return name().toLowerCase();
-        }
-
-        public static FriendStatus fromString(String status) {
-            if (status != null) {
-                for (FriendStatus fs : FriendStatus.values()) {
-                    if (status.equalsIgnoreCase(fs.toString())) {
-                        return fs;
-                    }
-                }
-            }
-            throw new IllegalArgumentException("Unknown status: " + status);
-        }
     }
 
     // 기본 생성자

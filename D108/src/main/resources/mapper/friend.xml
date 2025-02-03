@@ -6,15 +6,11 @@
 <mapper namespace="com.example.model.dao.FriendDao">
 
     <select id="searchFriends" parameterType="int" resultType="com.example.model.dto.Friend">
-        SELECT
-        CASE
-        WHEN user_id = #{userId} THEN friend_id
-        ELSE user_id
-        END AS friendId,
-        status
+        SELECT *
         FROM Friend
         WHERE #{userId} IN (user_id, friend_id)
     </select>
+
 
     <insert id="requestFriends" parameterType="com.example.model.dto.Friend">
         INSERT INTO Friend (user_id, friend_id, status)
