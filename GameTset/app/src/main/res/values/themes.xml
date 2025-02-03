@@ -5,5 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.GameTset" parent="Base.Theme.GameTset" />
+    <style name="Theme.GameTset" parent="Base.Theme.GameTset">
+        <item name="android:fontFamily">@font/daehan</item>
+    </style>
 </resources>

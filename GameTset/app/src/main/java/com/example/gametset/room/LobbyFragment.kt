@@ -1,5 +1,6 @@
 package com.example.gametset.room
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,12 @@ import com.example.gametset.R
 
 class LobbyFragment : Fragment() {
 
+    lateinit var mainActivity: MainActivity
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = context as MainActivity
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,5 +27,16 @@ class LobbyFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_lobby, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        mainActivity.hideBottomNav(false)
+        mainActivity.hideToolBar(false)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mainActivity.hideBottomNav(true)
+        mainActivity.hideToolBar(true)
+    }
 
 }

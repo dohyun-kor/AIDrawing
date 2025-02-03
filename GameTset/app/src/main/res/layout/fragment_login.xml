@@ -165,12 +165,12 @@
             app:layout_constraintTop_toBottomOf="@+id/btnLogin">
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/btn_signup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="8dp"
-                android:text="이메일 가입"
+                android:text="회원가입"
                 app:layout_constraintEnd_toStartOf="@+id/imageView9"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_chainStyle="packed"
@@ -182,11 +182,11 @@
                 android:layout_width="20dp"
                 android:layout_height="0dp"
                 android:background="@drawable/vertical_dashed_line"
-                app:layout_constraintBottom_toBottomOf="@+id/textView5"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_signup"
                 app:layout_constraintEnd_toStartOf="@+id/textView6"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/textView5"
-                app:layout_constraintTop_toTopOf="@+id/textView5" />
+                app:layout_constraintStart_toEndOf="@+id/btn_signup"
+                app:layout_constraintTop_toTopOf="@+id/btn_signup" />
 
             <TextView
                 android:id="@+id/textView6"
