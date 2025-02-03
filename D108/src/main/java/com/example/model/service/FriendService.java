@@ -11,5 +11,5 @@ public interface FriendService {
     public List<Friend> searchFriends(int userId);
 
     /** 친구 요청을 보낸다.*/
-    public boolean requestFriends(int userId, int friendId);
+    public int requestFriends(int userId, int friendId);
 }

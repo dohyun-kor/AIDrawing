@@ -23,7 +23,8 @@ public class FriendServiceImpl implements FriendService{
     }
 
     @Override
-    public boolean requestFriends(int userId, int friendId) {
-        return friendDao.requestFriends(userId, friendId);
+    public int requestFriends(int userId, int friendId) {
+        Friend friend = new Friend(userId, friendId);
+        return friendDao.requestFriends(friend);
     }
 }

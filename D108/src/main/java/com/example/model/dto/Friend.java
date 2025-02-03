@@ -45,6 +45,11 @@ public class Friend implements Serializable {
         this.friendId = friendId;
         this.status = status;
     }
+    public Friend(int userId, int friendId) {
+        this.userId = userId;
+        this.friendId = friendId;
+        this.status = FriendStatus.PENDING;
+    }
 
     // Getters and Setters
     public int getUserId() {

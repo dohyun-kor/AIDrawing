@@ -9,12 +9,29 @@ import java.util.List;
 
 public interface FriendControllerDocs {
 
-    @Operation(summary = "해당 유저의 친구목록을 조회한다."
-            , description = "<pre>"
-            + "아래는 userId = 224 사용자의 친구목록을 조회하는 샘플코드\n "
-            + "{\r\n"
-            + "  \"userId\": \"224\",\r\n"
-            + "}"
-            + "</pre>")
+    @Operation(
+            summary = "해당 유저의 친구 목록을 조회합니다.",
+            description =
+                    "아래는 요청 형식 예시입니다..\n\n" +
+                            "```json\n" +
+                            "{\n" +
+                            "    \"userId\": 224,\n" +
+                            "}\n" +
+                            "```\n"
+    )
+
     public ResponseEntity<List<Friend>> searchFriend(@RequestParam int userId);
+
+    @Operation(
+            summary = "해당 유저에게 친구 추가 요청을 보냅니다.",
+            description =
+                    "아래는 요청 형식 예시입니다..\n\n" +
+                            "```json\n" +
+                            "{\n" +
+                            "    \"userId\": 224,\n" +
+                            "    \"friendId\": 300,\n" +
+                            "}\n" +
+                            "```\n"
+    )
+    public boolean requestFriends(@RequestParam int userId, @RequestParam int friendId);
 }
