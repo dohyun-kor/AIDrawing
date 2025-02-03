@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/friend")
-@CrossOrigin("*")
 public class FriendRestController implements FriendControllerDocs{
 
     private static final Logger logger = LoggerFactory.getLogger(FriendRestController.class);
@@ -32,6 +31,22 @@ public class FriendRestController implements FriendControllerDocs{
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/request")
+    public boolean requestFriends(@RequestParam int userId, @RequestParam int friendId){
+        int result = 0;
+        try{
+            result = fService.requestFriends(userId, friendId);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(result == 1){
+            return true;
+        }else{
+            return false;
         }
     }
 }

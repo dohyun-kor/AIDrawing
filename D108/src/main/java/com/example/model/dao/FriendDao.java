@@ -12,5 +12,5 @@ public interface FriendDao {
     List<Friend> searchFriends(int userId);
 
     /** 친구 요청을 보낸다.*/
-    boolean requestFriends(int userId, int friendId);
+    int requestFriends(Friend friend);
 }
