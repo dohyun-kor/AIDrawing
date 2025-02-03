@@ -34,5 +34,5 @@ build/
 .env
 
 # application.properties 파일 무시
-D108/src/main/resources/application.properties
-#src/main/resources/application.properties
+#D108/src/main/resources/application.properties
+src/main/resources/application.properties
