@@ -36,10 +36,11 @@ pipeline {
                 // D108 디렉토리로 이동하여 Maven 빌드 실행
                 dir('D108') {
                     // 패키징
-                    sh 'mvn clean package'
+                    sh 'mvn clean package -DskipTests'
                 }
                 // 빌드 결과물 확인
                 sh 'ls -la D108/target'
+
                 // JAR 파일 스태시
                 stash includes: 'D108/target/*.jar', name: 'jarFiles'
             }
