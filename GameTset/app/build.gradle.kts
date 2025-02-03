@@ -1,5 +1,6 @@
 import com.android.build.api.dsl.Packaging
 
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -83,6 +84,9 @@ dependencies {
     // Room for local database storage (Optional, useful for game progress)
     implementation("androidx.room:room-runtime:2.5.2")
     kapt("androidx.room:room-compiler:2.5.2")
+
+    // lottie implementation
+    implementation(libs.airbnb.lottie.compose)
 
     // Firebase (Optional, for real-time database, authentication, etc.)
 //    implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
