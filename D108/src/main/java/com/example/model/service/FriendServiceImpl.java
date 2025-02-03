@@ -19,6 +19,11 @@ public class FriendServiceImpl implements FriendService{
 
     @Override
     public List<Friend> searchFriends(int userId) {
-        return friendDao.searchFriend(userId);
+        return friendDao.searchFriends(userId);
+    }
+
+    @Override
+    public boolean requestFriends(int userId, int friendId) {
+        return friendDao.requestFriends(userId, friendId);
     }
 }
