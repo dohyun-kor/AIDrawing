@@ -8,10 +8,9 @@ import java.util.List;
 @Mapper
 public interface FriendDao {
 
-    /**
-     * 사용자 친구정보를 조회한다.
-     *
-     * @param userId
-     */
-    List<Friend> searchFriend(int userId);
+    /** 사용자 친구정보를 조회한다.*/
+    List<Friend> searchFriends(int userId);
+
+    /** 친구 요청을 보낸다.*/
+    boolean requestFriends(int userId, int friendId);
 }
