@@ -16,9 +16,9 @@
         WHERE #{userId} IN (user_id, friend_id)
     </select>
 
-    <insert id="requestFriends" parameterType="map">
+    <insert id="requestFriends" parameterType="com.example.model.dto.Friend">
         INSERT INTO Friend (user_id, friend_id, status)
-        VALUES (#{userId}, #{friendId}, "pending")
+        VALUES (#{userId}, #{friendId}, #{status})
     </insert>
 
 
