@@ -109,5 +109,16 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation ("com.google.code.gson:gson:2.8.8")  // Gson 라이브러리 추가
+    implementation("com.google.code.gson:gson:2.8.8")  // Gson 라이브러리 추가
+
+    // Retrofit 사용을 위한 설정
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // ViewModel 및 LiveData 라이브러리
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+
+    implementation("androidx.fragment:fragment-ktx:1.3.6")
 }
