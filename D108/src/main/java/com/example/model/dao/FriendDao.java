@@ -3,6 +3,8 @@ package com.example.model.dao;
 import com.example.model.dto.Friend;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface FriendDao {
 
@@ -11,5 +13,5 @@ public interface FriendDao {
      *
      * @param userId
      */
-    Friend searchFriend(int userId);
+    List<Friend> searchFriend(int userId);
 }

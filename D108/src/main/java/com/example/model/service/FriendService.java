@@ -2,6 +2,8 @@ package com.example.model.service;
 
 import com.example.model.dto.Friend;
 
+import java.util.List;
+
 public interface FriendService {
 
     /**
@@ -9,5 +11,5 @@ public interface FriendService {
      *
      * @param userId
      */
-    public Friend searchFriends(int userId);
+    public List<Friend> searchFriends(int userId);
 }

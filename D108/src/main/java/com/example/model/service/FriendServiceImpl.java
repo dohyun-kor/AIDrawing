@@ -5,6 +5,8 @@ import com.example.model.dto.Friend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FriendServiceImpl implements FriendService{
 
@@ -16,7 +18,7 @@ public class FriendServiceImpl implements FriendService{
     }
 
     @Override
-    public Friend searchFriends(int userId) {
+    public List<Friend> searchFriends(int userId) {
         return friendDao.searchFriend(userId);
     }
 }
