@@ -33,6 +33,15 @@ pipeline {
                 MAVEN_CONFIG = "/root/.m2"
             }
             steps {
+                // Jenkins Credentials에 등록된 Secret File(application.properties)을 복사
+                withCredentials([file(credentialsId: 'application.properties', variable: 'APP_PROPS')]) {
+                    // 복사할 디렉토리 생성 (존재하지 않을 수 있으므로 미리 생성)
+                    sh '''
+                        #!/bin/bash
+                        mkdir -p D108/src/main/resources
+                        cp "$APP_PROPS" D108/src/main/resources/application.properties
+                    '''
+                }
                 // D108 디렉토리로 이동하여 Maven 빌드 실행
                 dir('D108') {
                     // 패키징
