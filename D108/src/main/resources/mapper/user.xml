@@ -6,7 +6,7 @@
 <mapper namespace="com.example.model.dao.UserDao">
 
     <insert id="insert" parameterType="com.example.model.dto.User">
-    INSERT INTO User
+    INSERT INTO Users
         (id,
          password,
          nickname,

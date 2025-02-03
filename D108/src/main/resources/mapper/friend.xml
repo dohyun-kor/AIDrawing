@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.model.dao.FriendDao">
+
+    <select id="searchFriend"
+            parameterType="int"
+            resultType="com.example.model.dto.Friend">
+        SELECT
+        CASE
+        WHEN user_id = #{userId} THEN friend_id
+        ELSE user_id
+        END AS friendId,
+        status
+        FROM Friend
+        WHERE #{userId} IN (user_id, friend_id)
+    </select>
+
+
+</mapper>
