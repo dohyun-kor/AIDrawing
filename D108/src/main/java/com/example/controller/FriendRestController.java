@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/friend")
+@RequestMapping("api/friend")
 @CrossOrigin("*")
 public class FriendRestController {
 
@@ -32,7 +32,7 @@ public class FriendRestController {
             + "</pre>")
     public ResponseEntity<List<Friend>> searchFriend(@RequestParam int userId) {
         try {
-            List<Friend> friendList = (List<Friend>) fService.searchFriends(userId);
+            List<Friend> friendList = fService.searchFriends(userId);
             logger.info("친구정보 : {}",friendList);
             return ResponseEntity.ok(friendList);
         } catch (Exception e) {
