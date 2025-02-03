@@ -36,7 +36,7 @@ pipeline {
                 // D108 디렉토리로 이동하여 Maven 빌드 실행
                 dir('D108') {
                     // 패키징
-                    sh 'mvn clean package -DskipTests'
+                    sh 'mvn clean package'
                 }
                 // 빌드 결과물 확인
                 sh 'ls -la D108/target'
