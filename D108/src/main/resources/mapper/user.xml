@@ -5,6 +5,7 @@
 
 <mapper namespace="com.example.model.dao.UserDao">
 
+    <!-- 회원가입 -->
     <insert id="insert" parameterType="com.example.model.dto.User">
     INSERT INTO User
         (id,
@@ -16,5 +17,10 @@
                 #{nickname},
                 #{email})
     </insert>
+
+    <!-- 로그인 시 ID로 사용자 조회 -->
+    <select id="findById" resultType="com.example.model.dto.User">
+        SELECT * FROM User WHERE id = #{id}
+    </select>
 
 </mapper>

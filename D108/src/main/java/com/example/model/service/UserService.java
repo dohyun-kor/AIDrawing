@@ -1,6 +1,7 @@
 package com.example.model.service;
 
 import com.example.model.dto.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public interface UserService {
 
@@ -11,4 +12,6 @@ public interface UserService {
      */
     public int join(User user);
 
+    // 로그인 인증 메서드
+    String authenticate(User user);
 }

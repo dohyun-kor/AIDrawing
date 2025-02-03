@@ -11,5 +11,14 @@ public interface UserDao {
      * @param user
      * @return
      */
+
+    // 회원가입 : 사용자의 정보를 DB에 삽입
     int insert(User user);
+
+    /**
+     * ID로 사용자 정보를 조회한다.
+     * @param id
+     * @return
+     */
+    User findById(String id);
 }
