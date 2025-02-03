@@ -19,4 +19,11 @@ public class UserServiceImpl implements UserService {
     public int join(User user) {
         return userDao.insert(user);
     }
+
+    @Override
+    public String authenticate(User user) {
+        return null;
+    }
+
+
 }
