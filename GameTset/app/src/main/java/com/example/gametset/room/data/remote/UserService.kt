@@ -14,7 +14,7 @@ import retrofit2.http.Query
 
 interface UserService {
     // 사용자 정보를 추가한다.
-    @POST("/user/signup")
+    @POST("user/signup")
     suspend fun insert(@Body user:UserDto): Boolean
 
     // userId로 유저의 정보를 조회한다.
@@ -22,7 +22,7 @@ interface UserService {
     suspend fun getUserInfo(@Query("userId") userId:Int): UserResponse
 
     // 사용자의 아이디로 UserId를 가져온다.
-    @GET("/user/{userId}")
+    @GET("user/{userId}")
     suspend fun getUserUserId(@Query("id") id:String): UserIdResponse
 
     // UserId 중복 조회

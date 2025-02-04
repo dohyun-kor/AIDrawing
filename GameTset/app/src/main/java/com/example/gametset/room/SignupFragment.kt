@@ -1,4 +1,5 @@
 package com.example.gametset.room
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,7 +10,9 @@ import android.widget.EditText
 import android.graphics.Color
 import android.util.Log
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.gametset.databinding.FragmentLoginBinding
 import com.example.gametset.databinding.FragmentSignupBinding
 import com.example.gametset.room.data.UserDatabase
 import com.example.gametset.room.model.dto.UserDto
@@ -19,6 +22,13 @@ import kotlinx.coroutines.launch
 private const val TAG = "SignupFragment_싸피"
 class SignupFragment : Fragment() {
     private lateinit var binding: FragmentSignupBinding
+
+    lateinit var mainActivity: MainActivity
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = context as MainActivity
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -140,9 +150,10 @@ class SignupFragment : Fragment() {
                         Toast.makeText(context, "회원가입 성공", Toast.LENGTH_SHORT).show()
                         Log.d("SignupFragment", "회원가입 성공: $id")
 
-                        parentFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, LoginFragment())
-                            .commit()
+                        mainActivity.openFragment(3)
+//                        parentFragmentManager.beginTransaction()
+//                            .replace(R.id.fragment_container, LoginFragment())
+//                            .commit()
                     } else {
                         Toast.makeText(context, "회원가입 실패", Toast.LENGTH_SHORT).show()
                         Log.e("SignupFragment", "회원가입 실패")
