@@ -25,4 +25,10 @@ public class RankingServiceImpl implements RankingService {
         // RankingDao의 getTopRankings 메서드를 호출하여 랭킹 정보를 반환
         return rankingDao.getTopRankings();
     }
+
+    // 특정 유저의 랭킹 조회
+    @Override
+    public RankingDto getUserRanking(int userId) {
+        return rankingDao.getUserRanking(userId);
+    }
 }

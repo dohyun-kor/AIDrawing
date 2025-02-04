@@ -14,5 +14,12 @@
         LIMIT 10;
     </select>
 
+    <!-- 특정 사용자의 랭킹 조회 -->
+    <select id="getUserRanking" parameterType="int" resultType="com.example.model.dto.RankingDto">
+        SELECT r.ranking_id, r.user_id, u.exp, u.nickname, r.rank_position, r.win_rate
+        FROM Ranking r
+        JOIN Users u ON r.user_id = u.user_id
+        WHERE r.user_id = #{userId};
+    </select>
 
 </mapper>

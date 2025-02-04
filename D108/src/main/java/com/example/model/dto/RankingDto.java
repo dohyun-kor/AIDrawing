@@ -13,20 +13,19 @@ public class RankingDto {
 
     private float winRate; // 랭킹 승률
 
-    private String updatedAt;
 
     // 기본 생성자
     public RankingDto() {
 
     }
-    public RankingDto(int rankingId, int userId, int exp, String nickname, int rankPosition, float winRate, String updatedAt) {
+
+    public RankingDto(int rankingId, int userId, int exp, String nickname, int rankPosition, float winRate) {
         this.rankingId = rankingId;
         this.userId = userId;
         this.exp = exp;
         this.nickname = nickname;
         this.rankPosition = rankPosition;
         this.winRate = winRate;
-        this.updatedAt = updatedAt;
     }
 
     public int getRankingId() {
@@ -76,14 +75,5 @@ public class RankingDto {
     public void setWinRate(float winRate) {
         this.winRate = winRate;
     }
-
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
 
 }
