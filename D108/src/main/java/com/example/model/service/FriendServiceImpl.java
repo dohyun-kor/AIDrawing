@@ -2,6 +2,7 @@ package com.example.model.service;
 
 import com.example.model.dao.FriendDao;
 import com.example.model.dto.Friend;
+import com.example.model.dto.FriendRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,8 @@ public class FriendServiceImpl implements FriendService{
     }
 
     @Override
-    public int requestFriends(int userId, int friendId) {
-        Friend friend = new Friend(userId, friendId);
-        return friendDao.requestFriends(friend);
+    public int requestFriends(FriendRequest friendRequest) {
+        return friendDao.requestFriends(friendRequest);
     }
 
     @Override

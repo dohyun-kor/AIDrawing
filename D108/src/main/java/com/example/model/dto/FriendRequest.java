@@ -1,0 +1,36 @@
+package com.example.model.dto;
+
+public class FriendRequest {
+
+    private int userId;
+    private int friendId;
+
+    public FriendRequest(int userId, int friendId) {
+        this.userId = userId;
+        this.friendId = friendId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getFriendId() {
+        return friendId;
+    }
+
+    public void setFriendId(int friendId) {
+        this.friendId = friendId;
+    }
+
+    @Override
+    public String toString() {
+        return "FriendRequest{" +
+                "userId='" + userId + '\'' +
+                ", friendId='" + friendId + '\'' +
+                '}';
+    }
+}
