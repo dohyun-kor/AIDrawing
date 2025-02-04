@@ -5,10 +5,14 @@ import android.graphics.Color
 import android.graphics.Path
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.SeekBar
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,6 +68,37 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
+        openFragment(2)
+
+        binding.toolbar.toolBarMenuBtn.setOnClickListener {
+            showPopupMenu(it)
+        }
+
+    }
+
+    private fun showPopupMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        val inflater: MenuInflater = popupMenu.menuInflater
+        inflater.inflate(R.menu.tool_bar_menu_sw, popupMenu.menu)
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_settings -> {
+                    Toast.makeText(this, "설정 선택됨", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.action_friend-> {
+                    Toast.makeText(this, "친구 선택됨", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.action_ranking -> {
+                    Toast.makeText(this, "랭킹 선택됨", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.show()
     }
 
     fun openFragment(index: Int) {
@@ -73,6 +108,16 @@ class MainActivity : AppCompatActivity() {
     private fun moveFragment(index: Int, key: String, value: Int) {
         val transaction = supportFragmentManager.beginTransaction()
         when (index) {
+
+            // 로그인
+            0 -> {
+                transaction.replace(
+                    R.id.frame_layout_main,
+                    LoginFragment()
+                )
+                    .addToBackStack(null)
+            }
+
             //회원가입
             1 -> {
                 transaction.replace(
