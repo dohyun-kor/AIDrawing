@@ -1,6 +1,6 @@
 package com.example.model.service;
 
-import com.example.controller.FriendRestController;
+import com.example.controller.FriendController;
 import com.example.model.dao.UserDao;
 import com.example.model.dto.User;
 import org.slf4j.Logger;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static final Logger logger = LoggerFactory.getLogger(FriendRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FriendController.class);
 
     private final UserDao userDao;
 
