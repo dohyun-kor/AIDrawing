@@ -15,11 +15,7 @@ import retrofit2.http.Query
 interface UserService {
     // 사용자 정보를 추가한다.
     @POST("/user/signup")
-<<<<<<< Updated upstream
-    suspend fun insert(@Body body: UserDto): Boolean
-=======
     suspend fun insert(@Query("id") id:String, @Query("password") password:String,@Query("nickname") nickname:String,@Query("email") email:String): Boolean
->>>>>>> Stashed changes
 
     // userId로 유저의 정보를 조회한다.
     @GET("user/info")

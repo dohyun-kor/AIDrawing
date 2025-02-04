@@ -5,7 +5,6 @@ data class UserDto(
     val id: String,
     val password: String,
     val nickname: String,
-<<<<<<< Updated upstream
     val point: Int,
     val gamesWon: Int,
     val totalGames: Int,
@@ -23,10 +22,4 @@ data class UserDto(
         level: Int,
         exp: Int
     ) : this(userId, id, "", nickname, point, gamesWon, totalGames, level, exp)
-=======
-    val email: String? = null
-){
-    constructor() : this("", "", "")
-    constructor(id: String, pass: String) : this(id, pass,"")
->>>>>>> Stashed changes
 }
