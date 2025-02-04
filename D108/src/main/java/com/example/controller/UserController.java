@@ -27,7 +27,6 @@ public class UserController implements UserControllerDocs {   // docs 인터페�
      * 회원가입 시에는 닉네임, 아이디, 패스워드만 전달됩니다.
      */
     @PostMapping("/signup")
-    @Override
     public ResponseEntity<Boolean> signup(@RequestBody User user) {
         int result = 0;
         try {
@@ -49,7 +48,6 @@ public class UserController implements UserControllerDocs {   // docs 인터페�
      * 로그인 시에는 아이디와 패스워드만 전달됩니다.
      */
     @PostMapping("/login")
-    @Override
     public ResponseEntity<Integer> login(@RequestBody User user) {
         int result = -1;
         try {
