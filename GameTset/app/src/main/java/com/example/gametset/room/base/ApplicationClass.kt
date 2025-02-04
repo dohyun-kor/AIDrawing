@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 class ApplicationClass: Application() {
     companion object{
-        const val SERVER_URL = "http://172.30.1.75:9987/"
+        const val SERVER_URL = "https://i12d108.p.ssafy.io/api/"
 
         lateinit var sharedPreferencesUtil: SharedPreferencesUtil
         lateinit var retrofit: Retrofit
@@ -51,5 +51,4 @@ class ApplicationClass: Application() {
     val gson : Gson = GsonBuilder()
         .setLenient()
         .create()
-
 }
