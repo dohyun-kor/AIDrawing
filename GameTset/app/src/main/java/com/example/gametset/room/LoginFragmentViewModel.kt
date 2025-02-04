@@ -24,6 +24,7 @@ class LoginFragmentViewModel : ViewModel() {
                     // 로그인 성공
                     _user.value = UserDto(
                         response.userId,
+                        "",
                         userinfo.id,
                         "",
                         userinfo.nickname,

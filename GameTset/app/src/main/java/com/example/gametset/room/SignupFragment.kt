@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import com.example.gametset.R
 import android.widget.EditText
 import android.graphics.Color
-import android.widget.Toast
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.gametset.databinding.FragmentSignupBinding
 import com.example.gametset.room.data.UserDatabase
@@ -16,6 +16,7 @@ import com.example.gametset.room.model.dto.UserDto
 import com.example.gametset.room.data.remote.RetrofitUtil
 import kotlinx.coroutines.launch
 
+private const val TAG = "SignupFragment_싸피"
 class SignupFragment : Fragment() {
     private lateinit var binding: FragmentSignupBinding
 
@@ -128,14 +129,10 @@ class SignupFragment : Fragment() {
             Log.d("SignupFragment", "회원가입 시도: ID=${id}, PW=${password}, 닉네임=${nickname}")
 
             lifecycleScope.launch {
+                val user = UserDto(id,password,nickname)
                 runCatching {
-                    val response = RetrofitUtil.userService.insert(
-                        id = id,
-                        password = password,
-                        nickname = nickname,
-                        email = ""  // 이메일이 필수값이므로 빈 문자열이라도 전달
-                    )
-                    Log.d("SignupFragment", "Response: $response")
+                    Log.d("SignupFragment", "Response: ${user}")
+                    val response = RetrofitUtil.userService.insert(user)
 
                     response
                 }.onSuccess { isSuccess ->

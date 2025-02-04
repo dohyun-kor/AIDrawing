@@ -15,7 +15,7 @@ import retrofit2.http.Query
 interface UserService {
     // 사용자 정보를 추가한다.
     @POST("/user/signup")
-    suspend fun insert(@Query("id") id:String, @Query("password") password:String,@Query("nickname") nickname:String,@Query("email") email:String): Boolean
+    suspend fun insert(@Body user:UserDto): Boolean
 
     // userId로 유저의 정보를 조회한다.
     @GET("user/info")
