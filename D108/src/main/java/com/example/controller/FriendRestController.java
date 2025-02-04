@@ -35,7 +35,7 @@ public class FriendRestController implements FriendControllerDocs{
     }
 
     @PostMapping("/request")
-    public boolean requestFriends(@RequestParam int userId, @RequestParam int friendId){
+    public ResponseEntity<Boolean> requestFriends(@RequestParam int userId, @RequestParam int friendId){
         int result = 0;
         try{
             result = fService.requestFriends(userId, friendId);
@@ -44,9 +44,25 @@ public class FriendRestController implements FriendControllerDocs{
         }
 
         if(result == 1){
-            return true;
+            return ResponseEntity.ok(true);
         }else{
-            return false;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/request")
+    public ResponseEntity<Boolean> requestUpdate(@RequestBody Friend nFriend){
+        int result = 0;
+        try{
+            result = fService.updateRequest(nFriend);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        if(result == 1){
+            return ResponseEntity.ok(true);
+        }else{
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

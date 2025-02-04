@@ -12,4 +12,7 @@ public interface FriendService {
 
     /** 친구 요청을 보낸다.*/
     public int requestFriends(int userId, int friendId);
+
+    /** 친구 요청을 처리한다.*/
+    public int updateRequest(Friend nFriend);
 }

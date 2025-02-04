@@ -3,6 +3,7 @@ package com.example.docs;
 import com.example.model.dto.Friend;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -19,8 +20,8 @@ public interface FriendControllerDocs {
                             "}\n" +
                             "```\n"
     )
-
     public ResponseEntity<List<Friend>> searchFriend(@RequestParam int userId);
+
 
     @Operation(
             summary = "해당 유저에게 친구 추가 요청을 보냅니다.",
@@ -33,5 +34,20 @@ public interface FriendControllerDocs {
                             "}\n" +
                             "```\n"
     )
-    public boolean requestFriends(@RequestParam int userId, @RequestParam int friendId);
+    public ResponseEntity<Boolean> requestFriends(@RequestParam int userId, @RequestParam int friendId);
+
+
+    @Operation(
+            summary = "해당 친구 요청을 수락 / 거절 합니다.",
+            description =
+                    "아래는 요청 형식 예시입니다..\n\n" +
+                            "```json\n" +
+                            "{\n" +
+                            "    \"userId\": 224,\n" +
+                            "    \"friendId\": 300,\n" +
+                            "    \"status\": \"BLOCKED\",\n" +
+                            "}\n" +
+                            "```\n"
+    )
+    public ResponseEntity<Boolean> requestUpdate(@RequestBody Friend nFriend);
 }

@@ -13,4 +13,10 @@ public interface FriendDao {
 
     /** 친구 요청을 보낸다.*/
     int requestFriends(Friend friend);
+
+    /** 친구 요청 승인*/
+    int acceptFriends(Friend nFriend);
+
+    /** 친구 요청 거절*/
+    int denyFriends(Friend nFriend);
 }
