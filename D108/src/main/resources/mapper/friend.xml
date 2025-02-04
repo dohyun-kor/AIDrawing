@@ -17,5 +17,17 @@
         VALUES (#{userId}, #{friendId}, #{status})
     </insert>
 
+    <update id="acceptFriends" parameterType="com.example.model.dto.Friend">
+        UPDATE Friend
+            SET
+            status = #{status}
+        WHERE user_id = #{userId} and friend_id = #{friendId}
+    </update>
+    
+    <delete id="denyFriends" parameterType="com.example.model.dto.Friend">
+        DELETE FROM Friend
+        WHERE user_id = #{userId} and friend_id = #{friendId}
+    </delete>
+
 
 </mapper>

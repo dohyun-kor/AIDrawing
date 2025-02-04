@@ -27,4 +27,13 @@ public class FriendServiceImpl implements FriendService{
         Friend friend = new Friend(userId, friendId);
         return friendDao.requestFriends(friend);
     }
+
+    @Override
+    public int updateRequest(Friend nFriend) {
+        if(nFriend.getStatus() == Friend.FriendStatus.ACCEPTED){
+            return friendDao.acceptFriends(nFriend);
+        }else{
+            return friendDao.denyFriends(nFriend);
+        }
+    }
 }
