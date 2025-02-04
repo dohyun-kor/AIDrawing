@@ -1,4 +1,3 @@
-<<<<<<< PATCH SET (6786b3 fix:입력 변경)
 // 최신 버전의 Swagger(OpenAPI 3)를 기준으로 작성합니다.
 package com.example.docs;
 
@@ -36,5 +35,3 @@ public interface UserControllerDocs {
     )
     ResponseEntity<Integer> login(@RequestBody User user);
 }
-=======
->>>>>>> BASE      (abb17a A Merge branch 'master' of https://i12d108.p.ssafy.io:8989/a)
