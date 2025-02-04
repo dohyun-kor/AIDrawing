@@ -45,26 +45,20 @@ public class UserController {
      * @return statusCode와 message
      */
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody User user) {
-        Map<String, Object> response = new HashMap<>();
-
+    public ResponseEntity<Integer> login(@RequestBody User user) {
+        int result = -1;
         try {
             // 아이디/비밀번호 인증
-            String result = userService.authenticate(user);
-
-            if ("success".equals(result)) {
-                response.put("statusCode", 200);
-                response.put("message", "로그인 성공");
-            } else {
-                response.put("statusCode", 401); // 인증 실패 시 401
-                response.put("message", "로그인 실패: 아이디 또는 비밀번호가 일치하지 않습니다.");
-            }
+            result = userService.authenticate(user);
         } catch (Exception e) {
-            response.put("statusCode", 500);
-            response.put("message", "로그인 중 오류가 발생했습니다.");
+            e.printStackTrace();
         }
 
-        return response;
+        if (result != -1) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }
 

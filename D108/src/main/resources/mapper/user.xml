@@ -20,7 +20,7 @@
 
     <!-- 로그인 시 ID로 사용자 조회 -->
     <select id="findById" resultType="com.example.model.dto.User">
-        SELECT * FROM User WHERE id = #{id}
+        SELECT * FROM Users WHERE id = #{id}
     </select>
 
 </mapper>
