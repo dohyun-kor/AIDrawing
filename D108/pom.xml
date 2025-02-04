@@ -115,11 +115,28 @@
 	        <artifactId>spring-boot-starter-websocket</artifactId>
 	    </dependency>
 
-		<!-- JWT 의존성 추가 -->
+<!--		&lt;!&ndash; JWT 의존성 추가 &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>io.jsonwebtoken</groupId>-->
+<!--			<artifactId>jjwt</artifactId>-->
+<!--			<version>0.12.5</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt</artifactId>
-			<version>0.12.5</version>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId> <!-- JSON 파싱용 -->
+			<version>0.11.5</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Spring Security 의존성 추가 -->

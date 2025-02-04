@@ -1,6 +1,7 @@
-// 최신 버전의 Swagger(OpenAPI 3)를 기준으로 작성합니다.
+// 파일 위치: src/main/java/com/example/docs/UserControllerDocs.java
 package com.example.docs;
 
+import com.example.model.dto.LoginResponse;
 import com.example.model.dto.User;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,8 @@ public interface UserControllerDocs {
                             "  \"id\": \"user123\",\n" +
                             "  \"password\": \"pass1234\"\n" +
                             "}\n" +
-                            "```\n"
+                            "```\n" +
+                            "로그인 성공 시 사용자 ID와 JWT 토큰이 함께 반환됩니다."
     )
-    ResponseEntity<Integer> login(@RequestBody User user);
+    ResponseEntity<LoginResponse> login(@RequestBody User user);
 }
