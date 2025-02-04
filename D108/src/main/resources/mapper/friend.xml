@@ -12,9 +12,9 @@
     </select>
 
 
-    <insert id="requestFriends" parameterType="com.example.model.dto.Friend">
+    <insert id="requestFriends" parameterType="com.example.model.dto.FriendRequest">
         INSERT INTO Friend (user_id, friend_id, status)
-        VALUES (#{userId}, #{friendId}, #{status})
+        VALUES (#{userId}, #{friendId}, "PENDING")
     </insert>
 
     <update id="acceptFriends" parameterType="com.example.model.dto.Friend">

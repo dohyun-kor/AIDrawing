@@ -2,8 +2,8 @@ package com.example.controller;
 
 import com.example.docs.FriendControllerDocs;
 import com.example.model.dto.Friend;
+import com.example.model.dto.FriendRequest;
 import com.example.model.service.FriendService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +15,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/friend")
-public class FriendRestController implements FriendControllerDocs{
+public class FriendController implements FriendControllerDocs{
 
-    private static final Logger logger = LoggerFactory.getLogger(FriendRestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FriendController.class);
 
     @Autowired
     FriendService fService;
 
-    @GetMapping("/list")
-    public ResponseEntity<List<Friend>> searchFriend(@RequestParam int userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<Friend>> searchFriend(@PathVariable int userId) {
         try {
             List<Friend> friendList = fService.searchFriends(userId);
-            logger.info("친구정보 : {}",friendList);
             return ResponseEntity.ok(friendList);
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,11 +33,12 @@ public class FriendRestController implements FriendControllerDocs{
         }
     }
 
-    @PostMapping("/request")
-    public ResponseEntity<Boolean> requestFriends(@RequestParam int userId, @RequestParam int friendId){
+
+    @PostMapping("")
+    public ResponseEntity<Boolean> requestFriends(@RequestBody FriendRequest friendRequest){
         int result = 0;
         try{
-            result = fService.requestFriends(userId, friendId);
+            result = fService.requestFriends(friendRequest);
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,7 +50,8 @@ public class FriendRestController implements FriendControllerDocs{
         }
     }
 
-    @PutMapping("/request")
+
+    @PutMapping("")
     public ResponseEntity<Boolean> requestUpdate(@RequestBody Friend nFriend){
         int result = 0;
         try{

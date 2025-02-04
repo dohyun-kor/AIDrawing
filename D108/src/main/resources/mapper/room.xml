@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.model.dao.RoomDao">
+
+    <!-- 방 생성 -->
+    <insert id="createRoom" parameterType="com.example.model.dto.Room">
+        INSERT INTO Room
+                (host_id,
+                room_name,
+                status,
+                max_players,
+                now_players)
+        VALUES (#{hostId},
+                #{roomName},
+                #{status},
+                #{maxPlayers},
+                #{nowPlayers})
+    </insert>
+
+    <update id="updateRoom" parameterType="java.util.Map">
+        UPDATE Room
+        SET
+            host_id = #{room.hostId},
+            room_name = #{room.roomName},
+            status = #{room.status},
+            max_players = #{room.maxPlayers},
+            now_players = #{room.nowPlayers}
+        WHERE room_id = #{roomId}
+    </update>
+
+
+</mapper>
