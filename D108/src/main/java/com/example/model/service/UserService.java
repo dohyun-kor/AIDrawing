@@ -13,5 +13,5 @@ public interface UserService {
     public int join(User user);
 
     // 로그인 인증 메서드
-    String authenticate(User user);
+    public int authenticate(User user);
 }
