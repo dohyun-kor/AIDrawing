@@ -112,24 +112,24 @@ class SignupFragment : Fragment() {
         return isValid
     }
 
-    private fun signup() {
-        if (validateFields()) {
-            val newUser = UserDto(
-                binding.idEditText.text.toString(),
-                binding.passwordEditText.text.toString(),
-                binding.nicknameEditText.text.toString()
-            )
-
-            if (UserDatabase.addUser(newUser)) {
-                Toast.makeText(context, "회원가입 성공", Toast.LENGTH_SHORT).show()
-
-                // LobbyFragment로 전환하고 네비게이션 바 표시
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, LobbyFragment())
-                    .commit()
-            }
-        }
-    }
+//    private fun signup() {
+//        if (validateFields()) {
+//            val newUser = UserDto(
+//                binding.idEditText.text.toString(),
+//                binding.passwordEditText.text.toString(),
+//                binding.nicknameEditText.text.toString()
+//            )
+//
+//            if (UserDatabase.addUser(newUser)) {
+//                Toast.makeText(context, "회원가입 성공", Toast.LENGTH_SHORT).show()
+//
+//                // LobbyFragment로 전환하고 네비게이션 바 표시
+//                parentFragmentManager.beginTransaction()
+//                    .replace(R.id.fragment_container, LobbyFragment())
+//                    .commit()
+//            }
+//        }
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -138,7 +138,7 @@ class SignupFragment : Fragment() {
         Log.d("SignupFragment", "현재 등록된 사용자: ${UserDatabase.getAllUsers()}")
 
         binding.signupButton.setOnClickListener {
-            signup()
+//            signup()
         }
     }
 }

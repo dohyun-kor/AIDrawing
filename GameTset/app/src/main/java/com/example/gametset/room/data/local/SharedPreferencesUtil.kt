@@ -28,7 +28,7 @@ class SharedPreferencesUtil(context: Context) {
         val id = preferences.getString("id", "")
         if (id != "") {
             val name = preferences.getString("nickname", "")
-            return UserDto(id!!, name!!, "")
+            return UserDto(0, id!!, "", "", 0, 0, 0, 0, 0)
         } else {
             return UserDto()
         }

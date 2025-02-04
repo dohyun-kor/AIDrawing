@@ -5,10 +5,7 @@ import com.example.gametset.room.model.dto.UserDto
 object UserDatabase {
     private val users = mutableListOf<UserDto>().apply {
         // 더미 데이터 추가
-        add(UserDto("test1", "Test1!", "asd2"))
-        add(UserDto("hong123", "Hong123!", "홍길동"))
-        add(UserDto("kim456", "Kim456@", "김철수"))
-        add(UserDto("park789", "Park789#", "박영희"))
+        add(UserDto(1, "test", "test", "admin", 0, 0, 0, 0, 0))
     }
 
     fun addUser(user: UserDto): Boolean {

@@ -34,11 +34,17 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        registerObserver()
+
         binding.apply {
+            //로귿인 버튼
             btnLogin.setOnClickListener{
-                mainActivity.openFragment(2)
+                val id = binding.editTextLoginID.text.toString()
+                val pass = binding.editTextLoginPassword.text.toString()
+                viewModel.login(id, pass)
             }
 
+            //회원 가입 버튼
             btnSignup.setOnClickListener{
                 //회원가입으로 이동
                 mainActivity.openFragment(1)
@@ -49,12 +55,12 @@ class LoginFragment : Fragment() {
     private fun registerObserver() {
         viewModel.user.observe(viewLifecycleOwner) {
             if (it.id.isEmpty()) {
-                Toast.makeText(activity, "로그인 되었습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "id 혹은 password를 확인해 주세요.", Toast.LENGTH_SHORT).show()
             } else {
                 //sharedpreference에 기록
                 ApplicationClass.sharedPreferencesUtil.addUser(it)
                 Toast.makeText(activity, "로그인 되었습니다.", Toast.LENGTH_SHORT).show()
-                mainActivity.openFragment(1)
+                mainActivity.openFragment(2)
             }
         }
     }

@@ -1,6 +1,9 @@
 package com.example.gametset.room.data.remote
 
 import com.example.gametset.room.model.dto.UserDto
+import com.example.gametset.room.model.response.IsUsedResponse
+import com.example.gametset.room.model.response.LoginResponse
+import com.example.gametset.room.model.response.UserIdResponse
 import com.example.gametset.room.model.response.UserResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -11,26 +14,26 @@ import retrofit2.http.Query
 
 interface UserService {
     // 사용자 정보를 추가한다.
-    @POST("rest/user")
+    @POST("/user/signup")
     suspend fun insert(@Body body: UserDto): Boolean
 
-    // 사용자의 정보와 함께 사용자의 주문 내역, 사용자 등급 정보를 반환한다.
-    @GET("rest/user/info")
-    suspend fun getUserInfo(@Query("id") id:String): UserResponse
+    // userId로 유저의 정보를 조회한다.
+    @GET("user/info")
+    suspend fun getUserInfo(@Query("userId") userId:Int): UserResponse
 
-    // 사용자가 입력된 금액만큼 포인트를 얻는다.
-    @PUT("rest/user/point/add/{id}")
-    suspend fun addPoint(@Path("id") id:String, @Query("points") points:Int): Int
+    // 사용자의 아이디로 UserId를 가져온다.
+    @GET("/user/{userId}")
+    suspend fun getUserUserId(@Query("id") id:String): UserIdResponse
 
-    // 사용자가 입력된 금액만큼 사용한다.
-    @PUT("rest/user/point/use/{id}")
-    suspend fun usePoint(@Path("id") id:String, @Query("points") points:Int): Int
+    // UserId 중복 조회
+    @GET("user/isUsed")
+    suspend fun isUsedId(@Query("nickname") id: String): IsUsedResponse
 
-    // request parameter로 전달된 id가 이미 사용중인지 반환한다.
-    @GET("rest/user/isUsed")
-    suspend fun isUsedId(@Query("id") id: String): Boolean
+    // nickname 중복 조회
+    @GET("user/nickname/isUsed")
+    suspend fun isUsedNickname(@Query("id") id: String): IsUsedResponse
 
     // 로그인 처리 후 성공적으로 로그인 되었다면 loginId라는 쿠키를 내려준다.
-    @POST("rest/user/login")
-    suspend fun login(@Body body: UserDto): UserDto
+    @POST("user/login")
+    suspend fun login(@Path("id") id:String, @Query("password") password:String): LoginResponse
 }
