@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
@@ -53,11 +54,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //야매 로그인 때문에 만듬 로그아웃에 들어갈 기능
+        ApplicationClass.sharedPreferencesUtil.deleteUser()
+        ApplicationClass.sharedPreferencesUtil.deleteUserCookie()
+
         //로그인 된 상태인지 확인
         val user = ApplicationClass.sharedPreferencesUtil.getUser()
 
         //로그인 상태 확인. id가 있다면 로그인 된 상태
-        if (user.id != ""){
+        if (user.id != "") {
             openFragment(2)
         } else {
             // 가장 첫 화면은 홈 화면의 Fragment로 지정
@@ -68,10 +73,8 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
-        openFragment(2)
-
         binding.toolbar.toolBarMenuBtn.setOnClickListener {
-            showPopupMenu(it)
+            openFragment(3)
         }
 
     }
@@ -87,17 +90,21 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "설정 선택됨", Toast.LENGTH_SHORT).show()
                     true
                 }
-                R.id.action_friend-> {
+
+                R.id.action_friend -> {
                     Toast.makeText(this, "친구 선택됨", Toast.LENGTH_SHORT).show()
                     true
                 }
+
                 R.id.action_ranking -> {
                     Toast.makeText(this, "랭킹 선택됨", Toast.LENGTH_SHORT).show()
                     true
                 }
+
                 else -> false
             }
         }
+
         popupMenu.show()
     }
 
@@ -135,6 +142,15 @@ class MainActivity : AppCompatActivity() {
                 )
                     .addToBackStack(null)
             }
+            // 상단 메뉴바
+            3 -> {
+                transaction.add(
+                    R.id.frame_layout_main,
+                    MenuPopUp()
+                )
+                    .addToBackStack(null)
+            }
+
             //logout
             5 -> {
                 logout()
@@ -177,10 +193,10 @@ class MainActivity : AppCompatActivity() {
         else binding.bottomNavigation.visibility = View.VISIBLE
     }
 
-    fun hideToolBar(isOn: Boolean){
-        if(!isOn){
+    fun hideToolBar(isOn: Boolean) {
+        if (!isOn) {
             binding.toolbar.toolbar.visibility = View.VISIBLE
-        }else{
+        } else {
             binding.toolbar.toolbar.visibility = View.GONE
         }
     }

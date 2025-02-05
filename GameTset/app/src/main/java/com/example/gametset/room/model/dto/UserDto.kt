@@ -24,5 +24,5 @@ data class UserDto(
         exp: Int
     ) : this(userId,"", id, "", nickname, point, gamesWon, totalGames, level, exp)
     constructor(id:String, password: String, nickname: String) : this(0,"",id, password, nickname,0,0,0,0,0)
-
+    constructor(id:String, password: String) : this(0,"",id, password, "",0,0,0,0,0)
 }
