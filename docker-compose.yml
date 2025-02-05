@@ -62,7 +62,7 @@ services:
     ports:
       - "6379:6379"
       - "8001:8001"  # Redis Stack 자체 Web UI (optional)
-      -
+
     environment:
       - REDIS_ARGS=--requirepass ${REDIS_PASSWORD}
 
