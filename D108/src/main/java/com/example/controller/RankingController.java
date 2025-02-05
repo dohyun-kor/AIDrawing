@@ -12,12 +12,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ranking")
-public class RankingRestController implements RankingControllerDocs {
+public class RankingController implements RankingControllerDocs {
 
     private final RankingService rankingService;
 
     @Autowired
-    public RankingRestController(RankingService rankingService) {
+    public RankingController(RankingService rankingService) {
         this.rankingService = rankingService;
     }
 
@@ -40,6 +40,7 @@ public class RankingRestController implements RankingControllerDocs {
            RankingDto ranking = rankingService.getUserRanking(userId);
            return ResponseEntity.ok(ranking);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

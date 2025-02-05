@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.model.dao.PictureDao">
+
+    <!-- 특정 사용자(userId)를 이용하여 마이룸 그림 전체 조회 -->
+    <select id="getPicturesByUserId" parameterType="int" resultType="com.example.model.dto.PictureDto">
+        SELECT
+            p.picture_id AS pictureId,
+            p.user_id AS userId,
+            p.title,
+            p.topic,
+            p.description,
+            p.image_url AS imageUrl,
+            p.is_displayed AS isDisplayed
+            FROM Picture p
+        WHERE p.user_id = #{userId}
+    </select>
+
+    <!-- 마이룸에 있는 특정 그림 삭제-->
+    <delete id="deletePictureById" parameterType="int">
+        DELETE FROM Picture
+        WHERE picture_id = #{pictureId}
+    </delete>
+
+</mapper>
