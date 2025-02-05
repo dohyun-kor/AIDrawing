@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.docs.RankingControllerDocs;
 import com.example.model.dto.RankingDto;
 import com.example.model.service.RankingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ranking")
-public class RankingRestController {
+public class RankingRestController implements RankingControllerDocs {
 
     private final RankingService rankingService;
 
@@ -26,11 +27,7 @@ public class RankingRestController {
         List<RankingDto> rankings  = null;
         try {
             rankings = rankingService.getTopRankings();
-            if (rankings != null && !rankings.isEmpty()) {
-                return ResponseEntity.ok(rankings);
-            } else {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            }
+            return ResponseEntity.ok(rankings);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

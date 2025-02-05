@@ -2,9 +2,7 @@ package com.example.model.dto;
 
 // 10등까지 전체 랭킹 조회
 public class RankingDto {
-    private int rankingId; // 랭킹 고유 ID
     private int userId; // 사용자 고유 ID
-
     private int exp; // 사용자 경험치
 
     private String nickname; // 사용자의 닉네임
@@ -19,21 +17,12 @@ public class RankingDto {
 
     }
 
-    public RankingDto(int rankingId, int userId, int exp, String nickname, int rankPosition, float winRate) {
-        this.rankingId = rankingId;
+    public RankingDto(int userId, int exp, String nickname, int rankPosition, float winRate) {
         this.userId = userId;
         this.exp = exp;
         this.nickname = nickname;
         this.rankPosition = rankPosition;
         this.winRate = winRate;
-    }
-
-    public int getRankingId() {
-        return rankingId;
-    }
-
-    public void setRankingId(int rankingId) {
-        this.rankingId = rankingId;
     }
 
     public int getUserId() {
@@ -75,5 +64,4 @@ public class RankingDto {
     public void setWinRate(float winRate) {
         this.winRate = winRate;
     }
-
 }
