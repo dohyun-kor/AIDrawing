@@ -1,5 +1,5 @@
 package com.example.gametset.room.data
-import com.example.gametset.room.model.dto.UserDto
+import com.example.gametset.room.data.model.dto.UserDto
 
 
 object UserDatabase {

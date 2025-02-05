@@ -1,15 +1,14 @@
-package com.example.gametset.room
+package com.example.gametset.room.ui.store
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gametset.R
 import com.example.gametset.room.data.StoreDatabase
-
 
 class StoreFragment : Fragment() {
     private lateinit var storeAdapter: StoreAdapter
@@ -36,6 +35,6 @@ class StoreFragment : Fragment() {
 
         // 더미 데이터 설정
         val dummyData = StoreDatabase.generateDummyData()
-        storeAdapter.submitList(dummyData.data)
+        storeAdapter.submitList(dummyData)
     }
 }

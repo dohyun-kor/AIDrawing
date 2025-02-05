@@ -1,7 +1,10 @@
-package com.example.gametset.room
+package com.example.gametset.room.ui.gameRoom
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent

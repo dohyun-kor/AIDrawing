@@ -1,14 +1,15 @@
-package com.example.gametset.room
+package com.example.gametset.room.ui.login
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.gametset.databinding.FragmentLoginBinding
+import com.example.gametset.room.MainActivity
 import com.example.gametset.room.base.ApplicationClass
 
 class LoginFragment : Fragment() {
@@ -27,7 +28,7 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLoginBinding.inflate(inflater,container,false)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
 

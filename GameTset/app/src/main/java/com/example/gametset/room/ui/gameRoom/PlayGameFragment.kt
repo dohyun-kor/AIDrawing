@@ -1,27 +1,27 @@
-package com.example.gametset.room
+package com.example.gametset.room.ui.gameRoom
 
 import android.graphics.Path
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gametset.R
+import com.example.gametset.databinding.FragmentPlayGameBinding
+import com.example.gametset.room.WordAdapter
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import org.json.JSONObject
-import com.example.gametset.databinding.FragmentPlayGameBinding
 
 private const val TAG = "PlayGameFragment_싸피"
 
 class PlayGameFragment : Fragment() {
-
     // 뷰 바인딩 객체
     private var _binding: FragmentPlayGameBinding? = null
     private val binding get() = _binding!!
@@ -99,7 +99,8 @@ class PlayGameFragment : Fragment() {
             setupColorButton(penColorBlack, R.color.black, "#FF000000")
         }
 
-        binding.verticalSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.verticalSeekBar.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 setPencilSize(progress.toFloat()) // SeekBar의 현재 값을 연필 크기로 설정
             }

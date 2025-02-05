@@ -1,30 +1,22 @@
 package com.example.gametset.room
 
-import android.content.Intent
-import android.graphics.Color
 import android.graphics.Path
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
-import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.SeekBar
-import android.widget.TextView
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gametset.R
 import com.example.gametset.databinding.ActivityMainBinding
 import com.example.gametset.room.base.ApplicationClass
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import com.example.gametset.room.ui.lobby.LobbyFragment
+import com.example.gametset.room.ui.login.LoginFragment
+import com.example.gametset.room.ui.lobby.MenuPopUp
+import com.example.gametset.room.ui.login.SignupFragment
+import com.example.gametset.room.ui.store.StoreFragment
 import okhttp3.WebSocket
-import okhttp3.WebSocketListener
-import org.json.JSONObject
 
 private const val TAG = "MainActivity_싸피"
 

@@ -1,4 +1,4 @@
-package com.example.gametset.room
+package com.example.gametset.room.ui.login
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -6,9 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gametset.room.data.remote.RetrofitUtil
-import com.example.gametset.room.model.dto.LoginDto
-import com.example.gametset.room.model.dto.UserDto
-import com.example.gametset.room.model.response.LoginResponse
+import com.example.gametset.room.data.model.dto.UserDto
 import kotlinx.coroutines.launch
 
 class LoginFragmentViewModel : ViewModel() {

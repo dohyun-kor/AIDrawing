@@ -1,21 +1,17 @@
-package com.example.gametset.room
+package com.example.gametset.room.ui.store
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gametset.R
 import com.example.gametset.databinding.StoreAdapterItemBinding
-import com.example.gametset.room.model.dto.StoreDto
+import com.example.gametset.room.data.model.dto.StoreDto
 
 class StoreAdapter : RecyclerView.Adapter<StoreAdapter.ViewHolder>() {
-    private var items: List<StoreDto.ItemData> = emptyList()
+    private var items: List<StoreDto> = emptyList()
 
     inner class ViewHolder(private val binding: StoreAdapterItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: StoreDto.ItemData) {
+        fun bind(item: StoreDto) {
             binding.item = item
-            binding.executePendingBindings()
         }
     }
 
@@ -34,7 +30,7 @@ class StoreAdapter : RecyclerView.Adapter<StoreAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = items.size
 
-    fun submitList(newItems: List<StoreDto.ItemData>) {
+    fun submitList(newItems: List<StoreDto>) {
         items = newItems
         notifyDataSetChanged()
     }

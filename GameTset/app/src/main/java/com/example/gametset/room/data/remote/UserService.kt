@@ -1,11 +1,11 @@
 package com.example.gametset.room.data.remote
 
-import com.example.gametset.room.model.dto.LoginDto
-import com.example.gametset.room.model.dto.UserDto
-import com.example.gametset.room.model.response.IsUsedResponse
-import com.example.gametset.room.model.response.LoginResponse
-import com.example.gametset.room.model.response.UserIdResponse
-import com.example.gametset.room.model.response.UserResponse
+import com.example.gametset.room.data.model.dto.LoginDto
+import com.example.gametset.room.data.model.dto.UserDto
+import com.example.gametset.room.data.model.response.IsUsedResponse
+import com.example.gametset.room.data.model.response.LoginResponse
+import com.example.gametset.room.data.model.response.UserIdResponse
+import com.example.gametset.room.data.model.response.UserResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -16,7 +16,7 @@ import retrofit2.http.Query
 interface UserService {
     // 사용자 정보를 추가한다.
     @POST("user/signup")
-    suspend fun insert(@Body user:UserDto): Boolean
+    suspend fun insert(@Body user: UserDto): Boolean
 
     // userId로 유저의 정보를 조회한다.
     @GET("user/info")
@@ -36,5 +36,5 @@ interface UserService {
 
     // 로그인 처리 후 성공적으로 로그인 되었다면 loginId라는 쿠키를 내려준다.
     @POST("user/login")
-    suspend fun login(@Body user:UserDto): LoginResponse
+    suspend fun login(@Body user: UserDto): LoginResponse
 }

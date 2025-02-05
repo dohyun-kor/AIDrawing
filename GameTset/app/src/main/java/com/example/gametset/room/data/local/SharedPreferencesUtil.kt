@@ -2,7 +2,7 @@ package com.example.gametset.room.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.gametset.room.model.dto.UserDto
+import com.example.gametset.room.data.model.dto.UserDto
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

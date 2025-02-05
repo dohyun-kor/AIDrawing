@@ -1,10 +1,10 @@
 package com.example.gametset.room.data
 
-import com.example.gametset.room.model.dto.StoreDto
+import com.example.gametset.room.data.model.dto.StoreDto
 
 object StoreDatabase {
-    fun generateDummyData(): StoreDto {
-        val itemDataList = mutableListOf<StoreDto.ItemData>()
+    fun generateDummyData(): List<StoreDto> {
+        val itemDataList = mutableListOf<StoreDto>()
 
         // category "one" 아이템 생성 (아이템 1~10)
         for (i in 1..10) {
@@ -14,7 +14,7 @@ object StoreDatabase {
             val price = 1000 + (i * 500)  // 아이템마다 다른 가격
             val description = "$name 설명"
 
-            itemDataList.add(StoreDto.ItemData(itemId, name, category, price, description))
+            itemDataList.add(StoreDto(itemId, name, category, price, description))
         }
 
         // category "two" 아이템 생성 (아이템 11~20)
@@ -25,9 +25,9 @@ object StoreDatabase {
             val price = 2000 + (i * 500)  // 다른 가격대 설정
             val description = "$name 설명"
 
-            itemDataList.add(StoreDto.ItemData(itemId, name, category, price, description))
+            itemDataList.add(StoreDto(itemId, name, category, price, description))
         }
 
-        return StoreDto(data = itemDataList)
+        return itemDataList
     }
 }

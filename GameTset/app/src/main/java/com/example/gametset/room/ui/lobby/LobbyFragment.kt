@@ -1,12 +1,13 @@
-package com.example.gametset.room
+package com.example.gametset.room.ui.lobby
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.gametset.R
+import com.example.gametset.room.MainActivity
 
 class LobbyFragment : Fragment() {
 

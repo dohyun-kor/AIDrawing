@@ -1,12 +1,11 @@
 package com.example.gametset.room
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 
 import androidx.appcompat.app.AppCompatActivity
 
 import com.example.gametset.R
+import com.example.gametset.room.ui.login.SignupFragment
 
 class SignupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

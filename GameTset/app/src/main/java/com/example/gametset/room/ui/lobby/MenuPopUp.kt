@@ -1,4 +1,4 @@
-package com.example.gametset.room
+package com.example.gametset.room.ui.lobby
 
 import android.content.Context
 import android.os.Bundle
@@ -6,12 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.fragment.app.viewModels
-import com.example.gametset.R
-import com.example.gametset.databinding.FragmentLoginBinding
 import com.example.gametset.databinding.FragmentMenuPopUpBinding
-import com.example.gametset.room.base.ApplicationClass
+import com.example.gametset.room.MainActivity
 
 class MenuPopUp : Fragment() {
     lateinit var mainActivity: MainActivity

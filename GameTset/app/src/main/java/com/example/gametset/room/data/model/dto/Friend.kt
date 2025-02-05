@@ -1,4 +1,4 @@
-package com.example.gametset.room.model.dto
+package com.example.gametset.room.data.model.dto
 
 data class Friend(
     val userId: Int,

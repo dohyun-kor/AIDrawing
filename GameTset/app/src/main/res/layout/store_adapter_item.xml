@@ -6,7 +6,7 @@
     <data>
         <variable
             name="item"
-            type="com.example.gametset.room.model.dto.StoreDto.ItemData" />
+            type="com.example.gametset.room.data.model.dto.StoreDto" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

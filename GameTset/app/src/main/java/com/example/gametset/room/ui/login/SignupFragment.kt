@@ -1,25 +1,23 @@
-package com.example.gametset.room
+package com.example.gametset.room.ui.login
+
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.gametset.R
 import android.widget.EditText
-import android.graphics.Color
-import android.util.Log
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.gametset.databinding.FragmentLoginBinding
 import com.example.gametset.databinding.FragmentSignupBinding
+import com.example.gametset.room.MainActivity
 import com.example.gametset.room.data.UserDatabase
-import com.example.gametset.room.model.dto.UserDto
+import com.example.gametset.room.data.model.dto.UserDto
 import com.example.gametset.room.data.remote.RetrofitUtil
 import kotlinx.coroutines.launch
 
-private const val TAG = "SignupFragment_싸피"
 class SignupFragment : Fragment() {
     private lateinit var binding: FragmentSignupBinding
 
@@ -139,7 +137,7 @@ class SignupFragment : Fragment() {
             Log.d("SignupFragment", "회원가입 시도: ID=${id}, PW=${password}, 닉네임=${nickname}")
 
             lifecycleScope.launch {
-                val user = UserDto(id,password,nickname)
+                val user = UserDto(id, password, nickname)
                 runCatching {
                     Log.d("SignupFragment", "Response: ${user}")
                     val response = RetrofitUtil.userService.insert(user)

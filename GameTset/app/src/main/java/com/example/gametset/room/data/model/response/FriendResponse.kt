@@ -1,4 +1,4 @@
-package com.example.gametset.room.model.response
+package com.example.gametset.room.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
