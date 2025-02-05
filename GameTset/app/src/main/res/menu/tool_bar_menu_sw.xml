@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_settings"
+        android:enabled="true"
+        android:icon="@drawable/setting_botton_bar_js"
+        android:orderInCategory="1"
+        android:title="설정"/>
+    <item
+        android:id="@+id/action_friend"
+        android:enabled="true"
+        android:icon="@drawable/friend_icon"
+        android:orderInCategory="2"
+        android:title="친구"/>
+    <item
+        android:id="@+id/action_ranking"
+        android:enabled="true"
+        android:icon="@drawable/ranking_icon"
+        android:orderInCategory="3"
+        android:title="랭킹"/>
+
+    <item
+        android:id="@+id/action_logout"
+        android:enabled="true"
+        android:icon="@drawable/logout_logo"
+        android:orderInCategory="3"
+        android:title="로그아웃"/>
+</menu>

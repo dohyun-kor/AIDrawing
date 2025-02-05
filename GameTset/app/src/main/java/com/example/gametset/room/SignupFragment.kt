@@ -150,7 +150,7 @@ class SignupFragment : Fragment() {
                         Toast.makeText(context, "회원가입 성공", Toast.LENGTH_SHORT).show()
                         Log.d("SignupFragment", "회원가입 성공: $id")
 
-                        mainActivity.openFragment(3)
+                        mainActivity.openFragment(0)
 //                        parentFragmentManager.beginTransaction()
 //                            .replace(R.id.fragment_container, LoginFragment())
 //                            .commit()

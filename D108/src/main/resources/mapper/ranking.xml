@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.model.dao.RankingDao">
+
+    <!-- 상위 10위까지 전체 랭킹 조회 -->
+    <select id="getTopRankings" parameterType="com.example.model.dto.User">
+        SELECT r.user_id, u.exp, u.nickname
+        FROM Ranking r
+        JOIN Users u ON r.user_id = u.user_id
+        ORDER BY u.exp DESC
+        LIMIT 10;
+    </select>
+
+    <!-- 특정 사용자의 랭킹 조회 -->
+    <select id="getUserRanking" parameterType="int" resultType="com.example.model.dto.RankingDto">
+        SELECT r.ranking_id, r.user_id, u.exp, u.nickname, r.rank_position, r.win_rate
+        FROM Ranking r
+        JOIN Users u ON r.user_id = u.user_id
+        WHERE r.user_id = #{userId};
+    </select>
+
+</mapper>

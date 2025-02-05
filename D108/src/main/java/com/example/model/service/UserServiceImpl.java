@@ -1,12 +1,17 @@
 package com.example.model.service;
 
+import com.example.controller.FriendController;
 import com.example.model.dao.UserDao;
 import com.example.model.dto.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(FriendController.class);
 
     private final UserDao userDao;
 
@@ -26,15 +31,15 @@ public class UserServiceImpl implements UserService {
      * @return "success" 또는 "failure"
      */
     @Override
-    public String authenticate(User user) {
+    public int authenticate(User user) {
         // DB에서 아이디로 사용자 조회
         User foundUser = userDao.findById(user.getId());
 
         // 사용자 존재 여부 및 비밀번호 확인
         if (foundUser != null && foundUser.getPassword().equals(user.getPassword())) {
-            return "true";
+            return foundUser.getUserId();
         } else {
-            return "false";
+            return -1;
         }
     }
 

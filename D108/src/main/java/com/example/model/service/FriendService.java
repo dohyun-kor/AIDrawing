@@ -1,6 +1,7 @@
 package com.example.model.service;
 
 import com.example.model.dto.Friend;
+import com.example.model.dto.FriendRequest;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface FriendService {
     public List<Friend> searchFriends(int userId);
 
     /** 친구 요청을 보낸다.*/
-    public int requestFriends(int userId, int friendId);
+    public int requestFriends(FriendRequest friendRequest);
 
     /** 친구 요청을 처리한다.*/
     public int updateRequest(Friend nFriend);
