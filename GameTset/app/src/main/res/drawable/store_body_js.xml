@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="397dp"
+    android:height="536dp"
+    android:viewportWidth="397"
+    android:viewportHeight="536">
+    <path
+        android:strokeColor="#FF000000"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeMiterLimit="10"
+        android:pathData="M387 7.67c0 85.72-0.88 85.72-0.88 171.4 0 85.71 0.13 85.71 0.13 171.43 0 85.72 0.19 85.72 0.19 171.44"/>
+    <path
+        android:strokeColor="#FF000000"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeMiterLimit="10"
+        android:pathData="M10.95 522.65c0-85.9-0.58-85.9-0.58-171.74 0-85.9 0.08-85.9 0.08-171.79C10.45 93.23 10 93.23 10 7.34"/>
+    <group>
+        <path
+            android:strokeColor="#FF000000"
+            android:strokeWidth="3"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeMiterLimit="10"
+            android:pathData="M7 9.3c12 0 12-1.17 24-1.17s12 0.44 24 0.44 12 1.08 24 1.08 12-1.1 24-1.1S115 8 126.98 8c12 0 12 1.75 24 1.75s12 0.25 24 0.25 12-1.4 24-1.4c11.99 0 11.99 1.13 24 1.13 12 0 12-0.76 23.99-0.76 12 0 12 0.2 24 0.2s12 0.56 24 0.56 12-0.72 24-0.72 12 0.72 24.01 0.72c12 0 12-1.32 24-1.32S379 8.19 391 8.19"/>
+    </group>
+    <group>
+        <path
+            android:strokeColor="#FF000000"
+            android:strokeWidth="3"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeMiterLimit="10"
+            android:pathData="M7 525.3c12 0 12-1.17 24-1.17s12 0.44 24 0.44 12 1.08 24 1.08 12-1.1 24-1.1 12-0.55 23.99-0.55c12 0 12 1.75 24 1.75s12 0.25 24 0.25 12-1.4 24-1.4c11.99 0 11.99 1.13 24 1.13 12 0 12-0.75 23.99-0.75 12 0 12 0.18 24 0.18s12 0.57 24 0.57 12-0.72 24-0.72 12 0.72 24.01 0.72c12 0 12-1.33 24-1.33s12-0.21 24.01-0.21"/>
+    </group>
+</vector>
