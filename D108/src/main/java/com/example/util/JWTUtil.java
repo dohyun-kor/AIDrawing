@@ -40,7 +40,7 @@
 
 package com.example.util;
 
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
@@ -80,6 +80,52 @@ public class JWTUtil {
                 .signWith(secretKey)                                // 주입받은 비밀키로 서명
                 .compact();
     }
+    /**
+     * JWT 토큰 검증 메서드
+     *  - 토큰 파싱 과정에서 유효하지 않은 경우 예외가 발생한다.
+     *  - 문제 없이 파싱된다면 유효한 토큰으로 판단할 수 있습니다.
+     *
+     * @param token 클라이언트로부터 전달받은 JWT
+     * @return 토큰이 유효하면 true, 그렇지 않으면 false
+     */
 
-    // 필요에 따라 토큰 검증, 파싱 등 추가 메서드를 구현할 수 있음
+    public boolean validateToken(String token) {
+        try {
+            // parseClaimsJws() 과정에서 서명 검증, 유효기간 검사 등을 수행
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey) // 비밀키 설정
+                    .build()
+                    .parseClaimsJws(token); // 여기서 예외가 발생하지 않으면 유효한 토큰
+            return true;
+        } catch (SecurityException | MalformedJwtException e) {
+            // 시그니처 혹은 구조 문제가 있을 때 발생
+            System.out.println("Invalid JWT Signature or Malformed token");
+        } catch (ExpiredJwtException e){
+            // 토큰 유효기간 만료
+            System.out.println("Expired JWT token");
+        } catch (UnsupportedJwtException e){
+            // 지원되지 않는 형식의 JWT
+            System.out.println("Unsupported JWT token");
+        } catch (IllegalArgumentException e){
+            // 토큰이 비어있거나 제대로 구성되지 않았을 때
+            System.out.println("JWT claims string is empty or has wrong format");
+        }
+        return false;
+
+    }
+    /**
+     * 토큰에서 Subject(사용자 아이디 등) 을 추출하는 메서드
+     * 검증에 성공한 토큰이라는 전제 하에 사용할 수 있습니다.
+     *
+     * @param token 클라이언트로부터 받은 JWT
+     * @return 토큰 내부의 subject (사용자 식별자) 반환
+     */
+    public String getSubject(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
 }

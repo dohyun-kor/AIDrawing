@@ -1,5 +1,4 @@
 services:
-  # docker-compose.yml에 Jenkins 서비스 추가
   mysql:
     image: mysql:8.0
     ports:
@@ -7,22 +6,22 @@ services:
     container_name: mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # .env 파일에서 설정
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql  # 데이터 영속화
+      - mysql_data:/var/lib/mysql
     networks:
       - app-network
-    healthcheck:  # DB 연결 상태 확인
+    healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD"]
       interval: 5s
       timeout: 3s
       retries: 5
 
   backend:
-    image: dororo737/d-108:latest  # Jenkins에서 푸시한 이미지 이름
+    image: dororo737/d-108:latest
     ports:
       - "8081:9987"
     volumes:
@@ -34,12 +33,12 @@ services:
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_PROFILES_ACTIVE: prod  # 프로덕션 프로필
+      SPRING_PROFILES_ACTIVE: prod
     networks:
       - app-network
     depends_on:
       mysql:
-        condition: service_healthy  # DB 건강 상태 확인 후 시작
+        condition: service_healthy
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -55,8 +54,26 @@ services:
     networks:
       - app-network
 
+  # 여기서부터 Redis Stack 컨테이너 추가
+  redis-stack:
+    image: redis/redis-stack:latest  # 최신버전 Redis Stack 이미지
+    container_name: redis-stack
+    # 기본 Redis 포트는 6379, Redis Stack의 UI 포트는 8001(기본값)
+    ports:
+      - "6379:6379"
+      - "8001:8001"  # Redis Stack 자체 Web UI (optional)
+
+    volumes:
+      # redis-stack-data 라는 이름의 볼륨(또는 호스트 경로)을 생성하여 영구 저장
+      - redis-stack-data:/data
+    # 필요하다면 depends_on 등을 활용하여 의존성 설정 가능
+    depends_on:
+      - mysql
+      - backend
+
 volumes:
   mysql_data:
+  redis_data:
 
 networks:
   app-network:
