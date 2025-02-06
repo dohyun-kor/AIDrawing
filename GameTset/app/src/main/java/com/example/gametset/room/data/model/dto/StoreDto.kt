@@ -5,5 +5,7 @@ data class StoreDto(
     val name: String,
     val category: String,
     val price: Int,
-    val description: String
+    val description: String,
+    val link : String
 )
+
