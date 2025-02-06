@@ -1,11 +1,6 @@
 package com.example.gametset.room.data.remote
 
-import com.example.gametset.room.data.model.dto.UserDto
 import com.example.gametset.room.data.model.response.FriendResponse
-import com.example.gametset.room.data.model.response.IsUsedResponse
-import com.example.gametset.room.data.model.response.LoginResponse
-import com.example.gametset.room.data.model.response.UserIdResponse
-import com.example.gametset.room.data.model.response.UserResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
