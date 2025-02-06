@@ -15,7 +15,9 @@ import com.example.gametset.room.ui.lobby.LobbyFragment
 import com.example.gametset.room.ui.login.LoginFragment
 import com.example.gametset.room.ui.lobby.MenuPopUp
 import com.example.gametset.room.ui.login.SignupFragment
+import com.example.gametset.room.ui.myroom.MyroomFragment
 import com.example.gametset.room.ui.store.StoreFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import okhttp3.WebSocket
 
 private const val TAG = "MainActivity_싸피"
@@ -63,6 +65,29 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.frame_layout_main, LoginFragment())
                 .commit()
+        }
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.selectedItemId = R.id.navigation_page_2
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when(item.itemId){
+                R.id.navigation_page_1 -> {
+                    //상점
+                    openFragment(7)
+                    true
+                }
+                R.id.navigation_page_2 -> {
+                    //로비
+                    openFragment(2)
+                    true
+                }
+                R.id.navigation_page_3 -> {
+                    //마이페이지
+                    openFragment(4)
+                    true
+                }
+                else -> false
+            }
         }
 
         binding.toolbar.toolBarMenuBtn.setOnClickListener {
@@ -143,6 +168,15 @@ class MainActivity : AppCompatActivity() {
                     .addToBackStack(null)
             }
 
+            // 마이룸
+            4 -> {
+                transaction.replace(
+                    R.id.frame_layout_main,
+                    MyroomFragment()
+                )
+                    .addToBackStack(null)
+            }
+
             //logout
             5 -> {
                 logout()
@@ -154,6 +188,9 @@ class MainActivity : AppCompatActivity() {
 //                    .commit()
 //                binding.bottomNavigation.selectedItemId = R.id.navigation_page_2
 //            }
+
+
+
             //store상세페이지로 가기
             7 -> {
                 transaction.replace(

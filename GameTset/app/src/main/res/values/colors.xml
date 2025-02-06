@@ -9,4 +9,6 @@
     <color name="blue">#0000FF</color>
     <color name="navy_blue">#000080</color>
     <color name="purple">#800080</color>
+    <color name="ssafy_blue_light">#7C8DE1</color>
+    <color name="ssafy_gray">#B2B2B2</color>
 </resources>
