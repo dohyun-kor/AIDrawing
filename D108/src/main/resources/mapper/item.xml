@@ -2,17 +2,20 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.example.model.dao.ItemDao">
 
-    <!-- 상점 아이템 전체 조회 -->
+    <!-- 상점 아이템 전체 조회
+         SELECT * 컬럼을 명시적으로 기재하고, 별칭을 통해 DTO 필드와 맵핑
+         필드: item_id, name, category, price, description, rink
+    -->
     <select id="findAll" resultType="com.example.model.dto.ItemDto">
         SELECT
         item_id AS itemId,
         name,
         category,
         price,
-        description
+        description,
+        rink
         FROM Item
     </select>
 
@@ -23,7 +26,8 @@
         name,
         category,
         price,
-        description
+        description,
+        rink
         FROM Item
         WHERE item_id = #{itemId}
     </select>
