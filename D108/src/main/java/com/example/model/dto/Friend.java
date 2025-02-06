@@ -1,12 +1,21 @@
 package com.example.model.dto;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class Friend implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    // Getters and Setters
     private int userId;
     private int friendId;
     private FriendStatus status;
@@ -16,10 +25,6 @@ public class Friend implements Serializable {
         PENDING,    // 'pending'
         ACCEPTED,   // 'accepted'
         BLOCKED;    // 'blocked'
-    }
-
-    // 기본 생성자
-    public Friend() {
     }
 
     // 전체 필드 생성자
@@ -32,31 +37,6 @@ public class Friend implements Serializable {
         this.userId = userId;
         this.friendId = friendId;
         this.status = FriendStatus.PENDING;
-    }
-
-    // Getters and Setters
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getFriendId() {
-        return friendId;
-    }
-
-    public void setFriendId(int friendId) {
-        this.friendId = friendId;
-    }
-
-    public FriendStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(FriendStatus status) {
-        this.status = status;
     }
 
     // Optional: equals 및 hashCode 재정의 (Primary Key: userId, friendId)

@@ -31,5 +31,10 @@
         WHERE room_id = #{roomId}
     </update>
 
+    <select id="searchRoom" resultType="com.example.model.dto.RoomListDto">
+        SELECT *
+        FROM Room
+    </select>
+
 
 </mapper>

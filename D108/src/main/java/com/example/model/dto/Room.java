@@ -1,6 +1,8 @@
 package com.example.model.dto;
 
-public class Room {
+import java.io.Serializable;
+
+public class Room{
     private int hostId;
     private String roomName;
     private RoomStatus status;

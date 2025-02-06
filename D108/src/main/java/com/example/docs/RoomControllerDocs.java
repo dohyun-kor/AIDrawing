@@ -2,10 +2,13 @@ package com.example.docs;
 
 import com.example.model.dto.Friend;
 import com.example.model.dto.Room;
+import com.example.model.dto.RoomListDto;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 public interface RoomControllerDocs {
     @Operation(
@@ -39,4 +42,11 @@ public interface RoomControllerDocs {
                             "```\n"
     )
     public ResponseEntity<Boolean> updateRoom(@PathVariable int roomId, @RequestBody Room room);
+
+    @Operation(
+            summary = "현재 존재하는 모든 게임 방을 조회합니다",
+            description =
+                    "모든 방의 정보를 확인할 수 있습니다."
+    )
+    public ResponseEntity<List<RoomListDto>> searchRoom();
 }
