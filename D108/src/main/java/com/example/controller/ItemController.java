@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.docs.ItemControllerDocs;
 import com.example.model.dto.ItemDto;
 import com.example.model.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/items")
-public class ItemController {
+public class ItemController implements ItemControllerDocs {
 
     @Autowired
     private ItemService itemService; // 비즈니스 로직을 담당하는 서비스

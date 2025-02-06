@@ -9,20 +9,20 @@ public class ItemDto {
     private String category; // 아이템 분류 (기능, 치장 등)
     private int price; // 아이템 가격
     private String description; // 아이템 설명
-    private String rink;
+    private String link;
 
     // 기본 생성자
     public ItemDto() {
     }
 
     // 모든 필드를 받는 생성자
-    public ItemDto(int itemId, String name, String category, int price, String description, String rink) {
+    public ItemDto(int itemId, String name, String category, int price, String description, String link) {
         this.itemId = itemId;
         this.name = name;
         this.category = category;
         this.price = price;
         this.description = description;
-        this.rink = rink;
+        this.link = link;
     }
 
     // Getter/Setter
@@ -56,10 +56,10 @@ public class ItemDto {
     public void setDescription(String description) {
         this.description = description;
     }
-    public String getRink() {
-        return rink;
+    public String getlink() {
+        return link;
     }
-    public void setRink(String rink) {
-        this.rink = rink;
+    public void setlink(String link) {
+        this.link = link;
     }
 }

@@ -1,3 +1,4 @@
+// C:\SSAFY\Do\gitlab_repo\D108\D108\src\main\java\com\example\model\dao\MyItemDao.java
 package com.example.model.dao;
 
 import com.example.model.dto.MyItemDto;
@@ -9,8 +10,7 @@ import java.util.List;
 @Mapper
 public interface MyItemDao {
     /**
-     * 내가 가진 모든 아이템 조회
-     * @param userId 사용자 ID
+     * 특정 userId의 모든 MyItem 조회
      */
     List<MyItemDto> findAllMyItems(int userId);
 
@@ -21,7 +21,7 @@ public interface MyItemDao {
     MyItemDto findMyItemById(int purchaseId);
 
     /**
-     * 아이템 구매 (MyItem 테이블에 데이터 Insert
+     * 아이템 구매 MyItem 테이블에 데이터 Insert
      */
     int insertMyItem(MyItemDto myItemDto);
 }

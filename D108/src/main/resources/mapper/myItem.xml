@@ -2,46 +2,39 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.example.model.dao.MyItemDao">
 
-    <!-- 내가 가진 아이템 전체 조회 -->
+    <!-- 특정 userId의 모든 MyItem 조회 -->
     <select id="findAllMyItems" parameterType="int" resultType="com.example.model.dto.MyItemDto">
         SELECT
-        purchase_id AS purchaseId,
-        item_id     AS itemId,
-        user_id     AS userId,
-        -- 아래 2개 필드(itemName, price)는 Item 테이블과 조인해서 가져온다고 가정
-        i.name      AS itemName,
-        i.price     AS price,
-        purchase_date AS purchaseDate
+        m.purchase_id AS purchaseId,
+        m.item_id     AS itemId,
+        m.user_id     AS userId,
+        i.name        AS itemName,
+        m.purchase_date AS purchaseDate
         FROM MyItem m
         JOIN Item i ON m.item_id = i.item_id
         WHERE m.user_id = #{userId}
     </select>
 
-    <!-- 내가 가진 아이템 단일 조회 -->
+    <!-- purchaseId로 MyItem 단일 조회 -->
     <select id="findMyItemById" parameterType="int" resultType="com.example.model.dto.MyItemDto">
         SELECT
-        purchase_id AS purchaseId,
-        m.item_id   AS itemId,
-        m.user_id   AS userId,
-        i.name      AS itemName,
-        i.price     AS price,
-        purchase_date AS purchaseDate
+        m.purchase_id AS purchaseId,
+        m.item_id     AS itemId,
+        m.user_id     AS userId,
+        i.name        AS itemName,
+        m.purchase_date AS purchaseDate
         FROM MyItem m
         JOIN Item i ON m.item_id = i.item_id
         WHERE m.purchase_id = #{purchaseId}
     </select>
 
-    <!-- 아이템 구매 -->
+    <!-- 새 MyItem 등록 -->
     <insert id="insertMyItem" parameterType="com.example.model.dto.MyItemDto">
         INSERT INTO MyItem
         (item_id, user_id, purchase_date)
         VALUES
         (#{itemId}, #{userId}, NOW())
-        <!-- MySQL 기준, 구매 시각을 NOW()로 삽입 -->
-        <!-- DB마다 날짜/시간 함수를 다르게 설정해야 할 수도 있음 -->
     </insert>
-
 </mapper>
