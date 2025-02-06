@@ -1,5 +1,12 @@
 package com.example.model.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@NoArgsConstructor
 public class FriendRequestDto {
 
     private int userId;
@@ -7,22 +14,6 @@ public class FriendRequestDto {
 
     public FriendRequestDto(int userId, int friendId) {
         this.userId = userId;
-        this.friendId = friendId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getFriendId() {
-        return friendId;
-    }
-
-    public void setFriendId(int friendId) {
         this.friendId = friendId;
     }
 
