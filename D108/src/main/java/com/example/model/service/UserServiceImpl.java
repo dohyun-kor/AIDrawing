@@ -59,4 +59,10 @@ public class UserServiceImpl implements UserService {
     public Boolean isUsedNickname(String nickname) {
         return userDao.existsByNickname(nickname);
     }
+
+    @Override
+    public int getUserIdById(String id) {
+        return userDao.getUserIdById(id);
+    }
+
 }

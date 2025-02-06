@@ -31,4 +31,8 @@ public interface UserService {
      */
     public Boolean isUsedNickname(String nickname);
 
+    /**
+     * ID로 조회하면 userId 반환
+     */
+    public int getUserIdById(String id);
 }

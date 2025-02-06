@@ -30,4 +30,12 @@
         WHERE nickname = #{nickname}
     </select>
 
+    <!-- id로 userId 조회-->
+    <select id="getUserIdById" parameterType="string" resultType="int">
+        SELECT user_id AS userId
+        FROM Users
+        WHERE id = #{id}
+    </select>
+
+
 </mapper>

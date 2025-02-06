@@ -147,14 +147,44 @@ public class UserController implements UserControllerDocs {
 
     // ID 중복 조회
     @GetMapping("/isUsed")
-    public Boolean isUsedId(@RequestParam String id) {
-        return userService.isUsedId(id);
+    public ResponseEntity<Boolean> isUsedId(@RequestParam String id) {
+        try {
+            Boolean isUsed = userService.isUsedId(id);
+            return ResponseEntity.ok(isUsed);
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 로그를 출력
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(false);  // 오류가 발생했을 경우 false를 반환
+        }
     }
 
     // 닉네임 중복 조회
     @GetMapping("/nickname/isUsed")
-    public Boolean isUsedNickname(@RequestParam String nickname) {
-        return userService.isUsedNickname(nickname);
+    public ResponseEntity<Boolean> isUsedNickname(@RequestParam String nickname) {
+        try {
+            Boolean isUsed = userService.isUsedNickname(nickname);
+            return ResponseEntity.ok(isUsed);
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 로그를 출력
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(false);  // 오류가 발생했을 경우 false를 반환
+        }
+    }
+
+    // 유저 ID로 조회하면 userId를 반환
+    @GetMapping("/{id}")
+    public ResponseEntity<Integer> getUserId(@PathVariable String id) {
+        try {
+            int userId = userService.getUserIdById(id);
+            if (userId != -1) { // 유효한 userId가 반환되었을 경우
+                return ResponseEntity.ok(userId);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 유저를 찾을 수 없을 경우
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 로그를 출력
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 오류 발생 시 500 오류 반환
+        }
     }
 
 }
