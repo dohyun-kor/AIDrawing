@@ -1,11 +1,11 @@
 package com.example.model.dto;
 
-public class FriendRequest {
+public class FriendRequestDto {
 
     private int userId;
     private int friendId;
 
-    public FriendRequest(int userId, int friendId) {
+    public FriendRequestDto(int userId, int friendId) {
         this.userId = userId;
         this.friendId = friendId;
     }

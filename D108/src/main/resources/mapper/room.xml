@@ -6,7 +6,7 @@
 <mapper namespace="com.example.model.dao.RoomDao">
 
     <!-- 방 생성 -->
-    <insert id="createRoom" parameterType="com.example.model.dto.Room">
+    <insert id="createRoom" parameterType="com.example.model.dto.RoomDto">
         INSERT INTO Room
                 (host_id,
                 room_name,
@@ -23,11 +23,11 @@
     <update id="updateRoom" parameterType="java.util.Map">
         UPDATE Room
         SET
-            host_id = #{room.hostId},
-            room_name = #{room.roomName},
-            status = #{room.status},
-            max_players = #{room.maxPlayers},
-            now_players = #{room.nowPlayers}
+            host_id = #{roomDto.hostId},
+            room_name = #{roomDto.roomName},
+            status = #{roomDto.status},
+            max_players = #{roomDto.maxPlayers},
+            now_players = #{roomDto.nowPlayers}
         WHERE room_id = #{roomId}
     </update>
 

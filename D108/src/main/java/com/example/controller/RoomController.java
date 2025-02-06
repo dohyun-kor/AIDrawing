@@ -1,8 +1,7 @@
 package com.example.controller;
 
 import com.example.docs.RoomControllerDocs;
-import com.example.model.dto.Friend;
-import com.example.model.dto.Room;
+import com.example.model.dto.RoomDto;
 import com.example.model.dto.RoomListDto;
 import com.example.model.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +19,11 @@ public class RoomController implements RoomControllerDocs {
     RoomService roomService;
 
     @PostMapping("")
-    public ResponseEntity<Boolean> createRoom(Room room){
+    public ResponseEntity<Boolean> createRoom(RoomDto roomDto){
         int result = 0;
 
         try{
-            result = roomService.createRoom(room);
+            result = roomService.createRoom(roomDto);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -39,12 +38,12 @@ public class RoomController implements RoomControllerDocs {
     @PutMapping("/{roomId}")
     public ResponseEntity<Boolean> updateRoom(
             @PathVariable int roomId,
-            @RequestBody Room room
+            @RequestBody RoomDto roomDto
     ) {
         int result = 0;
         try {
             // roomId와 함께 방 정보를 받아, 해당 ID에 해당하는 방을 업데이트
-            result = roomService.updateRoom(roomId, room);
+            result = roomService.updateRoom(roomId, roomDto);
         } catch (Exception e){
             e.printStackTrace();
         }

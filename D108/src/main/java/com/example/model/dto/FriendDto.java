@@ -1,6 +1,5 @@
 package com.example.model.dto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +10,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Friend implements Serializable {
+public class FriendDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,12 +27,12 @@ public class Friend implements Serializable {
     }
 
     // 전체 필드 생성자
-    public Friend(int userId, int friendId, FriendStatus status) {
+    public FriendDto(int userId, int friendId, FriendStatus status) {
         this.userId = userId;
         this.friendId = friendId;
         this.status = status;
     }
-    public Friend(int userId, int friendId) {
+    public FriendDto(int userId, int friendId) {
         this.userId = userId;
         this.friendId = friendId;
         this.status = FriendStatus.PENDING;
@@ -43,7 +42,7 @@ public class Friend implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Friend friendDTO)) return false;
+        if (!(o instanceof FriendDto friendDTO)) return false;
         return userId == friendDTO.userId &&
                 friendId == friendDTO.friendId;
     }

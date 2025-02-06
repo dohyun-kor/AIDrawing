@@ -1,12 +1,11 @@
 package com.example.docs;
 
-import com.example.model.dto.Friend;
-import com.example.model.dto.FriendRequest;
+import com.example.model.dto.FriendDto;
+import com.example.model.dto.FriendRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public interface FriendControllerDocs {
             description =
                     "PathVariable에 해당하는 유저의 친구 목록을 조회합니다."
     )
-    public ResponseEntity<List<Friend>> searchFriend(@PathVariable int userId);
+    public ResponseEntity<List<FriendDto>> searchFriend(@PathVariable int userId);
 
 
     @Operation(
@@ -31,7 +30,7 @@ public interface FriendControllerDocs {
                             "}\n" +
                             "```\n"
     )
-    public ResponseEntity<Boolean> requestFriends(@RequestBody FriendRequest friendRequest);
+    public ResponseEntity<Boolean> requestFriends(@RequestBody FriendRequestDto friendRequestDto);
 
     @Operation(
             summary = "해당 친구 요청을 수락 / 거절 합니다.",
@@ -45,5 +44,5 @@ public interface FriendControllerDocs {
                             "}\n" +
                             "```\n"
     )
-    public ResponseEntity<Boolean> requestUpdate(@RequestBody Friend nFriend);
+    public ResponseEntity<Boolean> requestUpdate(@RequestBody FriendDto nFriendDto);
 }

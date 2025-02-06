@@ -1,8 +1,6 @@
 package com.example.model.dto;
 
-import java.io.Serializable;
-
-public class Room{
+public class RoomDto {
     private int hostId;
     private String roomName;
     private RoomStatus status;
@@ -14,7 +12,7 @@ public class Room{
         PLAY;
     }
 
-    public Room(int hostId, String roomName, RoomStatus status, int maxPlayers, int nowPlayers) {
+    public RoomDto(int hostId, String roomName, RoomStatus status, int maxPlayers, int nowPlayers) {
         this.hostId = hostId;
         this.roomName = roomName;
         this.status = status;

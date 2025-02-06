@@ -1,5 +1,5 @@
 // 파일 위치: src/main/java/com/example/docs/JWTConfig.java
-package com.example.docs;
+package com.example.config;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

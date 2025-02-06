@@ -1,6 +1,6 @@
 package com.example.websocket;
 
-import com.example.model.dto.User;
+import com.example.model.dto.UserDto;
 import com.example.model.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.*;
@@ -27,7 +27,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         sessions.put(session.getId(), session);
         System.out.println("사용자 연결됨: " + session.getId());
         System.out.println("container 이름으로 바꿈.");
-        User newuser = new User("dnen14@naver.com","ssafy","ssafy","ssafyKing");
+        UserDto newuser = new UserDto("dnen14@naver.com","ssafy","ssafy","ssafyKing");
         uService.join(newuser);
         System.out.println("유저 정보 :" + newuser);
     }

@@ -6,7 +6,7 @@
 <mapper namespace="com.example.model.dao.RankingDao">
 
     <!-- 상위 10위까지 전체 랭킹 조회 -->
-    <select id="getTopRankings" parameterType="com.example.model.dto.User">
+    <select id="getTopRankings" parameterType="com.example.model.dto.UserDto">
         SELECT r.user_id, u.exp, u.nickname
         FROM Ranking r
         JOIN Users u ON r.user_id = u.user_id

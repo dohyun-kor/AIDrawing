@@ -1,6 +1,6 @@
 package com.example.model.dto;
 
-public class User {
+public class UserDto {
     private int userId;
     private String email;
     private String id;
@@ -13,7 +13,7 @@ public class User {
     private int exp;
     private String createdAt;
 
-    public User(String email, String id, String password, String nickname) {
+    public UserDto(String email, String id, String password, String nickname) {
         this.email = email;
         this.id = id;
         this.password = password;

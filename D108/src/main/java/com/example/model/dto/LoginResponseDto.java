@@ -5,7 +5,7 @@ package com.example.model.dto;
  * 로그인 응답을 위한 DTO 클래스
  * 사용자 아이디와 JWT 토큰을 함께 반환합니다.
  */
-public class LoginResponse {
+public class LoginResponseDto {
 
     // 사용자 식별자
     private int userId;
@@ -14,11 +14,11 @@ public class LoginResponse {
     private String token;
 
     // 기본 생성자
-    public LoginResponse() {
+    public LoginResponseDto() {
     }
 
     // 모든 필드를 초기화하는 생성자
-    public LoginResponse(int userId, String token) {
+    public LoginResponseDto(int userId, String token) {
         this.userId = userId;
         this.token = token;
     }

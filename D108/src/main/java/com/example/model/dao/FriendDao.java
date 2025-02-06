@@ -1,7 +1,7 @@
 package com.example.model.dao;
 
-import com.example.model.dto.Friend;
-import com.example.model.dto.FriendRequest;
+import com.example.model.dto.FriendDto;
+import com.example.model.dto.FriendRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -10,14 +10,14 @@ import java.util.List;
 public interface FriendDao {
 
     /** 사용자 친구정보를 조회한다.*/
-    List<Friend> searchFriends(int userId);
+    List<FriendDto> searchFriends(int userId);
 
     /** 친구 요청을 보낸다.*/
-    int requestFriends(FriendRequest friendRequest);
+    int requestFriends(FriendRequestDto friendRequestDto);
 
     /** 친구 요청 승인*/
-    int acceptFriends(Friend nFriend);
+    int acceptFriends(FriendDto nFriendDto);
 
     /** 친구 요청 거절*/
-    int denyFriends(Friend nFriend);
+    int denyFriends(FriendDto nFriendDto);
 }

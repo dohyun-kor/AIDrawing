@@ -1,8 +1,7 @@
 package com.example.model.service;
 
-import com.example.model.dao.FriendDao;
 import com.example.model.dao.RoomDao;
-import com.example.model.dto.Room;
+import com.example.model.dto.RoomDto;
 import com.example.model.dto.RoomListDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +19,13 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public int createRoom(Room room) {
-        return roomDao.createRoom(room);
+    public int createRoom(RoomDto roomDto) {
+        return roomDao.createRoom(roomDto);
     }
 
     @Override
-    public int updateRoom(int roomId, Room room) {
-        return roomDao.updateRoom(roomId, room);
+    public int updateRoom(int roomId, RoomDto roomDto) {
+        return roomDao.updateRoom(roomId, roomDto);
     }
 
     @Override

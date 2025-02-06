@@ -1,6 +1,6 @@
 package com.example.model.dao;
 
-import com.example.model.dto.User;
+import com.example.model.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper  // MyBatis Mapper 설정
@@ -8,19 +8,19 @@ public interface UserDao {
 
     /**
      * 사용자 정보를 추가한다.
-     * @param user
+     * @param userDto
      * @return
      */
 
     // 회원가입 : 사용자의 정보를 DB에 삽입
-    int insert(User user);
+    int insert(UserDto userDto);
 
     /**
      * ID로 사용자 정보를 조회한다.
      * @param id
      * @return
      */
-    User findById(String id);
+    UserDto findById(String id);
 
     /**
      * 닉네임 중복 여부를 확인한다.
@@ -42,6 +42,6 @@ public interface UserDao {
      * @param userId 조회할 userId
      * @return User
      */
-    User findByUserId(int userId);
+    UserDto findByUserId(int userId);
 
 }

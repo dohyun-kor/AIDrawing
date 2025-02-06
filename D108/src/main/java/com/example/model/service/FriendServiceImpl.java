@@ -1,8 +1,8 @@
 package com.example.model.service;
 
 import com.example.model.dao.FriendDao;
-import com.example.model.dto.Friend;
-import com.example.model.dto.FriendRequest;
+import com.example.model.dto.FriendDto;
+import com.example.model.dto.FriendRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,21 +19,21 @@ public class FriendServiceImpl implements FriendService{
     }
 
     @Override
-    public List<Friend> searchFriends(int userId) {
+    public List<FriendDto> searchFriends(int userId) {
         return friendDao.searchFriends(userId);
     }
 
     @Override
-    public int requestFriends(FriendRequest friendRequest) {
-        return friendDao.requestFriends(friendRequest);
+    public int requestFriends(FriendRequestDto friendRequestDto) {
+        return friendDao.requestFriends(friendRequestDto);
     }
 
     @Override
-    public int updateRequest(Friend nFriend) {
-        if(nFriend.getStatus() == Friend.FriendStatus.ACCEPTED){
-            return friendDao.acceptFriends(nFriend);
+    public int updateRequest(FriendDto nFriendDto) {
+        if(nFriendDto.getStatus() == FriendDto.FriendStatus.ACCEPTED){
+            return friendDao.acceptFriends(nFriendDto);
         }else{
-            return friendDao.denyFriends(nFriend);
+            return friendDao.denyFriends(nFriendDto);
         }
     }
 }

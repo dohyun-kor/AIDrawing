@@ -17,7 +17,7 @@
     </insert>
 
     <!-- 로그인 시 ID로 사용자 조회 -->
-    <select id="findById" resultType="com.example.model.dto.User">
+    <select id="findById" resultType="com.example.model.dto.UserDto">
         SELECT * FROM Users WHERE id = #{id}
     </select>
 
@@ -36,7 +36,7 @@
     </select>
 
     <!-- 유저 ID로 유저 정보 조회-->
-    <select id="findByUserId" parameterType="int" resultType="com.example.model.dto.User">
+    <select id="findByUserId" parameterType="int" resultType="com.example.model.dto.UserDto">
         SELECT * FROM Users WHERE user_id = #{userId}
     </select>
 

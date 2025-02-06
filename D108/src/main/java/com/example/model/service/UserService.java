@@ -1,19 +1,18 @@
 package com.example.model.service;
 
-import com.example.model.dto.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.model.dto.UserDto;
 
 public interface UserService {
 
     /**
      * 사용자 정보를 DB에 저장한다.
      *
-     * @param user
+     * @param userDto
      */
-    public int join(User user);
+    public int join(UserDto userDto);
 
     // 로그인 인증 메서드
-    public int authenticate(User user);
+    public int authenticate(UserDto userDto);
 
 
     /**
@@ -41,7 +40,7 @@ public interface UserService {
      * @param userId 조회할 userId
      * @return User
      */
-    User findByUserId(int userId);
+    UserDto findByUserId(int userId);
 
 
 }

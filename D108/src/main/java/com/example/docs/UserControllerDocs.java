@@ -1,8 +1,8 @@
 // 파일 위치: src/main/java/com/example/docs/UserControllerDocs.java
 package com.example.docs;
 
-import com.example.model.dto.LoginResponse;
-import com.example.model.dto.User;
+import com.example.model.dto.LoginResponseDto;
+import com.example.model.dto.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +23,7 @@ public interface UserControllerDocs {
                             "}\n" +
                             "```\n"
     )
-    ResponseEntity<Boolean> signup(@RequestBody User user);
+    ResponseEntity<Boolean> signup(@RequestBody UserDto userDto);
 
     @Operation(
             summary = "로그인 API",
@@ -37,7 +37,7 @@ public interface UserControllerDocs {
                             "```\n" +
                             "로그인 성공 시 사용자 ID와 JWT 토큰이 함께 반환됩니다."
     )
-    ResponseEntity<LoginResponse> login(@RequestBody User user);
+    ResponseEntity<LoginResponseDto> login(@RequestBody UserDto userDto);
 
 
     @Operation(
@@ -92,5 +92,5 @@ public interface UserControllerDocs {
                             "}\n" +
                             "```\n"
     )
-    public ResponseEntity<User> getUserInfo(@RequestParam int userId);
+    public ResponseEntity<UserDto> getUserInfo(@RequestParam int userId);
 }
