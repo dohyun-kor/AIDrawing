@@ -6,16 +6,14 @@
 <mapper namespace="com.example.model.dao.UserDao">
 
     <!-- 회원가입 -->
-    <insert id="insert" parameterType="com.example.model.dto.User">
+    <insert id="insert" parameterType="com.example.model.dto.SignUpDto">
     INSERT INTO Users
         (id,
          password,
-         nickname,
-         email)
+         nickname)
         VALUES (#{id},
                 #{password},
-                #{nickname},
-                #{email})
+                #{nickname})
     </insert>
 
     <!-- 로그인 시 ID로 사용자 조회 -->
@@ -35,6 +33,11 @@
         SELECT user_id AS userId
         FROM Users
         WHERE id = #{id}
+    </select>
+
+    <!-- 유저 ID로 유저 정보 조회-->
+    <select id="findByUserId" parameterType="int" resultType="com.example.model.dto.User">
+        SELECT * FROM Users WHERE user_id = #{userId}
     </select>
 
 

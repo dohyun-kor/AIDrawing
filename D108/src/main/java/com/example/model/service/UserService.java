@@ -29,10 +29,19 @@ public interface UserService {
      * @param nickname 확인할 닉네임
      * @return 중복이면 true, 아니면 false
      */
-    public Boolean isUsedNickname(String nickname);
+    public boolean isUsedNickname(String nickname);
 
     /**
      * ID로 조회하면 userId 반환
      */
     public int getUserIdById(String id);
+
+    /**
+     * userId로 유저 정보를 조회한다.
+     * @param userId 조회할 userId
+     * @return User
+     */
+    User findByUserId(int userId);
+
+
 }

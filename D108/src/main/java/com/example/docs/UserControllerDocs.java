@@ -81,4 +81,16 @@ public interface UserControllerDocs {
 
     )
     public ResponseEntity<Integer> getUserId(@PathVariable String id);
+
+    @Operation(
+            summary = "해당 유저 정보를 조회합니다.",
+            description =
+                    "### 요청 예시\n" +
+                            "```json\n" +
+                            "{\n" +
+                            "  \"userId\": \"13\"\n" +
+                            "}\n" +
+                            "```\n"
+    )
+    public ResponseEntity<User> getUserInfo(@RequestParam int userId);
 }

@@ -35,4 +35,13 @@ public interface UserDao {
      * @return userId
      */
     int getUserIdById(String id);
+
+
+    /**
+     * userId로 유저 정보를 조회한다.
+     * @param userId 조회할 userId
+     * @return User
+     */
+    User findByUserId(int userId);
+
 }

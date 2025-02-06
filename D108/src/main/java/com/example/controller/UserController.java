@@ -76,6 +76,7 @@
 package com.example.controller;
 
 import com.example.docs.UserControllerDocs;
+import com.example.model.dto.Friend;
 import com.example.model.dto.LoginResponse;
 import com.example.model.dto.User;
 import com.example.model.service.UserService;
@@ -186,5 +187,23 @@ public class UserController implements UserControllerDocs {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 오류 발생 시 500 오류 반환
         }
     }
+
+    /**
+     * userId로 유저 정보를 조회한다.
+     * @param userId 조회할 userId
+     * @return 유저 정보
+     */
+    @GetMapping("/info")
+    public ResponseEntity<User> getUserInfo(@RequestParam int userId) {
+        try {
+            // userId로 유저 정보를 조회
+            User user = userService.findByUserId(userId);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 로그를 출력
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 오류 발생 시 500 오류 반환
+        }
+    }
+
 
 }
