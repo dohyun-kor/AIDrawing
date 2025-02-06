@@ -13,8 +13,9 @@ object StoreDatabase {
             val category = "one"
             val price = 1000 + (i * 500)  // 아이템마다 다른 가격
             val description = "$name 설명"
+            val link = ""
 
-            itemDataList.add(StoreDto(itemId, name, category, price, description))
+            itemDataList.add(StoreDto(itemId, name, category, price, description, link))
         }
 
         // category "two" 아이템 생성 (아이템 11~20)
@@ -24,8 +25,9 @@ object StoreDatabase {
             val category = "two"
             val price = 2000 + (i * 500)  // 다른 가격대 설정
             val description = "$name 설명"
+            val link = ""
 
-            itemDataList.add(StoreDto(itemId, name, category, price, description))
+            itemDataList.add(StoreDto(itemId, name, category, price, description, link))
         }
 
         return itemDataList
