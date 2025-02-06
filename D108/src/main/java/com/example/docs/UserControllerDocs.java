@@ -5,6 +5,7 @@ import com.example.model.dto.LoginResponse;
 import com.example.model.dto.User;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -50,8 +51,7 @@ public interface UserControllerDocs {
                             "}\n" +
                             "```\n"
     )
-    public Boolean isUsedId(@RequestParam String id);
-
+    public ResponseEntity<Boolean> isUsedId(@RequestParam String id);
 
     @Operation(
             summary = "닉네임의 중복 여부를 조회합니다.",
@@ -65,5 +65,20 @@ public interface UserControllerDocs {
                             "```\n"
 
     )
-    public Boolean isUsedNickname(@RequestParam String nickname);
+    public ResponseEntity<Boolean> isUsedNickname(@RequestParam String nickname);
+
+
+
+    @Operation(
+            summary = "유저 ID로 조회하면 userId를 반환합니다.",
+            description =
+                    "### 요청 예시\n" +
+                            "```json\n" +
+                            "{\n" +
+                            "  \"id\": \"ssafy\"\n" +
+                            "}\n" +
+                            "```\n"
+
+    )
+    public ResponseEntity<Integer> getUserId(@PathVariable String id);
 }

@@ -28,4 +28,11 @@ public interface UserDao {
      * @return 중복되면 true, 아니면 false
      */
     boolean existsByNickname(String nickname);
+
+    /**
+     * ID로 userId를 조회한다.
+     * @param id
+     * @return userId
+     */
+    int getUserIdById(String id);
 }
