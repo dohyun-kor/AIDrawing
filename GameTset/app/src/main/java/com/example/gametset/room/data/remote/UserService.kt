@@ -2,7 +2,6 @@ package com.example.gametset.room.data.remote
 
 import com.example.gametset.room.data.model.dto.LoginDto
 import com.example.gametset.room.data.model.dto.UserDto
-import com.example.gametset.room.data.model.response.IsUsedResponse
 import com.example.gametset.room.data.model.response.LoginResponse
 import com.example.gametset.room.data.model.response.UserIdResponse
 import com.example.gametset.room.data.model.response.UserResponse
@@ -28,11 +27,11 @@ interface UserService {
 
     // UserId 중복 조회
     @GET("user/isUsed")
-    suspend fun isUsedId(@Query("nickname") id: String): IsUsedResponse
+    suspend fun isUsedId(@Query("nickname") id: String): Boolean
 
     // nickname 중복 조회
     @GET("user/nickname/isUsed")
-    suspend fun isUsedNickname(@Query("id") id: String): IsUsedResponse
+    suspend fun isUsedNickname(@Query("id") id: String): Boolean
 
     // 로그인 처리 후 성공적으로 로그인 되었다면 loginId라는 쿠키를 내려준다.
     @POST("user/login")
