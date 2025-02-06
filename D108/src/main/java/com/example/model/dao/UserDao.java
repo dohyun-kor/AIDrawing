@@ -21,4 +21,11 @@ public interface UserDao {
      * @return
      */
     User findById(String id);
+
+    /**
+     * 닉네임 중복 여부를 확인한다.
+     * @param nickname
+     * @return 중복되면 true, 아니면 false
+     */
+    boolean existsByNickname(String nickname);
 }

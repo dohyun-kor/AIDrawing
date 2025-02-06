@@ -144,4 +144,17 @@ public class UserController implements UserControllerDocs {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
+    // ID 중복 조회
+    @GetMapping("/isUsed")
+    public Boolean isUsedId(@RequestParam String id) {
+        return userService.isUsedId(id);
+    }
+
+    // 닉네임 중복 조회
+    @GetMapping("/nickname/isUsed")
+    public Boolean isUsedNickname(@RequestParam String nickname) {
+        return userService.isUsedNickname(nickname);
+    }
+
 }

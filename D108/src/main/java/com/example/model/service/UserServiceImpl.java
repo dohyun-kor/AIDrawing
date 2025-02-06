@@ -43,5 +43,20 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * ID 중복 확인 메서드
+     *
+     * @param id 확인하려는 ID
+     * @return true: 중복된 ID, false: 사용 가능한 ID
+     */
+    @Override
+    public boolean isUsedId(String id) {
+        User foundUser = userDao.findById(id);
+        return foundUser != null; // ID가 존재하면 true, 없으면 false
+    }
 
+    @Override
+    public Boolean isUsedNickname(String nickname) {
+        return userDao.existsByNickname(nickname);
+    }
 }
