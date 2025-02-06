@@ -13,7 +13,7 @@
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:lottie_url="https://cdn.lottielab.com/l/28vutytsFVcknV.json?v=117d010323f742660f17ee0e&amp;w=1"
+        app:lottie_url="https://cdn.lottielab.com/l/28vutytsFVcknV.json?v=117d0104993457d0dbaf40ce&amp;w=1"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"/>
