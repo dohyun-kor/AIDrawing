@@ -11,17 +11,21 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.gametset.R
 import com.example.gametset.databinding.FragmentSignupBinding
 import com.example.gametset.room.MainActivity
 import com.example.gametset.room.data.UserDatabase
 import com.example.gametset.room.data.model.dto.UserDto
 import com.example.gametset.room.data.remote.RetrofitUtil
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class SignupFragment : Fragment() {
     private lateinit var binding: FragmentSignupBinding
 
     lateinit var mainActivity: MainActivity
+
+    private var checkedSignup = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,7 +44,7 @@ class SignupFragment : Fragment() {
     private fun validatePassword(password: String): Boolean {
         val specialChars = "!@#$%^&*()-+"
         return password.any { it.isUpperCase() } &&
-               password.any { it in specialChars }
+                password.any { it in specialChars }
     }
 
     private fun validateNickname(nickname: String): Boolean {
@@ -125,9 +129,6 @@ class SignupFragment : Fragment() {
 //            }
         }
 
-
-
-
         return isValid
     }
 
@@ -179,12 +180,35 @@ class SignupFragment : Fragment() {
 //        Log.d("SignupFragment", "현재 등록된 사용자: ${UserDatabase.getAllUsers()}")
 
         binding.signupButton.setOnClickListener {
-            signup()
-        }
+            lifecycleScope.launch {
+                runCatching {
+                    if(validateFields()) {
+                        var idCheck =
+                            RetrofitUtil.userService.isUsedId(binding.idEditText.text.toString())
 
-        binding.cancelButton.setOnClickListener {
-            // 취소 버튼 처리
-            parentFragmentManager.popBackStack()
+                        var nicknamecheck =
+                            RetrofitUtil.userService.isUsedNickname(binding.nicknameEditText.text.toString())
+                        if (idCheck || nicknamecheck) {
+                            if(idCheck){
+                                showError(binding.idEditText, "아이디가 중복되었습니다")
+                            }
+                            if(nicknamecheck){
+                                showError(binding.nicknameEditText, "닉네임이 중복되었습니다")
+                            }
+                            checkedSignup = false
+                        }
+                    }
+                }.onSuccess {
+                    if (checkedSignup) {
+                        signup()
+                    }
+                }
+            }
+
+            binding.cancelButton.setOnClickListener {
+                // 취소 버튼 처리
+                parentFragmentManager.popBackStack()
+            }
         }
     }
 }

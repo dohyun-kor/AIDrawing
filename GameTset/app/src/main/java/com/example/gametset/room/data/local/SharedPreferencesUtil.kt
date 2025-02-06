@@ -19,8 +19,16 @@ class SharedPreferencesUtil(context: Context) {
     //사용자 정보 저장
     fun addUser(user: UserDto) {
         val editor = preferences.edit()
+        editor.putInt("userId", user.userId)
+        editor.putString("email", user.email)
         editor.putString("id", user.id)
+        editor.putString("password", user.password)
         editor.putString("nickname", user.nickname)
+        editor.putInt("point", user.point)
+        editor.putInt("gamesWon", user.gamesWon)
+        editor.putInt("totalGames", user.totalGames)
+        editor.putInt("level", user.level)
+        editor.putInt("exp", user.exp)
         editor.apply()
     }
 

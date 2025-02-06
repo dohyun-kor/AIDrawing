@@ -7,13 +7,18 @@ import android.view.MenuInflater
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.gametset.R
 import com.example.gametset.databinding.ActivityMainBinding
 import com.example.gametset.room.base.ApplicationClass
+import com.example.gametset.room.data.model.dto.UserDto
+import com.example.gametset.room.ui.lobby.FriendModalFragment
 import com.example.gametset.room.ui.lobby.LobbyFragment
 import com.example.gametset.room.ui.login.LoginFragment
 import com.example.gametset.room.ui.lobby.MenuPopUp
+import com.example.gametset.room.ui.login.LoginFragmentViewModel
 import com.example.gametset.room.ui.login.SignupFragment
 import com.example.gametset.room.ui.myroom.MyroomFragment
 import com.example.gametset.room.ui.store.StoreFragment
@@ -24,9 +29,12 @@ private const val TAG = "MainActivity_싸피"
 
 // MainActivity 클래스 정의
 class MainActivity : AppCompatActivity() {
+    private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
     // 뷰 바인딩 객체
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var _binding: ActivityMainBinding
+    val binding: ActivityMainBinding
+        get() = _binding
 
     // 시뮬레이션된 경로 목록
     private lateinit var simulatedPaths: List<Path>
@@ -43,14 +51,25 @@ class MainActivity : AppCompatActivity() {
     // 단어 목록
     private var currentColor = 0
 
+    var CurrentUser : UserDto? = null
+
+    private lateinit var loginViewModel: LoginFragmentViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(_binding.root)
 
-        //야매 로그인 때문에 만듬 로그아웃에 들어갈 기능
-        ApplicationClass.sharedPreferencesUtil.deleteUser()
-        ApplicationClass.sharedPreferencesUtil.deleteUserCookie()
+        // ViewModel 초기화
+        loginViewModel = ViewModelProvider(this).get(LoginFragmentViewModel::class.java)
+        // 또는
+        // val loginViewModel: LoginFragmentViewModel by viewModels()
+
+        // Observer를 사용하여 데이터 변화를 감지하고 UI를 업데이트
+        loginViewModel.user.observe(this) { user ->
+            // user 데이터로 UI 업데이트
+            Log.d("MainActivity", "User Info: ${user}")
+        }
 
         //로그인 된 상태인지 확인
         val user = ApplicationClass.sharedPreferencesUtil.getUser()
@@ -69,28 +88,35 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = R.id.navigation_page_2
 
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when(item.itemId){
+        _binding.bottomNavigation.setOnItemSelectedListener { item ->
+            if (_binding.bottomNavigation.selectedItemId == item.itemId) {
+                // 현재 선택된 아이템을 다시 클릭했을 때 이벤트를 막음
+                return@setOnItemSelectedListener false
+            }
+            when (item.itemId) {
                 R.id.navigation_page_1 -> {
                     //상점
                     openFragment(7)
                     true
                 }
+
                 R.id.navigation_page_2 -> {
                     //로비
                     openFragment(2)
                     true
                 }
+
                 R.id.navigation_page_3 -> {
                     //마이페이지
                     openFragment(4)
                     true
                 }
+
                 else -> false
             }
         }
 
-        binding.toolbar.toolBarMenuBtn.setOnClickListener {
+        _binding.toolbar.toolBarMenuBtn.setOnClickListener {
             openFragment(3)
         }
 
@@ -181,6 +207,16 @@ class MainActivity : AppCompatActivity() {
             5 -> {
                 logout()
             }
+
+            // 친구
+            6 -> {
+                transaction.add(
+                    R.id.frame_layout_main,
+                    FriendModalFragment()
+                )
+                    .addToBackStack(null)
+            }
+
             //order로가기
 //            6 -> {
 //                transaction
@@ -188,7 +224,6 @@ class MainActivity : AppCompatActivity() {
 //                    .commit()
 //                binding.bottomNavigation.selectedItemId = R.id.navigation_page_2
 //            }
-
 
 
             //store상세페이지로 가기
@@ -203,30 +238,31 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    private fun logout() {
-//        //preference 지우기
-//        ApplicationClass.sharedPreferencesUtil.deleteUser()
-//        ApplicationClass.sharedPreferencesUtil.deleteUserCookie()
-//
-//        //화면이동
+    public fun logout() {
+        //preference 지우기
+        ApplicationClass.sharedPreferencesUtil.deleteUser()
+        ApplicationClass.sharedPreferencesUtil.deleteUserCookie()
+        openFragment(0)
+
+        //화면이동
 //        val intent = Intent(this, LoginActivity::class.java)
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//        startActivity(intent)
+
+        startActivity(intent)
     }
 
     fun hideBottomNav(state: Boolean) {
         Log.d("why", "why")
-        if (state) binding.bottomNavigation.visibility = View.GONE
-        else binding.bottomNavigation.visibility = View.VISIBLE
+        if (state) _binding.bottomNavigation.visibility = View.GONE
+        else _binding.bottomNavigation.visibility = View.VISIBLE
     }
 
     fun hideToolBar(isOn: Boolean) {
         if (!isOn) {
-            binding.toolbar.toolbar.visibility = View.VISIBLE
+            _binding.toolbar.toolbar.visibility = View.VISIBLE
         } else {
-            binding.toolbar.toolbar.visibility = View.GONE
+            _binding.toolbar.toolbar.visibility = View.GONE
         }
     }
 
@@ -234,5 +270,17 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         webSocket.close(1000, "App closed")
+    }
+
+    companion object{
+        val SIGNUPPAGE = 0
+        val LOGINPAGE = 1
+        val LOBBYPAGE = 2
+        val MenuBar =3
+        val MYROOMPAGE = 4
+        val LOGOUT = 5
+        val STOREPAGE = 6
+        val FRIENDMODAL = 7
+
     }
 }

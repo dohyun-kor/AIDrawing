@@ -11,11 +11,88 @@
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:layout_marginHorizontal="20dp"
+        android:background="@drawable/black_border_sw"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/black_border_sw">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--        <ImageView-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:background="@drawable/signup_body_js"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="설정"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/backgroundSound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/setting_background_sound_sw"
+            app:layout_constraintBottom_toBottomOf="@+id/soundEffect"
+            app:layout_constraintEnd_toStartOf="@+id/soundEffect"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/soundEffect" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="배경음악"
+            app:layout_constraintEnd_toEndOf="@+id/backgroundSound"
+            app:layout_constraintStart_toStartOf="@+id/backgroundSound"
+            app:layout_constraintTop_toBottomOf="@+id/backgroundSound" />
+
+        <ImageButton
+            android:id="@+id/soundEffect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/setting_sound_effect_sw"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="효과음"
+            app:layout_constraintEnd_toEndOf="@+id/soundEffect"
+            app:layout_constraintStart_toStartOf="@+id/soundEffect"
+            app:layout_constraintTop_toBottomOf="@+id/soundEffect" />
+
+        <ImageButton
+            android:id="@+id/imageButton9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/setting_vibration"
+            app:layout_constraintBottom_toBottomOf="@+id/soundEffect"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/soundEffect"
+            app:layout_constraintTop_toTopOf="@+id/soundEffect" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="진동"
+            app:layout_constraintEnd_toEndOf="@+id/imageButton9"
+            app:layout_constraintStart_toStartOf="@+id/imageButton9"
+            app:layout_constraintTop_toBottomOf="@+id/imageButton9" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

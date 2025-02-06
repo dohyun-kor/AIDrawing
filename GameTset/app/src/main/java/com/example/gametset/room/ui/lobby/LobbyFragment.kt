@@ -23,13 +23,18 @@ class LobbyFragment : Fragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_lobby, container, false)
     }
 
     override fun onResume() {
         super.onResume()
+        mainActivity.binding.bottomNavigation.selectedItemId = R.id.navigation_page_2
         mainActivity.hideBottomNav(false)
         mainActivity.hideToolBar(false)
     }

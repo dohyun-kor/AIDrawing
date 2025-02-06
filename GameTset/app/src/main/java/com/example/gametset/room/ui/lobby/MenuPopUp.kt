@@ -31,21 +31,26 @@ class MenuPopUp : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding){
+            //설정
             settingsFrame.setOnClickListener {
                 parentFragmentManager.popBackStack()
             }
 
+            //친구
             friendFrame.setOnClickListener {
                 parentFragmentManager.popBackStack()
-
+                mainActivity.openFragment(6)
             }
 
+            //랭킹
             rankingFrame.setOnClickListener {
                 parentFragmentManager.popBackStack()
             }
 
+            // 로그아웃
             logoutFrame.setOnClickListener {
                 parentFragmentManager.popBackStack()
+                mainActivity.logout()
             }
 
             //배경 눌렀을때 뒤로 가기

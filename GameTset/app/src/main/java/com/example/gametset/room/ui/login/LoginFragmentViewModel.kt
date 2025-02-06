@@ -23,33 +23,20 @@ class LoginFragmentViewModel : ViewModel() {
                 RetrofitUtil.userService.login(loginDto)
             }.onSuccess { response ->
                 if (response.userId!=-1) {
+                    val userinfo = RetrofitUtil.userService.getUserInfo(response.userId)
+                    // 로그인 성공
                     _user.value = UserDto(
                         response.userId,
                         "",
-                        "AA",
-                        "",
-                        "",
-                        0,
-                        0,
-                        0,
-                        0,
-                        0
+                        userinfo.id,
+                        userinfo.id,
+                        userinfo.nickname,
+                        userinfo.points,
+                        userinfo.gameswon,
+                        userinfo.totalgames,
+                        userinfo.level,
+                        userinfo.exp
                     )
-//                    val userinfo = RetrofitUtil.userService.getUserInfo(response.userId)
-//                    // 로그인 성공
-//                    _user.value = UserDto(
-//                        response.userId,
-//                        "",
-//                        userinfo.id,
-//                        "",
-//                        userinfo.nickname,
-//                        userinfo.points,
-//                        userinfo.gameswon,
-//                        userinfo.totalgames,
-//                        userinfo.level,
-//                        userinfo.exp
-//                    )
-//                    println("Login successful! access: ${response.statusCode}")
                 } else {
                     Log.d(TAG, "실패")
                     // 로그인 실패

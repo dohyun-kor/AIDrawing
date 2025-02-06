@@ -22,16 +22,16 @@ interface UserService {
     suspend fun getUserInfo(@Query("userId") userId:Int): UserResponse
 
     // 사용자의 아이디로 UserId를 가져온다.
-    @GET("user/{userId}")
+    @GET("user/{id}")
     suspend fun getUserUserId(@Query("id") id:String): UserIdResponse
 
     // UserId 중복 조회
     @GET("user/isUsed")
-    suspend fun isUsedId(@Query("nickname") id: String): Boolean
+    suspend fun isUsedId(@Query("id") id: String): Boolean
 
     // nickname 중복 조회
     @GET("user/nickname/isUsed")
-    suspend fun isUsedNickname(@Query("id") id: String): Boolean
+    suspend fun isUsedNickname(@Query("nickname") nickname: String): Boolean
 
     // 로그인 처리 후 성공적으로 로그인 되었다면 loginId라는 쿠키를 내려준다.
     @POST("user/login")
