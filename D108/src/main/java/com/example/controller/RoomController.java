@@ -1,12 +1,16 @@
 package com.example.controller;
 
 import com.example.docs.RoomControllerDocs;
+import com.example.model.dto.Friend;
 import com.example.model.dto.Room;
+import com.example.model.dto.RoomListDto;
 import com.example.model.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/room")
@@ -48,6 +52,17 @@ public class RoomController implements RoomControllerDocs {
         if(result == 1){
             return ResponseEntity.ok(true);
         } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<RoomListDto>> searchRoom() {
+        try {
+            List<RoomListDto> roomList = roomService.searchRoom();
+            return ResponseEntity.ok(roomList);
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
