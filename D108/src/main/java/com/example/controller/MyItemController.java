@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.docs.MyItemControllerDocs;
 import com.example.model.dto.MyItemDto;
+import com.example.model.dto.PurchaseRequestDto;
 import com.example.model.service.MyItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,18 +41,33 @@ public class MyItemController implements MyItemControllerDocs {
     }
 
     /**
-     * 새로 MyItem(아이템 구매 기록) 등록
-     * @param myItemDto 구매 정보
-     * @return insert 결과(성공 시 1, 실패 시 0 등)
+     * 아이템 구매 (포인트 차감 + MyItem Insert)
+     * @param purchaseRequestDto {"userId": ..., "itemId": ..., "itemPrice": ...}
+     * @return true: 성공, false: 실패
      */
+
     @PostMapping
-    public int insertMyItem(@RequestBody MyItemDto myItemDto) {
-        // POST /my-items
-        // Body 예시:
-        // {
-        //   "itemId": 10,
-        //   "userId": 224
-        // }
-        return myItemService.insertMyItem(myItemDto);
+    public boolean purchaseItem(@RequestBody PurchaseRequestDto purchaseRequestDto) {
+        // 1) PurchaseRequestDto에서 userId, itemId, itemPrice 추출
+        int userId = purchaseRequestDto.getUserId();
+        int itemId = purchaseRequestDto.getItemId();
+        int itemPrice = purchaseRequestDto.getItemPrice();
+
+        // 2) MyItemDto 생성 (userId, itemId 설정)
+        MyItemDto myItemDto = new MyItemDto();
+        myItemDto.setUserId(userId);
+        myItemDto.setItemId(itemId);
+        // 필요하다면 purchaseDate 등 다른 필드도 세팅할 수 있음
+
+        // 3) Service를 통해 구매 로직 실행
+        try {
+            int result = myItemService.purchaseItem(myItemDto, itemPrice);
+            // Service에서 int result = 1이면 성공
+            return (result == 1);
+        } catch (Exception e) {
+            // 포인트 부족 등 예외 발생 시 false 반환(또는 적절한 에러 응답)
+            return false;
+        }
     }
+
 }

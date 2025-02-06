@@ -40,5 +40,18 @@
         SELECT * FROM Users WHERE user_id = #{userId}
     </select>
 
+    <!-- userId로 point 조회-->
+    <select id="findPointByUserId" parameterType="int" resultType="int">
+        SELECT points
+        From Users
+        where user_id = #{userId}
+    </select>
+
+    <!-- point update-->
+    <update id="updatePoint">
+        UPDATE Users
+        SET points = #{points}
+        WHERE user_id = #{userId}
+    </update>
 
 </mapper>

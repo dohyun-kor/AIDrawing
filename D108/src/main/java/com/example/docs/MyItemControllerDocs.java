@@ -22,16 +22,4 @@ public interface MyItemControllerDocs {
     )
     MyItemDto getMyItemById(@PathVariable int purchaseId);
 
-    @Operation(
-            summary = "새 MyItem 등록 (아이템 구매)",
-            description =
-                    "예: POST /my-items\n\n" +
-                            "```json\n" +
-                            "{\n" +
-                            "  \"itemId\": 10,\n" +
-                            "  \"userId\": 224\n" +
-                            "}\n" +
-                            "```"
-    )
-    int insertMyItem(@RequestBody MyItemDto myItemDto);
 }

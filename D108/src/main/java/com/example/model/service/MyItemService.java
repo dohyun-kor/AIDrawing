@@ -22,4 +22,10 @@ public interface MyItemService {
      * 새 MyItem 등록
      */
     int insertMyItem(MyItemDto myItemDto);
+
+
+    int findPointByUserId(int userId);
+
+    // 아이템 구매(포인트 차감)
+    int purchaseItem(MyItemDto myItemDto, int itemPrice);
 }

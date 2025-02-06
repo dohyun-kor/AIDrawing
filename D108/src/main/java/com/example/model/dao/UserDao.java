@@ -2,6 +2,7 @@ package com.example.model.dao;
 
 import com.example.model.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper  // MyBatis Mapper 설정
 public interface UserDao {
@@ -44,4 +45,18 @@ public interface UserDao {
      */
     UserDto findByUserId(int userId);
 
+    /**
+     * userId로 유저 정보 중 point를 조회한다.
+     * @param userId 조회할 아이디 userId
+     * @return points
+     */
+    int findPointByUserId(int userId);
+
+    /**
+     *
+     * @param userId
+     * @param points
+     * @return
+     */
+    int updatePoint(@Param("userId") int userId, @Param("points") int points);
 }
