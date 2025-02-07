@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.model.dao.MyRoomDao">
+    <!-- 전시된 그림 조회-->
+    <select id="getDisplayedPictures" resultType="com.example.model.dto.PictureDto">
+        SELECT *
+        FROM Picture
+        WHERE is_displayed = true
+    </select>
+
+    <!-- 전시된 가구 조회-->
+    <select id="getDisplayedFurniture" resultType="com.example.model.dto.MyFurnitureDto">
+        SELECT *
+        FROM MyFurniture
+        WHERE user_id = #{userId}
+
+    </select>
+
+
+</mapper>
+
