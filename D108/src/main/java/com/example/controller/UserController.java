@@ -76,6 +76,7 @@
 package com.example.controller;
 
 import com.example.docs.UserControllerDocs;
+import com.example.model.dto.ChangeProfileDto;
 import com.example.model.dto.LoginResponseDto;
 import com.example.model.dto.UserDto;
 import com.example.model.service.UserService;
@@ -192,8 +193,8 @@ public class UserController implements UserControllerDocs {
      * @param userId 조회할 userId
      * @return 유저 정보
      */
-    @GetMapping("/info")
-    public ResponseEntity<UserDto> getUserInfo(@RequestParam int userId) {
+    @GetMapping("/{userId}/info")
+    public ResponseEntity<UserDto> getUserInfo(@PathVariable int userId) {
         try {
             // userId로 유저 정보를 조회
             UserDto userDto = userService.findByUserId(userId);
@@ -201,6 +202,22 @@ public class UserController implements UserControllerDocs {
         } catch (Exception e) {
             e.printStackTrace();  // 예외 로그를 출력
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 오류 발생 시 500 오류 반환
+        }
+    }
+
+
+    @PatchMapping("/{userId}/profile")
+    public ResponseEntity<Boolean> changeProfile(@PathVariable int userId, @RequestBody ChangeProfileDto itemId){
+        int result = -1;
+        try{
+            result = userService.changeProfile(userId, itemId.getItemId());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(result > 0){
+            return ResponseEntity.ok(true);
+        }else{
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

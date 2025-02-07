@@ -42,5 +42,13 @@ public interface UserService {
      */
     UserDto findByUserId(int userId);
 
+    /**
+     * userId의 유저 프로필을 ItemId로 변경한다.
+     * @param userId
+     * @param itemId
+     * @return Boolean
+     */
+    public int changeProfile(int userId, int itemId);
+
 
 }

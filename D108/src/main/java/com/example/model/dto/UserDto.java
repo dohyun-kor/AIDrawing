@@ -19,6 +19,7 @@ public class UserDto {
     private int level;
     private int exp;
     private String createdAt;
+    private int userProfileItemId;
 
     public UserDto(String email, String id, String password, String nickname) {
         this.email = email;
