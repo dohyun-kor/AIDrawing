@@ -1,6 +1,7 @@
 // 파일 위치: src/main/java/com/example/docs/UserControllerDocs.java
 package com.example.docs;
 
+import com.example.model.dto.ChangeProfileDto;
 import com.example.model.dto.LoginResponseDto;
 import com.example.model.dto.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,6 +54,8 @@ public interface UserControllerDocs {
     )
     public ResponseEntity<Boolean> isUsedId(@RequestParam String id);
 
+
+
     @Operation(
             summary = "닉네임의 중복 여부를 조회합니다.",
             description =
@@ -82,15 +85,27 @@ public interface UserControllerDocs {
     )
     public ResponseEntity<Integer> getUserId(@PathVariable String id);
 
+
+
     @Operation(
             summary = "해당 유저 정보를 조회합니다.",
+            description =
+                    "PathVariable에 해당하는 user 정보 조회"
+    )
+    public ResponseEntity<UserDto> getUserInfo(@PathVariable int userId);
+
+
+
+    @Operation(
+            summary = "해당 유저의 프로필을 변경합니다.",
             description =
                     "### 요청 예시\n" +
                             "```json\n" +
                             "{\n" +
-                            "  \"userId\": \"13\"\n" +
+                            "  \"ItemId\": \"2\"\n" +
                             "}\n" +
                             "```\n"
     )
-    public ResponseEntity<UserDto> getUserInfo(@RequestParam int userId);
+    public ResponseEntity<Boolean> changeProfile(@PathVariable int userId , @RequestBody ChangeProfileDto itemId);
+
 }

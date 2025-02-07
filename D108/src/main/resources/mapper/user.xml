@@ -54,4 +54,10 @@
         WHERE user_id = #{userId}
     </update>
 
+    <update id="changeProfile" parameterType="java.util.Map">
+        UPDATE Users
+        SET userProfileItemId = #{itemId}
+        WHERE user_id = #{userId}
+    </update>
+
 </mapper>

@@ -70,5 +70,10 @@ public class UserServiceImpl implements UserService {
         return userDao.findByUserId(userId);
     }
 
+    @Override
+    public int changeProfile(int userId, int itemId) {
+        return userDao.changeProfile(userId, itemId);
+    }
+
 
 }

@@ -30,12 +30,14 @@ public interface UserDao {
      */
     boolean existsByNickname(String nickname);
 
+
     /**
      * ID로 userId를 조회한다.
      * @param id
      * @return userId
      */
     int getUserIdById(String id);
+
 
 
     /**
@@ -45,12 +47,16 @@ public interface UserDao {
      */
     UserDto findByUserId(int userId);
 
+
+
     /**
      * userId로 유저 정보 중 point를 조회한다.
      * @param userId 조회할 아이디 userId
      * @return points
      */
     int findPointByUserId(int userId);
+
+
 
     /**
      *
@@ -59,4 +65,7 @@ public interface UserDao {
      * @return
      */
     int updatePoint(@Param("userId") int userId, @Param("points") int points);
+
+
+    int changeProfile(@Param("userId") int userId, @Param("itemId") int itemId);
 }
