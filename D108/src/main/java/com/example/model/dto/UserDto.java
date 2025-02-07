@@ -13,7 +13,7 @@ public class UserDto {
     private String id;
     private String password;
     private String nickname;
-    private int point;
+    private int points;
     private int gamesWon;
     private int totalGames;
     private int level;
@@ -35,7 +35,7 @@ public class UserDto {
                 ", id='" + id + '\'' +
                 ", password='" + password + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", point=" + point +
+                ", point=" + points +
                 ", gamesWon=" + gamesWon +
                 ", totalGames=" + totalGames +
                 ", level=" + level +
