@@ -1,5 +1,6 @@
 package com.example.model.dao;
 
+import com.example.model.dto.SignUpDto;
 import com.example.model.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -31,12 +32,12 @@ public interface UserDao {
     boolean existsByNickname(String nickname);
 
 
-    /**
-     * ID로 userId를 조회한다.
-     * @param id
-     * @return userId
-     */
-    int getUserIdById(String id);
+//    /**
+//     * ID로 userId를 조회한다.
+//     * @param id
+//     * @return userId
+//     */
+//    int getUserIdById(String id);
 
 
 
@@ -48,6 +49,13 @@ public interface UserDao {
     UserDto findByUserId(int userId);
 
 
+    /**
+     * nickname으로 유저 정보를 조회한다.
+     * @param nickname 조회할 nickname
+     * @return User
+     */
+    UserDto findByNickname(String nickname);
+
 
     /**
      * userId로 유저 정보 중 point를 조회한다.
@@ -55,7 +63,6 @@ public interface UserDao {
      * @return points
      */
     int findPointByUserId(int userId);
-
 
 
     /**
@@ -68,4 +75,12 @@ public interface UserDao {
 
 
     int changeProfile(@Param("userId") int userId, @Param("itemId") int itemId);
+
+
+    /**
+     * 사용자 정보를 업데이트한다.
+     * @param signUpDto 업데이트할 사용자 정보
+     * @return 업데이트된 행의 수
+     */
+    public int updateUser(@Param("userId")int userId, @Param("signUpDto") SignUpDto signUpDto);
 }

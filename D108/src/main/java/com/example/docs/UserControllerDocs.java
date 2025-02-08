@@ -3,6 +3,7 @@ package com.example.docs;
 
 import com.example.model.dto.ChangeProfileDto;
 import com.example.model.dto.LoginResponseDto;
+import com.example.model.dto.SignUpDto;
 import com.example.model.dto.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -71,20 +72,25 @@ public interface UserControllerDocs {
     public ResponseEntity<Boolean> isUsedNickname(@RequestParam String nickname);
 
 
+//    @Operation(
+//            summary = "유저 ID로 조회하면 userId를 반환합니다.",
+//            description =
+//                    "### 요청 예시\n" +
+//                            "```json\n" +
+//                            "{\n" +
+//                            "  \"id\": \"ssafy\"\n" +
+//                            "}\n" +
+//                            "```\n"
+//
+//    )
+//    public ResponseEntity<Integer> getUserId(@PathVariable String id);
 
     @Operation(
-            summary = "유저 ID로 조회하면 userId를 반환합니다.",
+            summary = "닉네임으로 해당 유저 정보를 조회합니다.",
             description =
-                    "### 요청 예시\n" +
-                            "```json\n" +
-                            "{\n" +
-                            "  \"id\": \"ssafy\"\n" +
-                            "}\n" +
-                            "```\n"
-
+                    "주어진 `nickname`에 해당하는 유저의 정보를 조회합니다."
     )
-    public ResponseEntity<Integer> getUserId(@PathVariable String id);
-
+    public ResponseEntity<UserDto> getUserInfoByNickname(@PathVariable String nickname);
 
 
     @Operation(
@@ -93,7 +99,6 @@ public interface UserControllerDocs {
                     "PathVariable에 해당하는 user 정보 조회"
     )
     public ResponseEntity<UserDto> getUserInfo(@PathVariable int userId);
-
 
 
     @Operation(
@@ -107,5 +112,20 @@ public interface UserControllerDocs {
                             "```\n"
     )
     public ResponseEntity<Boolean> changeProfile(@PathVariable int userId , @RequestBody ChangeProfileDto itemId);
+
+    @Operation(
+            summary = "해당 유저의 회원 정보를 수정합니다.",
+            description =
+                    "주어진 `userId`에 해당하는 유저의 회원 정보를 수정합니다.\n"+
+                            "### 요청 예시\n" +
+                            "```json\n" +
+                            "{\n" +
+                            "  \"id\": \"newid\"\n" +
+                            "  \"nickname\": \"newnickname\"\n" +
+                            "  \"password\": \"newpassword\"\n" +
+                            "}\n" +
+                            "```\n"
+    )
+    public ResponseEntity<Boolean> updateUserInfo(@PathVariable int userId, @RequestBody SignUpDto signUpDto);
 
 }

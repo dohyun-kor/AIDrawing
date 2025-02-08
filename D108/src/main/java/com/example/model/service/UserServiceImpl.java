@@ -2,6 +2,7 @@ package com.example.model.service;
 
 import com.example.controller.FriendController;
 import com.example.model.dao.UserDao;
+import com.example.model.dto.SignUpDto;
 import com.example.model.dto.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +61,10 @@ public class UserServiceImpl implements UserService {
         return userDao.existsByNickname(nickname);
     }
 
-    @Override
-    public int getUserIdById(String id) {
-        return userDao.getUserIdById(id);
-    }
+//    @Override
+//    public int getUserIdById(String id) {
+//        return userDao.getUserIdById(id);
+//    }
 
     @Override
     public UserDto findByUserId(int userId) {
@@ -75,5 +76,13 @@ public class UserServiceImpl implements UserService {
         return userDao.changeProfile(userId, itemId);
     }
 
+    @Override
+    public UserDto findByNickname(String nickname) {
+        return userDao.findByNickname(nickname);
+    }
 
+    @Override
+    public int updateUser(int userId, SignUpDto signUpDto) {
+        return userDao.updateUser(userId, signUpDto);
+    }
 }

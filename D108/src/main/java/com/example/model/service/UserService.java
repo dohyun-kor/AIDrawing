@@ -1,5 +1,6 @@
 package com.example.model.service;
 
+import com.example.model.dto.SignUpDto;
 import com.example.model.dto.UserDto;
 
 public interface UserService {
@@ -30,10 +31,10 @@ public interface UserService {
      */
     public boolean isUsedNickname(String nickname);
 
-    /**
-     * ID로 조회하면 userId 반환
-     */
-    public int getUserIdById(String id);
+//    /**
+//     * ID로 조회하면 userId 반환
+//     */
+//    public int getUserIdById(String id);
 
     /**
      * userId로 유저 정보를 조회한다.
@@ -50,5 +51,17 @@ public interface UserService {
      */
     public int changeProfile(int userId, int itemId);
 
+    /**
+     * nickname으로 유저 정보를 조회한다.
+     * @param nickname 조회할 nickname
+     * @return User
+     */
+    UserDto findByNickname(String nickname);
 
+    /**
+     * 회원 정보를 수정한다.
+     * @param signUpDto 업데이트할 사용자 정보
+     * @return 업데이트된 행의 수
+     */
+    public int updateUser(int userId, SignUpDto signUpDto);
 }

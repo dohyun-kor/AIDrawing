@@ -78,6 +78,7 @@ package com.example.controller;
 import com.example.docs.UserControllerDocs;
 import com.example.model.dto.ChangeProfileDto;
 import com.example.model.dto.LoginResponseDto;
+import com.example.model.dto.SignUpDto;
 import com.example.model.dto.UserDto;
 import com.example.model.service.UserService;
 import com.example.util.JWTUtil;  // 변경된 JWTUtil
@@ -171,22 +172,22 @@ public class UserController implements UserControllerDocs {
                     .body(false);  // 오류가 발생했을 경우 false를 반환
         }
     }
-
-    // 유저 ID로 조회하면 userId를 반환
-    @GetMapping("/{id}")
-    public ResponseEntity<Integer> getUserId(@PathVariable String id) {
-        try {
-            int userId = userService.getUserIdById(id);
-            if (userId != -1) { // 유효한 userId가 반환되었을 경우
-                return ResponseEntity.ok(userId);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 유저를 찾을 수 없을 경우
-            }
-        } catch (Exception e) {
-            e.printStackTrace();  // 예외 로그를 출력
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 오류 발생 시 500 오류 반환
-        }
-    }
+//
+//    // 유저 ID로 조회하면 userId를 반환
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Integer> getUserId(@PathVariable String id) {
+//        try {
+//            int userId = userService.getUserIdById(id);
+//            if (userId != -1) { // 유효한 userId가 반환되었을 경우
+//                return ResponseEntity.ok(userId);
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 유저를 찾을 수 없을 경우
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();  // 예외 로그를 출력
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 오류 발생 시 500 오류 반환
+//        }
+//    }
 
     /**
      * userId로 유저 정보를 조회한다.
@@ -217,6 +218,39 @@ public class UserController implements UserControllerDocs {
         if(result > 0){
             return ResponseEntity.ok(true);
         }else{
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * nickname으로 유저 정보를 조회한다.
+     * @param nickname 조회할 nickname
+     * @return 유저 정보
+     */
+    @GetMapping("/{nickname}")
+    public ResponseEntity<UserDto> getUserInfoByNickname(@PathVariable String nickname) {
+        try {
+            UserDto userDto = userService.findByNickname(nickname);
+            return ResponseEntity.ok(userDto);
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 로그를 출력
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 오류 발생 시 500 오류 반환
+        }
+    }
+
+    // 회원 정보를 수정한다.
+    @PatchMapping("{userId}")
+    public ResponseEntity<Boolean> updateUserInfo(@PathVariable int userId, @RequestBody SignUpDto signUpDto) {
+        int result = 0;
+        try {
+            result = userService.updateUser(userId, signUpDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (result == 1) {
+            return ResponseEntity.ok(true);
+        } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

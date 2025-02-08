@@ -28,17 +28,32 @@
         WHERE nickname = #{nickname}
     </select>
 
-    <!-- id로 userId 조회-->
-    <select id="getUserIdById" parameterType="string" resultType="int">
-        SELECT user_id AS userId
-        FROM Users
-        WHERE id = #{id}
-    </select>
+<!--    &lt;!&ndash; id로 userId 조회&ndash;&gt;-->
+<!--    <select id="getUserIdById" parameterType="string" resultType="int">-->
+<!--        SELECT user_id AS userId-->
+<!--        FROM Users-->
+<!--        WHERE id = #{id}-->
+<!--    </select>-->
 
     <!-- 유저 ID로 유저 정보 조회-->
     <select id="findByUserId" parameterType="int" resultType="com.example.model.dto.UserDto">
         SELECT * FROM Users WHERE user_id = #{userId}
     </select>
+
+    <!-- 유저 닉네임으로 유저 정보 조회-->
+    <select id="findByNickname" parameterType="String" resultType="com.example.model.dto.UserDto">
+        SELECT * FROM Users WHERE nickname = #{nickname}
+    </select>
+
+    <!-- 회원 정보 수정-->
+    <update id="updateUser" parameterType="java.util.Map">
+        UPDATE Users
+        SET
+        id = #{signUpDto.id},
+        password = #{signUpDto.password},
+        nickname = #{signUpDto.nickname}
+        WHERE user_id = #{userId}
+    </update>
 
     <!-- userId로 point 조회-->
     <select id="findPointByUserId" parameterType="int" resultType="int">
