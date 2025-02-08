@@ -18,12 +18,7 @@ public interface RankingControllerDocs {
     @Operation(
             summary = "해당 유저의 랭킹을 조회합니다.",
             description =
-                            "아래는 요청 형식 예시입니다:\n\n" +
-                            "```json\n" +
-                            "{\n" +
-                            "    \"userId\": 8\n" +
-                            "}\n" +
-                            "```\n"
+                    "주어진 `userId`에 해당하는 유저의 랭킹을 조회합니다."
     )
     public ResponseEntity<RankingDto> getUserRanking(@PathVariable int userId);
 }
