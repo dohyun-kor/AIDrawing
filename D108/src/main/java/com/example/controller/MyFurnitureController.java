@@ -3,11 +3,13 @@ package com.example.controller;
 import com.example.docs.MyFurnitureControllerDocs;
 import com.example.model.dto.MyFurnitureDto;
 import com.example.model.service.MyFurnitureService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "가구", description = "가구 관련 API")
 @RestController
 @RequestMapping("/myfurniture")
 public class MyFurnitureController implements MyFurnitureControllerDocs {

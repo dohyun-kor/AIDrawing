@@ -3,13 +3,18 @@ package com.example.controller;
 import com.example.docs.RankingControllerDocs;
 import com.example.model.dto.RankingDto;
 import com.example.model.service.RankingService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "랭킹", description = "랭킹 관련 API")
 @RestController
 @RequestMapping("/ranking")
 public class RankingController implements RankingControllerDocs {

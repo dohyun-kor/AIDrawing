@@ -12,9 +12,11 @@ import java.util.List;
 public interface FriendControllerDocs {
 
     @Operation(
+            tags = "친구",
             summary = "해당 유저의 친구 목록을 조회합니다.",
             description =
                     "PathVariable에 해당하는 유저의 친구 목록을 조회합니다."
+
     )
     public ResponseEntity<List<FriendDto>> searchFriend(@PathVariable int userId);
 

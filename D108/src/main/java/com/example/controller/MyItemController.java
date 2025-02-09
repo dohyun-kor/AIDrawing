@@ -4,6 +4,7 @@ import com.example.docs.MyItemControllerDocs;
 import com.example.model.dto.MyItemDto;
 import com.example.model.dto.PurchaseRequestDto;
 import com.example.model.service.MyItemService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * 사용자가 실제로 구매한 아이템(MyItem)에 대한 Controller
  */
+@Tag(name = "사용자가 구매한 아이템", description = "사용자가 구매한 아이템 관련 API")
 @RestController
 @RequestMapping("/my-items")
 public class MyItemController implements MyItemControllerDocs {

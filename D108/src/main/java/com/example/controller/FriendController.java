@@ -4,6 +4,7 @@ import com.example.docs.FriendControllerDocs;
 import com.example.model.dto.FriendDto;
 import com.example.model.dto.FriendRequestDto;
 import com.example.model.service.FriendService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "친구", description = "친구 관련 API")
 @RestController
 @RequestMapping("/friend")
 public class FriendController implements FriendControllerDocs{

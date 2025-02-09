@@ -81,12 +81,14 @@ import com.example.model.dto.LoginResponseDto;
 import com.example.model.dto.SignUpDto;
 import com.example.model.dto.UserDto;
 import com.example.model.service.UserService;
-import com.example.util.JWTUtil;  // 변경된 JWTUtil
+import com.example.util.JWTUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "유저", description = "유저 관련 API")
 @RestController
 @RequestMapping("/user")
 @CrossOrigin("*")
