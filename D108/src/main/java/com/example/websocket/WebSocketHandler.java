@@ -40,7 +40,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         try {
             String payload = message.getPayload();
-            System.out.println("수신된 메시지: " + payload);
+            System.out.println("수신자:" + session + "수신된 메시지: " + payload);
 
             Map<String, String> data = parseJson(payload);
             String roomId = data.get("roomId");
