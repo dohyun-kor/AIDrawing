@@ -28,4 +28,4 @@
     gerrit - jenkins 간 ci pipeline 테스트
 
 25-02-04 16:30
-    최신버전 
+    최신버전 d
