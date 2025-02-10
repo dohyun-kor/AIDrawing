@@ -15,7 +15,7 @@ public interface UserDao {
      */
 
     // 회원가입 : 사용자의 정보를 DB에 삽입
-    int insert(UserDto userDto);
+    int insert(SignUpDto userDto);
 
     /**
      * ID로 사용자 정보를 조회한다.

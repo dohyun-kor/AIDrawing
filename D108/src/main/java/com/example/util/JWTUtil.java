@@ -1,131 +1,151 @@
-//// 파일 위치: src/main/java/com/example/util/JWTUtil.java
-//package com.example.util;
-//
-//import io.jsonwebtoken.Jwts;
-//import io.jsonwebtoken.SignatureAlgorithm;
-//import io.jsonwebtoken.security.Keys;
-//import org.springframework.beans.factory.annotation.Value;
-//
-//import java.security.Key;
-//import java.util.Date;
-//
-///**
-// * JWT 토큰 생성 및 검증 유틸리티 클래스
-// */
-//public class JWTUtil {
-//
-//    // 비밀키 (실제 운영환경에서는 안전하게 관리해야 하며, 환경변수나 별도 설정 파일에 저장)
-//    private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-//
-//    // 토큰 유효기간 (예시: 1일)
-//    private static final long EXPIRATION_TIME = 86400000L; // 24시간 (밀리초 단위)
-//
-//    /**
-//     * JWT 토큰 생성 메서드
-//     * @param subject 토큰에 포함할 주체 정보 (예: 사용자 아이디)
-//     * @return 생성된 JWT 토큰 문자열
-//     */
-//    public static String generateToken(String subject) {
-//        return Jwts.builder()
-//                .setSubject(subject)                         // 토큰 주체 설정
-//                .setIssuedAt(new Date())                       // 토큰 발행 시간
-//                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간
-//                .signWith(key)                                 // 비밀키로 서명
-//                .compact();
-//    }
-//
-//    // 토큰 검증, 파싱 등의 추가 메서드를 필요에 따라 구현할 수 있음
-//}
-//
 
+// 파일 위치: src/main/java/com/example/util/JWTUtil.java
 package com.example.util;
-
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.SecretKey;
 import java.util.Date;
-
 /**
- * JWT 토큰 생성 및 검증 유틸리티 클래스
+ * JWT token 생성 및 검증 유틸리티 클래스
  */
 @Component
 public class JWTUtil {
-
     // 주입받을 SecretKey
-    private final SecretKey secretKey;
-
-    // 토큰 유효기간 (예시: 1일 = 86,400,000ms)
-    private static final long EXPIRATION_TIME = 86400000L;
-
+    private final SecretKey jwtSecretKey;
+    // 주입받을 RefreshKey
+    private final SecretKey jwtRefreshKey;
+    // token 유효기간 (예시: 1일 = 86,400,000ms)
+    private static final long ACCESS_EXPIRATION_TIME = 86400000L;
+    private static final long REFRESH_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000;
     /**
      * 생성자를 통해 SecretKey를 주입받는다.
-     * @param secretKey JWTConfig에서 생성된 SecretKey Bean
+     * @param jwtSecretKey JWTConfig에서 생성된 access token용 SecretKey Bean
+     * @param jwtRefreshKey JWTConfig에서 생성된 refresh token용 SecretKey Bean
      */
-    public JWTUtil(SecretKey secretKey) {
-        this.secretKey = secretKey;
+    @Autowired
+    public JWTUtil(@Qualifier("jwtSecretKey") SecretKey jwtSecretKey,
+                   @Qualifier("jwtRefreshKey") SecretKey jwtRefreshKey) {
+        this.jwtSecretKey = jwtSecretKey;
+        this.jwtRefreshKey = jwtRefreshKey;
     }
-
     /**
-     * JWT 토큰 생성 메서드
-     * @param subject 토큰에 포함할 주체 정보 (예: 사용자 아이디)
-     * @return 생성된 JWT 토큰 문자열
+     * access token 생성 메서드
+     * @param subject token에 포함할 주체 정보 (예: 사용자 아이디)
+     * @return 생성된 JWT token 문자열
      */
-    public String generateToken(String subject) {
+    public String generateAccessToken(String subject) {
         return Jwts.builder()
-                .setSubject(subject)                                 // 토큰 주체 설정
-                .setIssuedAt(new Date())                            // 토큰 발행 시간
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 만료 시간
-                .signWith(secretKey)                                // 주입받은 비밀키로 서명
+                .setSubject(subject)                                 // token 주체 설정
+                .setIssuedAt(new Date())                            // token 발행 시간
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRATION_TIME)) // 만료 시간
+                .signWith(jwtSecretKey)                                // 주입받은 비밀키로 서명
                 .compact();
     }
     /**
-     * JWT 토큰 검증 메서드
-     *  - 토큰 파싱 과정에서 유효하지 않은 경우 예외가 발생한다.
-     *  - 문제 없이 파싱된다면 유효한 토큰으로 판단할 수 있습니다.
+     * refresh token 생성 매서드
+     * @param subject token에 포함할 주체 정보 (예: 사용자 아이디)
+     * @return 생성된 return token 문자열
+     */
+    public String generateRefreshToken(String subject) {
+        return Jwts.builder()
+                .setSubject(subject) // token 주체 설정
+                .setIssuedAt(new Date()) // token 발행 시간
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME)) // 만료 시간 설정
+                .signWith(jwtRefreshKey) // refresh token용 키로 설정
+                .compact();
+    }
+    /**
+     * access token 검증 메서드
+     *  - token 파싱 과정에서 유효하지 않은 경우 예외가 발생한다.
+     *  - 문제 없이 파싱된다면 유효한 token으로 판단할 수 있습니다.
      *
      * @param token 클라이언트로부터 전달받은 JWT
-     * @return 토큰이 유효하면 true, 그렇지 않으면 false
+     * @return token이 유효하면 true, 그렇지 않으면 false
      */
-
-    public boolean validateToken(String token) {
+    public boolean validateAccessToken(String token) {
         try {
             // parseClaimsJws() 과정에서 서명 검증, 유효기간 검사 등을 수행
             Jwts.parserBuilder()
-                    .setSigningKey(secretKey) // 비밀키 설정
+                    .setSigningKey(jwtSecretKey) // 비밀키 설정
                     .build()
-                    .parseClaimsJws(token); // 여기서 예외가 발생하지 않으면 유효한 토큰
+                    .parseClaimsJws(token); // 여기서 예외가 발생하지 않으면 유효한 token
+            return true;
+        } catch (SecurityException | MalformedJwtException e) {
+            // 시그니처 혹은 구조 문제가 있을 때 발생
+            System.out.println("Invalid JWT Signature or Malformed token");
+        } catch (ExpiredJwtException e) {
+            // token 유효기간 만료
+            System.out.println("Expired JWT token");
+        } catch (UnsupportedJwtException e) {
+            // 지원되지 않는 형식의 JWT
+            System.out.println("Unsupported JWT token");
+        } catch (IllegalArgumentException e) {
+            // token이 비어있거나 제대로 구성되지 않았을 때
+            System.out.println("JWT claims string is empty or has wrong format");
+        }
+        return false;
+    }
+    /**
+     * refresh token 검증 메서드
+     *  - token 파싱 과정에서 유효하지 않은 경우 예외가 발생한다.
+     *  - 문제 없이 파싱된다면 유효한 token으로 판단할 수 있습니다.
+     *
+     * @param token 클라이언트로부터 전달받은 JWT
+     * @return token이 유효하면 true, 그렇지 않으면 false
+     */
+    public boolean validateRefreshToken(String token) {
+        try {
+            // parseClaimsJws() 과정에서 서명 검증, 유효기간 검사 등을 수행
+            Jwts.parserBuilder()
+                    .setSigningKey(jwtRefreshKey) // 비밀키 설정
+                    .build()
+                    .parseClaimsJws(token); // 여기서 예외가 발생하지 않으면 유효한 token
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             // 시그니처 혹은 구조 문제가 있을 때 발생
             System.out.println("Invalid JWT Signature or Malformed token");
         } catch (ExpiredJwtException e){
-            // 토큰 유효기간 만료
+            // token 유효기간 만료
             System.out.println("Expired JWT token");
         } catch (UnsupportedJwtException e){
             // 지원되지 않는 형식의 JWT
             System.out.println("Unsupported JWT token");
         } catch (IllegalArgumentException e){
-            // 토큰이 비어있거나 제대로 구성되지 않았을 때
+            // token이 비어있거나 제대로 구성되지 않았을 때
             System.out.println("JWT claims string is empty or has wrong format");
         }
         return false;
-
     }
     /**
-     * 토큰에서 Subject(사용자 아이디 등) 을 추출하는 메서드
-     * 검증에 성공한 토큰이라는 전제 하에 사용할 수 있습니다.
+     * access token에서 Subject(사용자 아이디 등)를 추출하는 메서드
+     * 검증에 성공한 token이라는 전제 하에 사용할 수 있습니다.
      *
      * @param token 클라이언트로부터 받은 JWT
-     * @return 토큰 내부의 subject (사용자 식별자) 반환
+     * @return token 내부의 subject (사용자 식별자) 반환
      */
-    public String getSubject(String token) {
+    public String getSubjectFromAccessToken(String token) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+                .setSigningKey(jwtSecretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
+    /**
+     * refresh token에서 Subject를 추출하는 메서드
+     *
+     * @param token 클라이언트로부터 받은 JMT
+     * @return token 내부의 subject 반환
+     */
+    public String getSubjectFromRefreshToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(jwtRefreshKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
     }
 }
+

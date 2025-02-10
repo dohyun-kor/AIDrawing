@@ -76,10 +76,7 @@
 package com.example.controller;
 
 import com.example.docs.UserControllerDocs;
-import com.example.model.dto.ChangeProfileDto;
-import com.example.model.dto.LoginResponseDto;
-import com.example.model.dto.SignUpDto;
-import com.example.model.dto.UserDto;
+import com.example.model.dto.*;
 import com.example.model.service.UserService;
 import com.example.util.JWTUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -109,11 +106,11 @@ public class UserController implements UserControllerDocs {
      * 회원가입 시에는 닉네임, 아이디, 패스워드만 전달됩니다.
      */
     @PostMapping("/signup")
-    public ResponseEntity<Boolean> signup(@RequestBody UserDto userDto) {
+    public ResponseEntity<Boolean> signup(@RequestBody SignUpDto signUpDto) {
         int result = 0;
         try {
             // user 객체에는 nickname, id, password만 포함되어 있다고 가정합니다.
-            result = userService.join(userDto);
+            result = userService.join(signUpDto);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -130,19 +127,22 @@ public class UserController implements UserControllerDocs {
      * 로그인 시에는 아이디와 패스워드만 전달됩니다.
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody UserDto userDto) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
         int result = -1;
         try {
             // user 객체에는 id와 password만 포함되어 있다고 가정합니다.
-            result = userService.authenticate(userDto);
+            result = userService.authenticate(loginRequestDto);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if(result != -1) {
             // user.getId()를 토큰 subject로 사용하여 토큰 생성(이제는 jwtUtil의 인스턴스 메서드)
-            String token = jwtUtil.generateToken(userDto.getId());
-            LoginResponseDto response = new LoginResponseDto(result, token);
+            String accessToken = jwtUtil.generateAccessToken(loginRequestDto.getId());
+//            String refreshToken = jwtUtil.generateRefreshToken(loginRequestDto.getId());
+//            LoginResponseDto response = new LoginResponseDto(result, accessToken, refreshToken);
+            LoginResponseDto response = new LoginResponseDto(result, accessToken);
+
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

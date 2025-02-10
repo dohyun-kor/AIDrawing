@@ -20,13 +20,21 @@ public class JWTConfig {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
+    @Value("${jwt.refresh}")
+    private String jwtRefresh;
+
     /**
      * SecretKey Bean 생성
      * @return HMAC-SHA 알고리즘에 사용할 SecretKey
      */
     @Bean
     public SecretKey jwtSecretKey() {
-        // jwtSecret 문자열을 바이트 배열로 변환하여 SecretKey 생성
+        // jwtSecret 문자열을 바이트 배열로 변환하여 jwtSecretKey 생성
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Bean
+    public SecretKey jwtRefreshKey() {
+        return Keys.hmacShaKeyFor(jwtRefresh.getBytes(StandardCharsets.UTF_8));
     }
 }
