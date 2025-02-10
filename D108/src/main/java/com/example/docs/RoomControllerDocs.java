@@ -20,7 +20,6 @@ public interface RoomControllerDocs {
                             "    \"roomName\": \"피카소의 재림\",\n" +
                             "    \"status\": \"WAIT\",\n" +
                             "    \"maxPlayers\": 4,\n" +
-                            "    \"nowPlayers\": 1,\n" +
                             "}\n" +
                             "```\n"
     )
@@ -36,7 +35,6 @@ public interface RoomControllerDocs {
                             "    \"roomName\": \"피카소의 재림2\",\n" +
                             "    \"status\": \"PLAY\",\n" +
                             "    \"maxPlayers\": 6,\n" +
-                            "    \"nowPlayers\": 3,\n" +
                             "}\n" +
                             "```\n"
     )

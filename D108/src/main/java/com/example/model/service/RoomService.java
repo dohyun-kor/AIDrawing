@@ -15,4 +15,13 @@ public interface RoomService {
 
     /** 전체 방 정보를 조회합니다.**/
     public List<RoomListDto> searchRoom();
+
+    /** 참가자 증가**/
+    public void incrementUserCount(int roomId);
+
+    /** 참가자 감소**/
+    public void decrementUserCount(int roomId);
+
+    /** 참가자 조회**/
+    public int getUserCount(int roomId);
 }

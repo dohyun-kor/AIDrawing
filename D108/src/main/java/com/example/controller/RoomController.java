@@ -61,6 +61,9 @@ public class RoomController implements RoomControllerDocs {
     public ResponseEntity<List<RoomListDto>> searchRoom() {
         try {
             List<RoomListDto> roomList = roomService.searchRoom();
+            for(RoomListDto roomlist : roomList){
+                roomlist.setNowPlayers(roomService.getUserCount(roomlist.getRoomId()));
+            }
             return ResponseEntity.ok(roomList);
         } catch (Exception e) {
             e.printStackTrace();

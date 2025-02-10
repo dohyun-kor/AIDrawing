@@ -479,7 +479,6 @@ CREATE TABLE `Room` (
                         `room_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '방 제목',
                         `status` enum('WAIT','PLAY') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'WAIT' COMMENT '방 상태 (예: 대기중, 시작됨 등)',
                         `max_players` int DEFAULT '4' COMMENT '최대 플레이어 수',
-                        `now_players` int DEFAULT '1' COMMENT '현재 참가한 플레이어 수',
                         `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '방 생성 시간'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
