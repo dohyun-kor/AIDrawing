@@ -1,5 +1,5 @@
-
 package com.example.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,65 +14,43 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
-    // JwtAuthenticationFilter 주입
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
-    //    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        return http
-//                .csrf(csrf -> csrf
-//                        .ignoringRequestMatchers("/api/**","/api/swagger","/api/swagger-ui/**", "/v3/api-docs/**")
-//                )
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().authenticated()
-//                )
-//                .build();
-//    }
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        return http
-//                .csrf(AbstractHttpConfigurer::disable)  // CSRF 전체 비활성화
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll() // 일단 테스트용으로 전체 허용
-//                )
-//                .build();
-//    }
-    //    25-02-09 검증 기본 로직.. swagger에서 Auth 인증 추가 //  회원가입, 로그인은 인증하지 않아도 됨
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // swagger-ui 관련 경로
+        // ✅ Swagger, WebSocket 엔드포인트를 허용할 경로 목록
         String[] swaggerWhitelist = {
                 "/swagger-ui/**",
                 "/v3/api-docs/**",
                 "/user/login",   // 로그인 엔드포인트
-                "/user/signup" ,   // 회원가입 엔드포인트
+                "/user/signup",   // 회원가입 엔드포인트
                 "/user/nickname/isUsed", // 닉네임 중복 조회
                 "/user/isUsed", // 아이디 중복 조회
                 "/user/*/info" // 해당 유저 정보 조회
-
         };
+
         return http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable
-                        // Swagger로 들어오는 요청은 CSRF 적용 제외
-//                        .ignoringRequestMatchers(swaggerWhitelist)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/ws/**") // ✅ WebSocket은 CSRF 보호 제외
+                        .disable()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // Swagger 관련 경로는 모두 허용
-                        .requestMatchers(swaggerWhitelist).permitAll()
-                        // 그 외 모든 요청은 인증 필요
-                        .anyRequest().authenticated()
+                        .requestMatchers(swaggerWhitelist).permitAll() // ✅ Swagger 관련 경로 허용
+                        .requestMatchers("/ws/**").permitAll() // ✅ WebSocket 엔드포인트 허용
+                        .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
-                // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 추가
+                // ✅ JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 추가
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                // formLogin 설정 (테스트를 위해 남겨둠)
-                .formLogin(Customizer.withDefaults())
+                .formLogin(Customizer.withDefaults()) // 테스트용 formLogin 활성화
                 .build();
     }
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
