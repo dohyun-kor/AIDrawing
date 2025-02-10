@@ -27,7 +27,6 @@ public class OpenApiConfig {
                         new Server().url("http://localhost:9987/api").description("Local Server")
                                 .description("Production server (HTTPS)")))
                 // 보안 스키마 설정 추가
-                .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
                 .components(new Components()
                         .addSecuritySchemes(SECURITY_SCHEME_NAME, new SecurityScheme()
                                 .name(SECURITY_SCHEME_NAME)

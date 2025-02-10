@@ -31,7 +31,7 @@ build/
 ### VS Code ###
 .vscode/
 
-.env
+../.env
 
 # application.properties 파일 무시
 
