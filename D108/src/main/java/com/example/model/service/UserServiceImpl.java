@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int join(SignUpDto signUpRequestDto) {
+    public int join(SignUpDto signUpDto) {
         return userDao.insert(signUpDto);
     }
     /**

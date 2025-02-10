@@ -2,7 +2,6 @@ package com.example.model.service;
 
 import com.example.model.dto.LoginRequestDto;
 import com.example.model.dto.SignUpDto;
-import com.example.model.dto.SingUpRequestDto;
 import com.example.model.dto.UserDto;
 
 public interface UserService {
@@ -10,9 +9,9 @@ public interface UserService {
     /**
      * 사용자 정보를 DB에 저장한다.
      *
-     * @param singupRequestDto
+     * @param signUpDto
      */
-    public int join(SingUpRequestDto singupRequestDto);
+    public int join(SignUpDto signUpDto);
 
     // 로그인 인증 메서드
     public int authenticate(LoginRequestDto loginRequestDto);
