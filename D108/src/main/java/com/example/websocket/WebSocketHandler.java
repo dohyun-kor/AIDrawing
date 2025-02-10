@@ -81,8 +81,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private void removeSessionFromRoom(String roomId, WebSocketSession session) {
         if (roomSessions.containsKey(roomId)) {
-            roomSessions.get(roomId).remove(session);
-            System.out.println("세션 " + session.getId() + " 가 방 " + roomId + " 에서 제거됨.");
+            if(roomSessions.get(roomId).contains(session)){
+                roomSessions.get(roomId).remove(session);
+                System.out.println("세션 " + session.getId() + " 가 방 " + roomId + " 에서 제거됨.");
+            }
         }
     }
 
