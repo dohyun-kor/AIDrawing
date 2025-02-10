@@ -51,6 +51,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 addSessionToRoom(roomId, session);
                 sendExistingDrawings(session, roomId);
                 broadcastMessageToRoom(roomId, payload, session);
+            } else if("leave".equals(event)){
+                removeSessionFromRoom(roomId, session);
             } else if ("draw".equals(event)) {
                 // 해당 방의 그림 데이터 저장
                 roomDrawings.putIfAbsent(roomId, new ArrayList<>());

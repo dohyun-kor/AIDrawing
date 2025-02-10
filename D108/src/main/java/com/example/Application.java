@@ -1,4 +1,4 @@
-package com.example.websocket;
+package com.example;
 
 import com.example.model.dao.UserDao;
 import org.mybatis.spring.annotation.MapperScan;
