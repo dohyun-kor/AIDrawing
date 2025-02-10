@@ -1,5 +1,6 @@
 package com.example.websocket;
 
+import com.example.model.service.RoomService;
 import com.example.model.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     UserService uService;
+
+    @Autowired
+    RoomService rService;
 
     // 방 별로 그림 데이터 저장 (방 ID -> 그림 데이터 리스트)
     private final Map<String, List<String>> roomDrawings = new ConcurrentHashMap<>();
@@ -51,8 +55,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 addSessionToRoom(roomId, session);
                 sendExistingDrawings(session, roomId);
                 broadcastMessageToRoom(roomId, payload, session);
+                rService.incrementUserCount(Integer.parseInt(roomId));
             } else if("leave".equals(event)){
                 removeSessionFromRoom(roomId, session);
+                rService.decrementUserCount(Integer.parseInt(roomId));
             } else if ("draw".equals(event)) {
                 // 해당 방의 그림 데이터 저장
                 roomDrawings.putIfAbsent(roomId, new ArrayList<>());

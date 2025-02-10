@@ -12,19 +12,17 @@ public class RoomDto {
     private String roomName;
     private RoomStatus status;
     private int maxPlayers;
-    private int nowPlayers;
 
     private enum RoomStatus{
         WAIT,
         PLAY;
     }
 
-    public RoomDto(int hostId, String roomName, RoomStatus status, int maxPlayers, int nowPlayers) {
+    public RoomDto(int hostId, String roomName, RoomStatus status, int maxPlayers) {
         this.hostId = hostId;
         this.roomName = roomName;
         this.status = status;
         this.maxPlayers = maxPlayers;
-        this.nowPlayers = nowPlayers;
     }
 
     @Override
@@ -34,7 +32,6 @@ public class RoomDto {
                 ", roomName='" + roomName + '\'' +
                 ", status=" + status +
                 ", maxPlayers=" + maxPlayers +
-                ", nowPlayers=" + nowPlayers +
                 '}';
     }
 }
