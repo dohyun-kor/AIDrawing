@@ -58,7 +58,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 rService.incrementUserCount(Integer.parseInt(roomId));
             } else if ("leave".equals(event)) {
                 removeSessionFromRoom(roomId, session);
-                rService.decrementUserCount(Integer.parseInt(roomId));
             } else if ("draw".equals(event)) {
                 // 그림 데이터 추가 (CopyOnWriteArrayList 사용)
                 roomDrawings.putIfAbsent(roomId, new CopyOnWriteArrayList<>());
@@ -86,6 +85,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private void removeSessionFromRoom(String roomId, WebSocketSession session) {
         if (roomSessions.containsKey(roomId)) {
             roomSessions.get(roomId).remove(session);
+            rService.decrementUserCount(Integer.parseInt(roomId));
             System.out.println("세션 " + session.getId() + " 가 방 " + roomId + " 에서 제거됨.");
         }
     }
