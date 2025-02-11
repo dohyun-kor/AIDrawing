@@ -21,7 +21,7 @@ public class RoomController implements RoomControllerDocs {
     RoomService roomService;
 
     @PostMapping("")
-    public ResponseEntity<Boolean> createRoom(RoomDto roomDto){
+    public ResponseEntity<Integer> createRoom(RoomDto roomDto){
         int result = 0;
 
         try{
@@ -30,8 +30,8 @@ public class RoomController implements RoomControllerDocs {
             e.printStackTrace();
         }
 
-        if(result == 1){
-            return ResponseEntity.ok(true);
+        if(result != 0){
+            return ResponseEntity.ok(roomDto.getRoomId());
         }else{
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

@@ -11,11 +11,12 @@ import java.util.List;
 
 public interface RoomControllerDocs {
     @Operation(
-            summary = "방을 생성 합니다.",
+            summary = "방을 생성 합니다. 반환 값은 생성된 방의 roomId입니다.",
             description =
                     "아래는 요청 형식 예시입니다..\n\n" +
                             "```json\n" +
                             "{\n" +
+                            "    \"roomId\": 0, <- 이거는 0값으로 그냥 던져주셔도 됩니다.\n" +
                             "    \"hostId\": 1,\n" +
                             "    \"roomName\": \"피카소의 재림\",\n" +
                             "    \"status\": \"WAIT\",\n" +
@@ -23,7 +24,7 @@ public interface RoomControllerDocs {
                             "}\n" +
                             "```\n"
     )
-    public ResponseEntity<Boolean> createRoom(@RequestBody RoomDto roomDto);
+    public ResponseEntity<Integer> createRoom(@RequestBody RoomDto roomDto);
 
     @Operation(
             summary = "roomId에 해당하는 방의 정보를 변경 합니다.",

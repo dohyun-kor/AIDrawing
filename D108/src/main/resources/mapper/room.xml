@@ -6,7 +6,7 @@
 <mapper namespace="com.example.model.dao.RoomDao">
 
     <!-- 방 생성 -->
-    <insert id="createRoom" parameterType="com.example.model.dto.RoomDto">
+    <insert id="createRoom" parameterType="com.example.model.dto.RoomDto" useGeneratedKeys="true" keyProperty="roomId">
         INSERT INTO Room
                 (host_id,
                 room_name,
