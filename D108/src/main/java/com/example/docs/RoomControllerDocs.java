@@ -56,4 +56,9 @@ public interface RoomControllerDocs {
                     "모든 방의 정보를 확인할 수 있습니다."
     )
     public ResponseEntity<List<RoomListDto>> searchRoom();
+
+    @Operation(
+            summary = "roomId에 대한 게임 방 정보 조회합니다"
+    )
+    public ResponseEntity<RoomDto> selectRoom(@PathVariable int roomId);
 }

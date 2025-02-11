@@ -10,10 +10,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -26,17 +23,20 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Autowired
     RoomService rService;
 
-    // 방 별로 그림 데이터 저장 (방 ID -> 그림 데이터 리스트)
+    // 세션 ID ↔ userId 매핑
+    private final Map<String, String> sessionUserMap = new ConcurrentHashMap<>();
+
+    // 방 별 그림 데이터 저장
     private final Map<String, List<String>> roomDrawings = new ConcurrentHashMap<>();
 
-    // 전체 클라이언트 세션 (세션 ID -> 세션 객체) - 선택사항 (전체 관리용)
+    // 전체 클라이언트 세션 (세션 ID -> 세션 객체)
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
     // 방 별 세션 관리 (방 ID -> 해당 방에 접속한 세션 Set)
     private final Map<String, Set<WebSocketSession>> roomSessions = new ConcurrentHashMap<>();
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(WebSocketSession session) {
         sessions.put(session.getId(), session);
         System.out.println("사용자 연결됨: " + session.getId());
     }
@@ -45,28 +45,36 @@ public class WebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         try {
             String payload = message.getPayload();
-            System.out.println("수신자:" + session + "\n수신된 메시지: " + payload);
+            System.out.println("수신자: " + session + "\n수신된 메시지: " + payload);
 
             Map<String, String> data = parseJson(payload);
             String roomId = data.get("roomId");
             String event = data.get("event");
 
             if ("join".equals(event)) {
+                String userId = data.get("userId");
+                sessionUserMap.put(session.getId(), userId); // 세션 ID와 userId 매핑
+
                 addSessionToRoom(roomId, session);
                 sendExistingDrawings(session, roomId);
+                sendExistingParticipants(session, roomId);
+                rService.incrementUserCount(Integer.parseInt(roomId), userId);
                 broadcastMessageToRoom(roomId, payload, session);
-                rService.incrementUserCount(Integer.parseInt(roomId));
             } else if ("leave".equals(event)) {
-                removeSessionFromRoom(roomId, session);
+                handleUserLeave(session, roomId);
             } else if ("draw".equals(event)) {
-                // 그림 데이터 추가 (CopyOnWriteArrayList 사용)
                 roomDrawings.putIfAbsent(roomId, new CopyOnWriteArrayList<>());
                 roomDrawings.get(roomId).add(payload);
                 broadcastMessageToRoom(roomId, payload, session);
-            } else if ("clearDrawing".equals(event)) {
+            } else if ("cleardrawing".equals(event)) {
                 roomDrawings.remove(roomId);
                 broadcastMessageToRoom(roomId, payload, null);
             } else if ("chat".equals(event)) {
+                broadcastMessageToRoom(roomId, payload, session);
+            } else if("start".equals(event)){
+                gamestart(roomId);
+                broadcastMessageToRoom(roomId, payload, session);
+            } else if("colorchange".equals(event) || "changeroominfo".equals(event)){
                 broadcastMessageToRoom(roomId, payload, session);
             }
         } catch (Exception e) {
@@ -75,6 +83,38 @@ public class WebSocketHandler extends TextWebSocketHandler {
             session.close(CloseStatus.SERVER_ERROR);
         }
     }
+    private void gamestart(String roomId){
+        rService.startGame(Integer.parseInt(roomId));
+    }
+
+    private void handleUserLeave(WebSocketSession session, String roomId) throws IOException {
+        String userId = sessionUserMap.get(session.getId());
+        if (userId != null) {
+            String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
+
+            // 사용자가 방장이라면 방장 변경
+            if (userId.equals(currentHostId)) {
+                List<String> participants = rService.getParticipants(Integer.parseInt(roomId));
+                participants.remove(userId); // 떠나는 유저 제외
+
+                if (!participants.isEmpty()) {
+                    String newHostId = participants.get(0); // 첫 번째 유저를 새 방장으로 선택
+                    rService.setRoomHost(Integer.parseInt(roomId), newHostId); // Redis에서 변경
+
+                    // 방장 변경 메시지 broadcast
+                    String hostChangeMessage = "{\"event\":\"hostchange\", \"userId\":\"" + newHostId + "\"}";
+                    broadcastMessageToRoom(roomId, hostChangeMessage, null);
+                }
+            }
+
+            // 기존 로직 유지
+            rService.decrementUserCount(Integer.parseInt(roomId), userId);
+            sessionUserMap.remove(session.getId());
+        }
+        removeSessionFromRoom(roomId, session);
+        broadcastMessageToRoom(roomId, "{\"event\":\"leave\", \"userId\":\"" + userId + "\"}", null);
+    }
+
 
     private void addSessionToRoom(String roomId, WebSocketSession session) {
         roomSessions.putIfAbsent(roomId, ConcurrentHashMap.newKeySet());
@@ -85,7 +125,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private void removeSessionFromRoom(String roomId, WebSocketSession session) {
         if (roomSessions.containsKey(roomId)) {
             roomSessions.get(roomId).remove(session);
-            rService.decrementUserCount(Integer.parseInt(roomId));
             System.out.println("세션 " + session.getId() + " 가 방 " + roomId + " 에서 제거됨.");
         }
     }
@@ -124,26 +163,82 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    private void sendExistingParticipants(WebSocketSession session, String roomId) throws IOException {
+        List<String> existingParticipants = rService.getParticipants(Integer.parseInt(roomId));
+        String hostId = rService.getRoomHost(Integer.parseInt(roomId));
+
+        // JSON 형태의 메시지 생성
+        String message = createExistingUserMessage(existingParticipants, hostId);
+
+        // 클라이언트에게 전송
+        sendMessageSafely(session, message);
+    }
+
+    // 기존 참가자 정보와 hostId를 JSON 문자열로 변환
+    private String createExistingUserMessage(List<String> participants, String hostId) {
+        String usersJson = participants.toString(); // 리스트를 JSON 배열 형식으로 변환
+        return "{\"event\": \"existinguser\", \"users\": " + usersJson + ", \"hostId\": \"" + hostId + "\"}";
+    }
+
+
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        sessions.remove(session.getId());
-        for (String roomId : roomSessions.keySet()) {
-            removeSessionFromRoom(roomId, session);
-        }
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws IOException {
+        handleUserDisconnect(session);
         System.out.println("사용자 연결 종료: " + session.getId() + " 상태: " + status);
     }
 
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws IOException {
         System.err.println("WebSocket 오류 발생: " + exception.toString());
+        handleUserDisconnect(session);
         if (session.isOpen()) {
-            session.close(CloseStatus.SERVER_ERROR);
-        }
-        sessions.remove(session.getId());
-        for (String roomId : roomSessions.keySet()) {
-            removeSessionFromRoom(roomId, session);
+            try {
+                session.close(CloseStatus.SERVER_ERROR);
+            } catch (IOException e) {
+                System.err.println("소켓 종료 오류: " + e.getMessage());
+            }
         }
     }
+
+    private void handleUserDisconnect(WebSocketSession session) throws IOException {
+        String userId = sessionUserMap.get(session.getId());
+        if (userId != null) {
+            for (String roomId : roomSessions.keySet()) {
+                if (roomSessions.get(roomId).contains(session)) {
+                    // 현재 방장의 ID 확인
+                    String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
+
+                    // 유저 카운트 감소 및 방에서 제거
+                    rService.decrementUserCount(Integer.parseInt(roomId), userId);
+                    removeSessionFromRoom(roomId, session);
+
+                    // 모든 사용자에게 leave 이벤트 알림
+                    broadcastMessageToRoom(roomId, "{\"event\":\"leave\", \"userId\":\"" + userId + "\"}", null);
+
+                    // 현재 떠나는 유저가 방장인지 확인
+                    if (userId.equals(currentHostId)) {
+                        // 새로운 방장 선택
+                        Set<WebSocketSession> remainingSessions = roomSessions.get(roomId);
+                        if (remainingSessions != null && !remainingSessions.isEmpty()) {
+                            // 남아있는 유저 중 무작위로 새로운 방장 선택
+                            WebSocketSession newHostSession = remainingSessions.iterator().next();
+                            String newHostId = sessionUserMap.get(newHostSession.getId());
+
+                            // Redis에서 새로운 방장 정보 업데이트
+                            rService.setRoomHost(Integer.parseInt(roomId), newHostId);
+
+                            // 새로운 방장 정보를 모든 클라이언트에게 broadcast
+                            String hostChangeMessage = "{\"event\":\"hostchange\", \"userId\":\"" + newHostId + "\"}";
+                            broadcastMessageToRoom(roomId, hostChangeMessage, null);
+                        }
+                    }
+                }
+            }
+            sessionUserMap.remove(session.getId());
+        }
+        sessions.remove(session.getId());
+    }
+
 
     private Map<String, String> parseJson(String json) {
         Map<String, String> map = new HashMap<>();

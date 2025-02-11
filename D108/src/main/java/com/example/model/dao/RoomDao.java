@@ -19,4 +19,6 @@ public interface RoomDao {
     public List<RoomListDto> searchRoom();
 
     public void deleteRoom(int roomId);
+
+    public RoomDto selectRoom(int roodId);
 }
