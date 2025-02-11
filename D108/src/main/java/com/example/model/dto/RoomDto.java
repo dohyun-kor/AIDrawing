@@ -15,10 +15,24 @@ public class RoomDto {
     private String roomName;
     private RoomStatus status;
     private int maxPlayers;
+    private int rounds;
+    private MODE mode;
+    private LEVEL level;
+    private int roundTime;
 
     private enum RoomStatus{
         WAIT,
         PLAY;
+    }
+    private enum MODE{
+        USER,
+        AI;
+    }
+
+    private enum LEVEL{
+        EASY,
+        NORMAL,
+        HARD;
     }
 
     public RoomDto(int hostId, String roomName, RoomStatus status, int maxPlayers) {

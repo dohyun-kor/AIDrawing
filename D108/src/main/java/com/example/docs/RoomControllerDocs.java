@@ -21,6 +21,10 @@ public interface RoomControllerDocs {
                             "    \"roomName\": \"피카소의 재림\",\n" +
                             "    \"status\": \"WAIT\",\n" +
                             "    \"maxPlayers\": 4,\n" +
+                            "    \"rounds\": 1,\n" +
+                            "    \"mode\": USER or AI,\n" +
+                            "    \"level\": EASY or NORMAL or HARD,\n" +
+                            "    \"roundTime\": 60,\n" +
                             "}\n" +
                             "```\n"
     )
@@ -32,10 +36,15 @@ public interface RoomControllerDocs {
                     "아래는 요청 형식 예시입니다..\n\n" +
                             "```json\n" +
                             "{\n" +
+                            "    \"roomId\": 0, <- 이거는 0값으로 그냥 던져주셔도 됩니다.\n" +
                             "    \"hostId\": 2,\n" +
                             "    \"roomName\": \"피카소의 재림2\",\n" +
                             "    \"status\": \"PLAY\",\n" +
                             "    \"maxPlayers\": 6,\n" +
+                            "    \"rounds\": 1,\n" +
+                            "    \"mode\": USER or AI,\n" +
+                            "    \"level\": EASY or NORMAL or HARD,\n" +
+                            "    \"roundTime\": 60,\n" +
                             "}\n" +
                             "```\n"
     )

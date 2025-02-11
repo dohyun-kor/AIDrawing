@@ -1,9 +1,9 @@
 package com.example.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,6 +12,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class RoomListDto implements Serializable {
 
     @Serial
@@ -24,19 +25,24 @@ public class RoomListDto implements Serializable {
     private int maxPlayers;
     private int nowPlayers;
     private String createdAt;
+    private int rounds;
+    private MODE mode;
+    private LEVEL level;
+    private int roundTime;
 
-    public enum RoomStatus{
+    private enum RoomStatus{
         WAIT,
         PLAY;
     }
-
-    public RoomListDto(int roomId, int hostId, String roomName, RoomStatus status, int maxPlayers, int nowPlayers, String createdAt) {
-        this.roomId = roomId;
-        this.hostId = hostId;
-        this.roomName = roomName;
-        this.status = status;
-        this.maxPlayers = maxPlayers;
-        this.nowPlayers = nowPlayers;
-        this.createdAt = createdAt;
+    private enum MODE{
+        USER,
+        AI;
     }
+
+    private enum LEVEL{
+        EASY,
+        NORMAL,
+        HARD;
+    }
+
 }
