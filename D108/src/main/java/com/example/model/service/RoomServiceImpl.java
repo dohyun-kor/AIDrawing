@@ -27,6 +27,14 @@ public class RoomServiceImpl implements RoomService {
     public int createRoom(RoomDto roomDto) {
         // 방 생성은 DB에만 저장
         roomDao.createRoom(roomDto);
+        String key = ROOM_PREFIX + roomDto.getRoomId();
+        // 참가자 리스트 초기화 (방장만 있는 상태로 시작)
+        CopyOnWriteArrayList<String> participants = new CopyOnWriteArrayList<>();
+        participants.add(String.valueOf(roomDto.getHostId()));
+        redisTemplate.opsForHash().put(key, "participants", participants);
+
+        // 게임 인원 수 초기화
+        redisTemplate.opsForHash().put(key, "numbers", 0);
         return roomDto.getRoomId();
     }
 
@@ -41,13 +49,6 @@ public class RoomServiceImpl implements RoomService {
         redisTemplate.opsForHash().put(key, "round", room.getRounds());
         redisTemplate.opsForHash().put(key, "remaintime", room.getRoundTime());
 
-        // 참가자 리스트 초기화 (방장만 있는 상태로 시작)
-        CopyOnWriteArrayList<String> participants = new CopyOnWriteArrayList<>();
-        participants.add(String.valueOf(room.getHostId()));
-        redisTemplate.opsForHash().put(key, "participants", participants);
-
-        // 게임 인원 수 초기화
-        redisTemplate.opsForHash().put(key, "numbers", 0);
     }
 
     @Override
