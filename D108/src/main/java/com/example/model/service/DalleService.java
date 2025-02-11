@@ -25,12 +25,10 @@ public class DalleService {
      * @param size 이미지 크기 (e.g., 1024x1024)
      * @return DalleResponseDto 응답 객체
      */
-    public DalleResponseDto generateImage(String subject, String size) {
-        DalleRequestDto dalleRequestDto = new DalleRequestDto(subject, size);
+    public DalleResponseDto generateImage(String subject, String size, int count) {
+        DalleRequestDto dalleRequestDto = new DalleRequestDto(subject, size, count);
 
         String url = "https://api.openai.com/v1/images/generations";
-
-        System.out.println("API Key: " + apiKey); // 디버깅용
 
         // 헤더 설정
         HttpHeaders headers = new HttpHeaders();
@@ -50,4 +48,6 @@ public class DalleService {
             throw new RuntimeException("DALL·E API 호출 실패: " + response.getStatusCode());
         }
     }
+
+
 }

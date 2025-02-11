@@ -12,10 +12,27 @@ public interface DalleControllerDocs {
                     "아래는 요청 형식 예시입니다..\n\n" +
                             "```json\n" +
                             "{\n" +
-                            "    \"subject\": \"apple\",\n" +
+                            "    \"difficulty\": \"easy\",\n" +
+                            "    \"count\": \"2\",\n" +
                             "    \"size\": 1024x1024,\n" +
+                            "}\n" +
+                            "```\n" +
+                            "아래는 응답 형식 예시입니다..\n\n" +
+                            "```json\n" +
+                            "{\n" +
+                            "    \"data\": [\n" +
+                            "        {\n" +
+                            "            \"url\": \"https://example.com/image1.png\"\n" +
+                            "        },\n" +
+                            "        {\n" +
+                            "            \"url\": \"https://example.com/image2.png\"\n" +
+                            "        }\n" +
+                            "    ]\n" +
                             "}\n" +
                             "```\n"
     )
-    public ResponseEntity<DalleResponseDto> generateImage(@RequestParam String subject, @RequestParam(required = false) String size);
+    public ResponseEntity<DalleResponseDto> generateImage(
+            @RequestParam String difficulty,
+            @RequestParam int count,
+            @RequestParam(required = false) String size);
 }

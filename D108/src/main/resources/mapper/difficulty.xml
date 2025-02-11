@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.model.dao.DifficultyDao">
+    <!-- Easy 난이도 토픽 -->
+    <select id="getEasyTopics" resultType="com.example.model.dto.DifficultyDto">
+        SELECT easy_topic_id, topic, topic_en
+        FROM GameTopicEasy
+        ORDER BY RAND()
+        LIMIT #{count}
+    </select>
+
+    <!-- Normal 난이도 토픽 -->
+    <select id="getNormalTopics" resultType="com.example.model.dto.DifficultyDto">
+        SELECT normal_topic_id, topic, topic_en
+        FROM GameTopicNormal
+        ORDER BY RAND()
+        LIMIT #{count}
+    </select>
+
+    <!-- Hard 난이도 토픽 -->
+    <select id="getHardTopics" resultType="com.example.model.dto.DifficultyDto">
+        SELECT hard_topic_id, topic, topic_en
+        FROM GameTopicHard
+        ORDER BY RAND()
+        LIMIT #{count}
+    </select>
+
+</mapper>
