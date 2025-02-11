@@ -70,4 +70,15 @@ public class RoomController implements RoomControllerDocs {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/{roomId}")
+    public ResponseEntity<RoomDto> selectRoom(@PathVariable int roomId){
+        try{
+            RoomDto room = roomService.selectRoom(roomId);
+            return ResponseEntity.ok(room);
+        }catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

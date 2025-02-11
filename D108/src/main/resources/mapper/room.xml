@@ -50,6 +50,11 @@
         WHERE room_id = #{roomId}
     </delete>
 
+    <select id="selectRoom" parameterType="int" resultType="com.example.model.dto.RoomDto">
+        SELECT *
+        FROM Room
+        WHERE room_id = #{roomId}
+    </select>
 
 
 </mapper>

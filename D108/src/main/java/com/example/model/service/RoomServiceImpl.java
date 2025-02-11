@@ -8,24 +8,46 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class RoomServiceImpl implements RoomService {
 
     private final RoomDao roomDao;
-    private final RedisTemplate<String, String> redisTemplate;
-    private static final String ROOM_PREFIX = "room:users:"; // Redis 키 네임
+    private final RedisTemplate<String, Object> redisTemplate; // Object로 변경하여 리스트도 저장 가능
+    private static final String ROOM_PREFIX = "room:"; // Redis 키 네임
 
     @Autowired
-    public RoomServiceImpl(RoomDao roomDao, RedisTemplate<String, String> redisTemplate) {
+    public RoomServiceImpl(RoomDao roomDao, RedisTemplate<String, Object> redisTemplate) {
         this.roomDao = roomDao;
         this.redisTemplate = redisTemplate;
     }
 
     @Override
     public int createRoom(RoomDto roomDto) {
+        // 방 생성은 DB에만 저장
         roomDao.createRoom(roomDto);
         return roomDto.getRoomId();
+    }
+
+    @Override
+    // 게임이 시작될 때 Redis에 관련 정보 저장
+    public void startGame(int roomId) {
+        RoomDto room = roomDao.selectRoom(roomId);
+        String key = ROOM_PREFIX + roomId;
+
+        //redis에 저장
+        redisTemplate.opsForHash().put(key, "host", room.getHostId());
+        redisTemplate.opsForHash().put(key, "round", room.getRounds());
+        redisTemplate.opsForHash().put(key, "remaintime", room.getRoundTime());
+
+        // 참가자 리스트 초기화 (방장만 있는 상태로 시작)
+        CopyOnWriteArrayList<String> participants = new CopyOnWriteArrayList<>();
+        participants.add(String.valueOf(room.getHostId()));
+        redisTemplate.opsForHash().put(key, "participants", participants);
+
+        // 게임 인원 수 초기화
+        redisTemplate.opsForHash().put(key, "numbers", 0);
     }
 
     @Override
@@ -39,23 +61,45 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void incrementUserCount(int roomId) {
-        String key = ROOM_PREFIX + roomId;
-
-        // 키가 없으면 초기값 0으로 설정 후 증가
-        redisTemplate.opsForValue().setIfAbsent(key, "0");
-        redisTemplate.opsForValue().increment(key);
+    public RoomDto selectRoom(int roomId) {
+        return roomDao.selectRoom(roomId);
     }
 
     @Override
-    public void decrementUserCount(int roomId) {
+    public void incrementUserCount(int roomId, String userId) {
         String key = ROOM_PREFIX + roomId;
 
-        // 현재 인원 수 감소
-        Long count = redisTemplate.opsForValue().decrement(key);
+        // 참가자 리스트 가져오기
+        CopyOnWriteArrayList<String> participants =
+                (CopyOnWriteArrayList<String>) redisTemplate.opsForHash().get(key, "participants");
 
-        // 방의 인원이 0명이 되면 Redis에서 삭제
-        if (count <= 0) {
+        if (participants == null) {
+            participants = new CopyOnWriteArrayList<>();
+        }
+
+        if (!participants.contains(userId)) {
+            participants.add(userId);
+            redisTemplate.opsForHash().put(key, "participants", participants);
+            redisTemplate.opsForHash().increment(key, "numbers", 1);
+        }
+    }
+
+    @Override
+    public void decrementUserCount(int roomId, String userId) {
+        String key = ROOM_PREFIX + roomId;
+
+        CopyOnWriteArrayList<String> participants =
+                (CopyOnWriteArrayList<String>) redisTemplate.opsForHash().get(key, "participants");
+
+        if (participants != null && participants.contains(userId)) {
+            participants.remove(userId);
+            redisTemplate.opsForHash().put(key, "participants", participants);
+            redisTemplate.opsForHash().increment(key, "numbers", -1);
+        }
+
+        // 방의 인원이 0명이 되면 Redis에서 삭제 및 DB 삭제
+        Integer count = (Integer) redisTemplate.opsForHash().get(key, "numbers");
+        if (count == null || count <= 0) {
             redisTemplate.delete(key);
             roomDao.deleteRoom(roomId);
         }
@@ -63,9 +107,24 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public int getUserCount(int roomId) {
-        String count = redisTemplate.opsForValue().get(ROOM_PREFIX + roomId);
-        // count가 null이거나 빈 문자열일 경우 0을 반환하고, 그렇지 않으면 count를 Integer로 반환
-        return (count == null || count.isBlank()) ? 0 : Integer.parseInt(count);
+        String key = ROOM_PREFIX + roomId;
+        Integer count = (Integer) redisTemplate.opsForHash().get(key, "numbers");
+        return count == null ? 0 : count;
     }
 
+    public List<String> getParticipants(int roomId) {
+        String key = ROOM_PREFIX + roomId;
+        return (List<String>) redisTemplate.opsForHash().get(key, "participants");
+    }
+
+    public String getRoomHost(int roomId){
+        String key = ROOM_PREFIX + roomId;
+        return (String) redisTemplate.opsForHash().get(key, "host");
+    }
+
+    @Override
+    public void setRoomHost(int roomId, String newHostId) {
+        String key = ROOM_PREFIX + roomId;
+        redisTemplate.opsForHash().put(key, "host", newHostId);
+    }
 }
