@@ -57,8 +57,8 @@ public class RoomServiceImpl implements RoomService {
         // 방의 인원이 0명이 되면 Redis에서 삭제
         if (count <= 0) {
             redisTemplate.delete(key);
+            roomDao.deleteRoom(roomId);
         }
-        roomDao.deleteRoom(roomId);
     }
 
     @Override
