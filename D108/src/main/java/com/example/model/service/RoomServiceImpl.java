@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -29,7 +30,7 @@ public class RoomServiceImpl implements RoomService {
         roomDao.createRoom(roomDto);
         String key = ROOM_PREFIX + roomDto.getRoomId();
         // 참가자 리스트 초기화 (방장만 있는 상태로 시작)
-        CopyOnWriteArrayList<String> participants = new CopyOnWriteArrayList<>();
+        ArrayList<String> participants = new ArrayList<>();
         participants.add(String.valueOf(roomDto.getHostId()));
         redisTemplate.opsForHash().put(key, "participants", participants);
 
@@ -71,16 +72,18 @@ public class RoomServiceImpl implements RoomService {
         String key = ROOM_PREFIX + roomId;
 
         // 참가자 리스트 가져오기
-        CopyOnWriteArrayList<String> participants =
-                (CopyOnWriteArrayList<String>) redisTemplate.opsForHash().get(key, "participants");
+        List<String> participants = (List<String>) redisTemplate.opsForHash().get(key, "participants");
 
         if (participants == null) {
-            participants = new CopyOnWriteArrayList<>();
+            participants = new ArrayList<>();
         }
 
-        if (!participants.contains(userId)) {
-            participants.add(userId);
-            redisTemplate.opsForHash().put(key, "participants", participants);
+        // CopyOnWriteArrayList로 변환 후 사용
+        CopyOnWriteArrayList<String> safeParticipants = new CopyOnWriteArrayList<>(participants);
+
+        if (!safeParticipants.contains(userId)) {
+            safeParticipants.add(userId);
+            redisTemplate.opsForHash().put(key, "participants", safeParticipants); // ArrayList로 저장
             redisTemplate.opsForHash().increment(key, "numbers", 1);
         }
     }
@@ -89,13 +92,17 @@ public class RoomServiceImpl implements RoomService {
     public void decrementUserCount(int roomId, String userId) {
         String key = ROOM_PREFIX + roomId;
 
-        CopyOnWriteArrayList<String> participants =
-                (CopyOnWriteArrayList<String>) redisTemplate.opsForHash().get(key, "participants");
+        List<String> participants = (List<String>) redisTemplate.opsForHash().get(key, "participants");
 
-        if (participants != null && participants.contains(userId)) {
-            participants.remove(userId);
-            redisTemplate.opsForHash().put(key, "participants", participants);
-            redisTemplate.opsForHash().increment(key, "numbers", -1);
+        if (participants != null) {
+            // CopyOnWriteArrayList로 변환 후 사용
+            CopyOnWriteArrayList<String> safeParticipants = new CopyOnWriteArrayList<>(participants);
+
+            if (safeParticipants.contains(userId)) {
+                safeParticipants.remove(userId);
+                redisTemplate.opsForHash().put(key, "participants", safeParticipants); // 다시 저장할 땐 ArrayList로
+                redisTemplate.opsForHash().increment(key, "numbers", -1);
+            }
         }
 
         // 방의 인원이 0명이 되면 Redis에서 삭제 및 DB 삭제
@@ -105,6 +112,7 @@ public class RoomServiceImpl implements RoomService {
             roomDao.deleteRoom(roomId);
         }
     }
+
 
     @Override
     public int getUserCount(int roomId) {
