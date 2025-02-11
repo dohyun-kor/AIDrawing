@@ -104,22 +104,29 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     if (excludeSession != null && client.getId().equals(excludeSession.getId())) {
                         continue;
                     }
-                    if (client.isOpen()) {
-                        try {
-                            client.sendMessage(new TextMessage(message));
-                        } catch (IOException e) {
-                            System.err.println("WebSocket 메시지 전송 중 오류 발생: " + e.getMessage());
-                        }
-                    }
+                    sendMessageSafely(client, message);
                 }
             }
         }
     }
 
+    private void sendMessageSafely(WebSocketSession session, String message) {
+        synchronized (session) {  // 세션별로 동기화
+            if (session.isOpen()) {
+                try {
+                    session.sendMessage(new TextMessage(message));
+                } catch (IOException e) {
+                    System.err.println("메시지 전송 오류: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+
     private void sendExistingDrawings(WebSocketSession session, String roomId) throws IOException {
         if (roomDrawings.containsKey(roomId)) {
             for (String drawing : roomDrawings.get(roomId)) {
-                session.sendMessage(new TextMessage(drawing));
+                sendMessageSafely(session, drawing);
             }
         }
     }
