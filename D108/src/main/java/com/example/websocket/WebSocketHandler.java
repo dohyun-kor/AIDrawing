@@ -10,8 +10,12 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
@@ -35,9 +39,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.put(session.getId(), session);
         System.out.println("사용자 연결됨: " + session.getId());
-        // 여기서 기본적으로 방에 넣을 필요가 있다면 클라이언트로부터 방 정보를 받아서 추가하는 로직을 구현
-        // 예시로 임시로 아무 방에나 넣는다면 아래와 같이 할 수 있음.
-        // addSessionToRoom("defaultRoom", session);
     }
 
     @Override
@@ -51,30 +52,27 @@ public class WebSocketHandler extends TextWebSocketHandler {
             String event = data.get("event");
 
             if ("join".equals(event)) {
-                // 사용자가 특정 방에 입장하는 경우, 해당 방의 세션에 추가
                 addSessionToRoom(roomId, session);
                 sendExistingDrawings(session, roomId);
                 broadcastMessageToRoom(roomId, payload, session);
                 rService.incrementUserCount(Integer.parseInt(roomId));
-            } else if("leave".equals(event)){
+            } else if ("leave".equals(event)) {
                 removeSessionFromRoom(roomId, session);
                 rService.decrementUserCount(Integer.parseInt(roomId));
             } else if ("draw".equals(event)) {
-                // 해당 방의 그림 데이터 저장
-                roomDrawings.putIfAbsent(roomId, new ArrayList<>());
+                // 그림 데이터 추가 (CopyOnWriteArrayList 사용)
+                roomDrawings.putIfAbsent(roomId, new CopyOnWriteArrayList<>());
                 roomDrawings.get(roomId).add(payload);
-                // 해당 방에만 브로드캐스트
                 broadcastMessageToRoom(roomId, payload, session);
             } else if ("clearDrawing".equals(event)) {
-                // 해당 방의 그림 데이터 삭제
                 roomDrawings.remove(roomId);
-                // 해당 방의 모든 클라이언트에게 알림
                 broadcastMessageToRoom(roomId, payload, null);
-            } else if ("chat".equals(event)){
-                broadcastMessageToRoom(roomId,payload,session);
+            } else if ("chat".equals(event)) {
+                broadcastMessageToRoom(roomId, payload, session);
             }
         } catch (Exception e) {
             System.err.println("WebSocket 메시지 처리 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();
             session.close(CloseStatus.SERVER_ERROR);
         }
     }
@@ -87,20 +85,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private void removeSessionFromRoom(String roomId, WebSocketSession session) {
         if (roomSessions.containsKey(roomId)) {
-            if(roomSessions.get(roomId).contains(session)){
-                roomSessions.get(roomId).remove(session);
-                System.out.println("세션 " + session.getId() + " 가 방 " + roomId + " 에서 제거됨.");
-            }
+            roomSessions.get(roomId).remove(session);
+            System.out.println("세션 " + session.getId() + " 가 방 " + roomId + " 에서 제거됨.");
         }
     }
 
-    // 특정 방에 있는 클라이언트에게만 메시지를 브로드캐스트
     private void broadcastMessageToRoom(String roomId, String message, WebSocketSession excludeSession) throws IOException {
         Set<WebSocketSession> clients = roomSessions.get(roomId);
         if (clients != null) {
             synchronized (clients) {
                 for (WebSocketSession client : clients) {
-                    // 제외할 세션이 있다면 건너뜀
                     if (excludeSession != null && client.getId().equals(excludeSession.getId())) {
                         continue;
                     }
@@ -111,7 +105,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     private void sendMessageSafely(WebSocketSession session, String message) {
-        synchronized (session) {  // 세션별로 동기화
+        synchronized (session) {
             if (session.isOpen()) {
                 try {
                     session.sendMessage(new TextMessage(message));
@@ -121,7 +115,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
             }
         }
     }
-
 
     private void sendExistingDrawings(WebSocketSession session, String roomId) throws IOException {
         if (roomDrawings.containsKey(roomId)) {
@@ -134,7 +127,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         sessions.remove(session.getId());
-        // 모든 방에서 해당 세션을 제거하도록 반복 처리
         for (String roomId : roomSessions.keySet()) {
             removeSessionFromRoom(roomId, session);
         }
@@ -143,7 +135,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        System.err.println("WebSocket 오류 발생: " + exception.getMessage());
+        System.err.println("WebSocket 오류 발생: " + exception.toString());
         if (session.isOpen()) {
             session.close(CloseStatus.SERVER_ERROR);
         }
