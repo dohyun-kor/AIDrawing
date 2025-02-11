@@ -164,14 +164,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     private void sendExistingParticipants(WebSocketSession session, String roomId) throws IOException {
-        List<String> existingParticipants = rService.getParticipants(Integer.parseInt(roomId));
-        String hostId = rService.getRoomHost(Integer.parseInt(roomId));
+        if(rService.getUserCount(Integer.parseInt(roomId)) >= 1){
+            List<String> existingParticipants = rService.getParticipants(Integer.parseInt(roomId));
+            String hostId = rService.getRoomHost(Integer.parseInt(roomId));
 
-        // JSON 형태의 메시지 생성
-        String message = createExistingUserMessage(existingParticipants, hostId);
+            // JSON 형태의 메시지 생성
+            String message = createExistingUserMessage(existingParticipants, hostId);
 
-        // 클라이언트에게 전송
-        sendMessageSafely(session, message);
+            // 클라이언트에게 전송
+            sendMessageSafely(session, message);
+        }
     }
 
     // 기존 참가자 정보와 hostId를 JSON 문자열로 변환
