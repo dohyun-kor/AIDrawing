@@ -2,6 +2,7 @@ package com.example.controller;
 
 
 import com.example.docs.PictureControllerDocs;
+import com.example.model.dto.PictureDisplayRequestDto;
 import com.example.model.dto.PictureDto;
 import com.example.model.service.PictureService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,5 +41,27 @@ public class PictureController implements PictureControllerDocs {
         pictureService.deletePictureById(pictureId);
     }
 
-
+    /**
+     * 해당 사용자(userId)의 마이룸에 전달받은 그림 전시 정보를 업데이트한다.
+     *
+     * @param userId       사용자 ID (경로 변수)
+     * @param pictureDisplayRequestDtoList  전시할 그림 정보 리스트 (요청 본문)
+     * @return 모든 업데이트가 성공하면 true, 아니면 500 에러 반환
+     */
+    // 전시 정보 업데이트 API 추가
+    @PostMapping("/display")
+    public ResponseEntity<Boolean> updatePictureDisplay(@RequestBody List<PictureDisplayRequestDto> pictureDisplayRequestDtoList) {
+        int result = 0;
+        try {
+            result = pictureService.updatePictureDisplay(pictureDisplayRequestDtoList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 모든 그림 정보가 정상 업데이트 되었을 경우 성공 응답
+        if(result == pictureDisplayRequestDtoList.size()) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

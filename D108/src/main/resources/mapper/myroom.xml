@@ -9,6 +9,7 @@
         SELECT *
         FROM Picture
         WHERE is_displayed = true
+        AND user_id = #{userId}
     </select>
 
     <!-- 전시된 가구 조회-->

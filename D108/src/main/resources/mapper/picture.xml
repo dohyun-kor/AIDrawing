@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
-
 <mapper namespace="com.example.model.dao.PictureDao">
 
     <!-- 특정 사용자(userId)를 이용하여 마이룸 그림 전체 조회 -->
     <select id="getPicturesByUserId" parameterType="int" resultType="com.example.model.dto.PictureDto">
         SELECT
-            p.picture_id AS pictureId,
-            p.user_id AS userId,
-            p.title,
-            p.topic,
-            p.description,
-            p.image_url AS imageUrl,
-            p.is_displayed AS isDisplayed
-            FROM Picture p
+        p.picture_id AS pictureId,
+        p.user_id AS userId,
+        p.title,
+        p.topic,
+        p.description,
+        p.image_url AS imageUrl,
+        p.is_displayed AS isDisplayed
+        FROM Picture p
         WHERE p.user_id = #{userId}
     </select>
 
@@ -24,5 +22,44 @@
         DELETE FROM Picture
         WHERE picture_id = #{pictureId}
     </delete>
+
+    <!-- 전시 정보 업데이트 쿼리 (특정 그림 업데이트) -->
+    <update id="updatePictureDisplay" parameterType="map">
+        UPDATE Picture
+        SET
+        is_displayed = 1,                                         <!-- 그림이 전시됨을 표시 -->
+        rotation = #{rotation},          <!-- 회전 정보 업데이트 -->
+        x_val = #{xVal},                 <!-- x 좌표 업데이트 -->
+        y_val = #{yVal}                  <!-- y 좌표 업데이트 -->
+        WHERE picture_id = #{pictureId}          <!-- 그림 고유 아이디 조건 -->
+    </update>
+
+    <!-- 초기화 쿼리: 해당 유저의 모든 그림을 비게시(0)로 초기화 -->
+    <update id="resetPictureDisplayForUser" parameterType="int">
+        UPDATE Picture
+        SET
+        is_displayed = 0,    <!-- 모든 그림을 비게시 상태로 -->
+        rotation = 0,        <!-- 회전 정보 초기화 (필요시) -->
+        x_val = 0,           <!-- x 좌표 초기화 -->
+        y_val = 0            <!-- y 좌표 초기화 -->
+        WHERE user_id = #{userId}
+    </update>
+
+    <select id="getPictureById" parameterType="int" resultType="com.example.model.dto.PictureDto">
+        SELECT
+        picture_id AS pictureId,
+        user_id AS userId,
+        image_url AS imageUrl,
+        topic,
+        title,
+        description,
+        is_displayed AS isDisplayed,
+        created_at,
+        rotation,
+        x_val,
+        y_val
+        FROM Picture
+        WHERE picture_id = #{pictureId}
+    </select>
 
 </mapper>
