@@ -1,4 +1,3 @@
-// 파일 경로: src/main/java/com/example/model/dto/PictureDto.java
 package com.example.model.dto;
 
 import lombok.Getter;

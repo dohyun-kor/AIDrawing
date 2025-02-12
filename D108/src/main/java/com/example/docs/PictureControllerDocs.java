@@ -52,5 +52,5 @@ public interface PictureControllerDocs {
                             "]\n" +
                             "```\n"
     )
-    public ResponseEntity<Boolean> updatePictureDisplay(@RequestBody List<PictureDisplayRequestDto> pictureDisplayRequestDto);
+    public ResponseEntity<Boolean> updatePictureDisplay(@PathVariable int userId, @RequestBody List<PictureDisplayRequestDto> pictureDisplayRequestDto);
 }
