@@ -28,10 +28,11 @@
         UPDATE Picture
         SET
         is_displayed = 1,                                         <!-- 그림이 전시됨을 표시 -->
-        rotation = #{rotation},          <!-- 회전 정보 업데이트 -->
-        x_val = #{xVal},                 <!-- x 좌표 업데이트 -->
-        y_val = #{yVal}                  <!-- y 좌표 업데이트 -->
-        WHERE picture_id = #{pictureId}          <!-- 그림 고유 아이디 조건 -->
+        rotation = #{pictureDisplayRequestDto.rotation},          <!-- 회전 정보 업데이트 -->
+        x_val = #{pictureDisplayRequestDto.xVal},                 <!-- x 좌표 업데이트 -->
+        y_val = #{pictureDisplayRequestDto.yVal}                  <!-- y 좌표 업데이트 -->
+        WHERE user_id = #{userId}
+        AND picture_id = #{pictureDisplayRequestDto.pictureId}          <!-- 그림 고유 아이디 조건 -->
     </update>
 
     <!-- 초기화 쿼리: 해당 유저의 모든 그림을 비게시(0)로 초기화 -->
@@ -45,21 +46,13 @@
         WHERE user_id = #{userId}
     </update>
 
-    <select id="getPictureById" parameterType="int" resultType="com.example.model.dto.PictureDto">
-        SELECT
-        picture_id AS pictureId,
-        user_id AS userId,
-        image_url AS imageUrl,
-        topic,
-        title,
-        description,
-        is_displayed AS isDisplayed,
-        created_at,
-        rotation,
-        x_val,
-        y_val
-        FROM Picture
+    <!-- 추가: 그림의 title, description 업데이트 쿼리 -->
+    <update id="updatePictureInfo" parameterType="com.example.model.dto.PictureUpdateRequestDto">
+        UPDATE Picture
+        SET
+        title = #{title},
+        description = #{description}
         WHERE picture_id = #{pictureId}
-    </select>
+    </update>
 
 </mapper>

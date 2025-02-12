@@ -4,6 +4,7 @@ package com.example.controller;
 import com.example.docs.PictureControllerDocs;
 import com.example.model.dto.PictureDisplayRequestDto;
 import com.example.model.dto.PictureDto;
+import com.example.model.dto.PictureUpdateRequestDto;
 import com.example.model.service.PictureService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +50,11 @@ public class PictureController implements PictureControllerDocs {
      * @return 모든 업데이트가 성공하면 true, 아니면 500 에러 반환
      */
     // 전시 정보 업데이트 API 추가
-    @PostMapping("/display")
-    public ResponseEntity<Boolean> updatePictureDisplay(@RequestBody List<PictureDisplayRequestDto> pictureDisplayRequestDtoList) {
+    @PostMapping("/{userId}")
+    public ResponseEntity<Boolean> updatePictureDisplay(@PathVariable int userId, @RequestBody List<PictureDisplayRequestDto> pictureDisplayRequestDtoList) {
         int result = 0;
         try {
-            result = pictureService.updatePictureDisplay(pictureDisplayRequestDtoList);
+            result = pictureService.updatePictureDisplay(userId, pictureDisplayRequestDtoList);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,6 +62,26 @@ public class PictureController implements PictureControllerDocs {
         if(result == pictureDisplayRequestDtoList.size()) {
             return ResponseEntity.ok(true);
         } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * 그림의 제목과 설명을 수정하는 API
+     * @param pictureUpdateRequestDto 수정할 그림 정보
+     * @return 수정이 성공하면 true, 실패 시 500 에러 응답
+     */
+    @PutMapping("/update")
+    public ResponseEntity<Boolean> updatePictureInfo(@RequestBody PictureUpdateRequestDto pictureUpdateRequestDto) {
+        try {
+            int result = pictureService.updatePictureInfo(pictureUpdateRequestDto);
+            if(result == 1){
+                return ResponseEntity.ok(true);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }   catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
