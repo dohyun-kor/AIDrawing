@@ -175,6 +175,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 try {
                     endRound(roomId, nowturn);
                 } catch (IOException | InterruptedException e) {
+                    System.out.println("다음 라운드로 넘어가는 도중 에러 발생");
+                    e.printStackTrace();
                     throw new RuntimeException(e);
                 }
             } else {
@@ -200,7 +202,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // 현재 라운드와 최대 라운드 비교
         int curround = (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "currentround");
         int maxround = (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "maxround");
-        if (curround+1 >= maxround) {
+        if (curround+1 > maxround) {
             endGame(roomId); // 게임 종료 처리
             return;
         }
