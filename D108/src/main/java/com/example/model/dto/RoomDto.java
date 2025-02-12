@@ -29,7 +29,7 @@ public class RoomDto {
         AI;
     }
 
-    private enum LEVEL{
+    public enum LEVEL{
         EASY,
         NORMAL,
         HARD;

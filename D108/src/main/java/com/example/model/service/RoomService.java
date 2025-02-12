@@ -10,8 +10,6 @@ public interface RoomService {
     /** 방을 생성한다.**/
     public int createRoom(RoomDto roomDto);
 
-    public void startGame(int roomId);
-
     /** roomId에 해당하는 방 정보를 변경한다.**/
     public int updateRoom(int roomId, RoomDto roomDto);
 
