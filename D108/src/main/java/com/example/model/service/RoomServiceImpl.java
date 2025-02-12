@@ -31,7 +31,6 @@ public class RoomServiceImpl implements RoomService {
         String key = ROOM_PREFIX + roomDto.getRoomId();
         // 참가자 리스트 초기화 (방장만 있는 상태로 시작)
         ArrayList<String> participants = new ArrayList<>();
-        participants.add(String.valueOf(roomDto.getHostId()));
         redisTemplate.opsForHash().put(key, "participants", participants);
 
         // 게임 인원 수 초기화
