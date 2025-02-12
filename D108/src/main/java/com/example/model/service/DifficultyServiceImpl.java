@@ -39,4 +39,25 @@ public class DifficultyServiceImpl implements DifficultyService{
         }
     }
 
+    /**
+     * 난이도별로 주제의 사용 상태를 업데이트합니다.
+     *
+     * @param difficulty 난이도 (easy, normal, hard)
+     * @param topicId    사용 상태를 업데이트할 주제 ID
+     * @return 업데이트된 레코드의 수
+     */
+    @Override
+    public int updateTopicUsed(String difficulty, int topicId) {
+        switch (difficulty.toLowerCase()) {
+            case "easy":
+                return difficultyDao.updateEasyTopicUsed(topicId);
+            case "normal":
+                return difficultyDao.updateNormalTopicUsed(topicId);
+            case "hard":
+                return difficultyDao.updateHardTopicUsed(topicId);
+            default:
+                throw new IllegalArgumentException("Invalid difficulty level: " + difficulty);
+        }
+    }
+
 }

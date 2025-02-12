@@ -57,8 +57,8 @@ public class DalleController implements DalleControllerDocs {
             for (DifficultyDto topic : topics) {
                 String subject = topic.getTopic();
 
-                // topic_en 출력 (디버깅용)
-                System.out.println("Topic in English: " + subject);
+                // topic 출력 (디버깅용)
+                System.out.println("Topic: " + subject);
 
                 // 이미지 생성 요청
                 DalleResponseDto dalleResponseDto = dalleService.generateImage(subject, size, 1);

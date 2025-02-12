@@ -19,17 +19,15 @@ public interface DifficultyControllerDocs {
                     "대소문자를 구분하지 않습니다.\n\n" +
                     "아래는 응답 형식 예시입니다..\n\n" +
                     "```json\n" +
-                    "{\n" +
-                    "    \"data\": [\n" +
-                    "        {\n" +
-                    "            \"topic\": \"모자\"\n" +
-                    "        },\n" +
-                    "        {\n" +
-                    "            \"topic\": \"버스\"\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "}\n" +
-                    "```\n"
+                    "[\n" +
+                    "    {\n" +
+                    "        \"topic\": \"우산\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "        \"topic\": \"길\"\n" +
+                    "    }\n" +
+                    "]\n" +
+                    "```"
     )
     public ResponseEntity<List<Map<String, String>>> getTopicsByDifficulty(@PathVariable String difficulty);
 
