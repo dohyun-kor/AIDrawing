@@ -325,6 +325,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     private void sendExistingParticipants(WebSocketSession session, String roomId) throws IOException {
+        System.out.println(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "numbers"));
         if (rService.getUserCount(Integer.parseInt(roomId)) >= 1) {
             List<String> existingParticipants = rService.getParticipants(Integer.parseInt(roomId));
             String hostId = rService.getRoomHost(Integer.parseInt(roomId));
