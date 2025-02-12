@@ -45,7 +45,6 @@ public class PictureController implements PictureControllerDocs {
     /**
      * 해당 사용자(userId)의 마이룸에 전달받은 그림 전시 정보를 업데이트한다.
      *
-     * @param userId       사용자 ID (경로 변수)
      * @param pictureDisplayRequestDtoList  전시할 그림 정보 리스트 (요청 본문)
      * @return 모든 업데이트가 성공하면 true, 아니면 500 에러 반환
      */
