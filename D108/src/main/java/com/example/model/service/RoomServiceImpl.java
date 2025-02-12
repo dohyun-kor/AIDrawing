@@ -35,6 +35,8 @@ public class RoomServiceImpl implements RoomService {
 
         // 게임 인원 수 초기화
         redisTemplate.opsForHash().put(key, "numbers", 0);
+        redisTemplate.opsForHash().put(key, "host", roomDto.getHostId()+"");
+
         return roomDto.getRoomId();
     }
 
@@ -45,7 +47,6 @@ public class RoomServiceImpl implements RoomService {
         String key = ROOM_PREFIX + roomId;
 
         //redis에 저장
-        redisTemplate.opsForHash().put(key, "host", room.getHostId());
         redisTemplate.opsForHash().put(key, "round", room.getRounds());
         redisTemplate.opsForHash().put(key, "remaintime", room.getRoundTime());
 
@@ -127,7 +128,7 @@ public class RoomServiceImpl implements RoomService {
 
     public String getRoomHost(int roomId){
         String key = ROOM_PREFIX + roomId;
-        return (String) redisTemplate.opsForHash().get(key, "host");
+        return String.valueOf(redisTemplate.opsForHash().get(key, "host"));
     }
 
     @Override
