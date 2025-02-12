@@ -114,6 +114,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // 참여자 목록 가져오기
         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
         String currentPlayer = participants.get(nowturn);
+        System.out.println("현재 턴인 유저 : " + currentPlayer);
 
         // 넥스트 라운드로 보낼 메시지 내용 생성
         Map<String, Object> messageMap = new HashMap<>();
