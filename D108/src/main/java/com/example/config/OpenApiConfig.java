@@ -15,7 +15,8 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         final Info info = new Info()
-                .title("피리부는 사나이들 API")
+                .title("피리부는 사나이들 " +
+                        "API")
                 .description("피리부는 사나이들 API Swagger Hompage입니다.");
 
         return new OpenAPI()

@@ -660,9 +660,30 @@ INSERT INTO `Users` (`user_id`, `email`, `id`, `password`, `nickname`, `points`,
 (49, NULL, 'jhjh', 'passwororro', 'jh', 0, 0, 0, 1, 0, '2025-02-11 12:47:06', 1),
 (50, NULL, 'hello', 'A!', 'hihi', 0, 0, 0, 1, 0, '2025-02-11 22:44:27', 1);
 
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `GuestBook`
+--
+
+CREATE TABLE `GuestBook` (
+                             `guest_book_id` int NOT NULL,
+                             `user_id` int NOT NULL,
+                             `writer_id` int NOT NULL,
+                             `content` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+                             `score` float DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 --
 -- 덤프된 테이블의 인덱스
 --
+
+--
+-- 테이블의 인덱스 `GuestBook`
+--
+ALTER TABLE `GuestBook`
+    ADD PRIMARY KEY (`guest_book_id`),
+    ADD KEY `fk_userId` (`user_id`) USING BTREE;
 
 --
 -- 테이블의 인덱스 `Friend`
@@ -771,6 +792,13 @@ ALTER TABLE `Users`
 --
 -- 덤프된 테이블의 AUTO_INCREMENT
 --
+
+--
+-- 테이블의 AUTO_INCREMENT `GuestBook`
+--
+ALTER TABLE `GuestBook`
+    MODIFY `guest_book_id` int NOT NULL AUTO_INCREMENT;
+COMMIT;
 
 --
 -- 테이블의 AUTO_INCREMENT `Game`
