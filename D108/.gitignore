@@ -1,10 +1,4 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
+### IDE 관련 파일 ###
 .apt_generated
 .classpath
 .factorypath
@@ -12,27 +6,25 @@ target/
 .settings
 .springBeans
 .sts4-cache
-
-### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
+.vscode/
+
+### 빌드 결과물 제외 ###
+target/
+build/
+
+### 환경 변수 파일 제외 ###
+.env
+**/application*.properties
+config/
+secrets/
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
-
-../.env
-
-# application.properties 파일 무시
-
-D108/src/main/resources/application.properties
