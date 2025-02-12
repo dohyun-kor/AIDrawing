@@ -25,7 +25,7 @@ pipeline {
                 docker {
                     image 'maven:3.9.9-eclipse-temurin-17'
                     // ~/.m2 볼륨 마운트, 워크스페이스 마운트 등
-                    args '-v $HOME/.m2:/root/.m2 -v $WORKSPACE:/workspace --group-add 999'
+                    args '--network=d-108_app-network -v $HOME/.m2:/root/.m2 -v $WORKSPACE:/workspace --group-add 999'
                 }
             }
             environment {
