@@ -19,7 +19,7 @@ public class RoomServiceImpl implements RoomService {
     private static final String ROOM_PREFIX = "room:"; // Redis 키 네임
 
     @Autowired
-    public RoomServiceImpl(RoomDao roomDao, RedisTemplate<String, Object> redisTemplate) {
+    public RoomServiceImpl(RoomDao roomDao, DifficultyService difficultyService, RedisTemplate<String, Object> redisTemplate) {
         this.roomDao = roomDao;
         this.redisTemplate = redisTemplate;
     }
@@ -31,6 +31,7 @@ public class RoomServiceImpl implements RoomService {
         String key = ROOM_PREFIX + roomDto.getRoomId();
         // 참가자 리스트 초기화 (방장만 있는 상태로 시작)
         ArrayList<String> participants = new ArrayList<>();
+        participants.add(String.valueOf(roomDto.getHostId()));
         redisTemplate.opsForHash().put(key, "participants", participants);
 
         // 게임 인원 수 초기화
@@ -38,18 +39,6 @@ public class RoomServiceImpl implements RoomService {
         redisTemplate.opsForHash().put(key, "host", roomDto.getHostId()+"");
 
         return roomDto.getRoomId();
-    }
-
-    @Override
-    // 게임이 시작될 때 Redis에 관련 정보 저장
-    public void startGame(int roomId) {
-        RoomDto room = roomDao.selectRoom(roomId);
-        String key = ROOM_PREFIX + roomId;
-
-        //redis에 저장
-        redisTemplate.opsForHash().put(key, "round", room.getRounds());
-        redisTemplate.opsForHash().put(key, "remaintime", room.getRoundTime());
-
     }
 
     @Override
