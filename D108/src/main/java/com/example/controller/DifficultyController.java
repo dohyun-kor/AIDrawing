@@ -35,8 +35,11 @@ public class DifficultyController implements DifficultyControllerDocs {
             // 주어진 난이도와 개수(2)를 이용해 주제 리스트를 반환
             List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(difficulty, 2);
 
+
             // 각 주제의 사용 상태를 true로 업데이트
             for (DifficultyDto topic : topics) {
+                System.out.println(topic.getTopic());
+                System.out.println(topic.getTopicId());
                 difficultyService.updateTopicUsed(difficulty, topic.getTopicId());
             }
 

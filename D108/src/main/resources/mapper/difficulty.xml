@@ -6,7 +6,7 @@
 <mapper namespace="com.example.model.dao.DifficultyDao">
     <!-- Easy 난이도 토픽 -->
     <select id="getEasyTopics" resultType="com.example.model.dto.DifficultyDto">
-        SELECT easy_topic_id, topic, topic_en
+        SELECT easy_topic_id AS topicId, topic, topic_en
         FROM GameTopicEasy
         WHERE is_used = 0
         ORDER BY RAND()
@@ -21,7 +21,7 @@
 
     <!-- Normal 난이도 토픽 -->
     <select id="getNormalTopics" resultType="com.example.model.dto.DifficultyDto">
-        SELECT normal_topic_id, topic, topic_en
+        SELECT normal_topic_id AS topicId, topic, topic_en
         FROM GameTopicNormal
         WHERE is_used = 0
         ORDER BY RAND()
@@ -36,7 +36,7 @@
 
     <!-- Hard 난이도 토픽 -->
     <select id="getHardTopics" resultType="com.example.model.dto.DifficultyDto">
-        SELECT hard_topic_id, topic, topic_en
+        SELECT hard_topic_id AS topicId, topic, topic_en
         FROM GameTopicHard
         WHERE is_used = 0
         ORDER BY RAND()
