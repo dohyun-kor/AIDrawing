@@ -55,7 +55,7 @@ public class DalleController implements DalleControllerDocs {
 
             // 각 주제에 대해 이미지 생성 요청
             for (DifficultyDto topic : topics) {
-                String subject = topic.getTopic();
+                String subject = topic.getTopicEn();
 
                 // topic 출력 (디버깅용)
                 System.out.println("Topic: " + subject);

@@ -15,7 +15,7 @@ public class DalleRequestDto {
 
     // 생성자
     public DalleRequestDto(String subject, String size, int n) {
-        this.prompt = "A simple and cute black-and-white line drawing of a " + subject + ", designed with clean and minimal outlines, resembling a hand-drawn sketch with a playful and adorable cartoon style. The design should look like a casual sticker or a fun illustration for social media.";
+        this.prompt = "A quick, simple, sketch of a " + subject + " as if drawn by a person in 30 seconds, with minimal details and bold, easy-to-recognize shapes.";
         this.size = size;
         this.n = n;
     }
