@@ -89,8 +89,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 correctCheck(roomId, payload);
                 broadcastMessageToRoom(roomId, payload, session);
             } else if ("start".equals(event)) {
-                gamestart(roomId, 0,1);
                 broadcastMessageToRoom(roomId, payload, session);
+                gamestart(roomId, 0,1);
             } else if ("colorchange".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, session);
             } else if("changeroominfo".equals(event)){
