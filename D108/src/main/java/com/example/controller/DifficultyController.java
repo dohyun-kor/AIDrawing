@@ -36,11 +36,16 @@ public class DifficultyController implements DifficultyControllerDocs {
             List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(difficulty, 2);
 
 
-            // 각 주제의 사용 상태를 true로 업데이트
+//            // 각 주제의 사용 상태를 true로 업데이트
+//            for (DifficultyDto topic : topics) {
+//                System.out.println(topic.getTopic());
+//                System.out.println(topic.getTopicId());
+//                difficultyService.updateTopicUsed(difficulty, topic.getTopicId());
+//            }
+
+            // topic 디버깅용
             for (DifficultyDto topic : topics) {
                 System.out.println(topic.getTopic());
-                System.out.println(topic.getTopicId());
-                difficultyService.updateTopicUsed(difficulty, topic.getTopicId());
             }
 
             // 필요한 데이터만 추출하여 새로운 리스트 생성

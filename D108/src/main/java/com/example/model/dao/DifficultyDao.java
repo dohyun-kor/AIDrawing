@@ -12,9 +12,9 @@ public interface DifficultyDao {
     List<DifficultyDto> getNormalTopics(@Param("count") int count);
     List<DifficultyDto> getHardTopics(@Param("count") int count);
 
-    // 난이도별 주제 사용 상태 업데이트
-    int updateEasyTopicUsed(@Param("topicId") int topicId);
-    int updateNormalTopicUsed(@Param("topicId") int topicId);
-    int updateHardTopicUsed(@Param("topicId") int topicId);
+//    // 난이도별 주제 사용 상태 업데이트
+//    int updateEasyTopicUsed(@Param("topicId") int topicId);
+//    int updateNormalTopicUsed(@Param("topicId") int topicId);
+//    int updateHardTopicUsed(@Param("topicId") int topicId);
 
 }
