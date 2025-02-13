@@ -135,6 +135,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
 
         List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 2);
+        System.out.println("선정된 주제들"+topics);
 
         // 원하는 형태로 topic을 가공
         List<String> topicList = topics.stream()
@@ -546,12 +547,22 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private void roundcheck(String roomId) throws IOException, InterruptedException {
         // 최신 참가자 목록 가져오기 (방을 나간 유저 제외)
         List<String> participants = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-        List<String> correctusers = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "correctuser");
-        // 정답을 맞춘 사람만 필터링
+        List<String> correctusers = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "correctuser");
+
+        // null 체크 후 빈 리스트로 초기화
+        if (participants == null) {
+            participants = new ArrayList<>();
+        }
+        if (correctusers == null) {
+            correctusers = new ArrayList<>();
+        }
+
+        // 정답자 수와 참가자 수 비교
         if (correctusers.size() == participants.size()) {
             endRound(roomId, (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "currentround"));
         }
     }
+
 
 
     private Map<String, String> parseJson(String json) {
