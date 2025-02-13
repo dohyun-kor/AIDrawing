@@ -8,45 +8,42 @@
     <select id="getEasyTopics" resultType="com.example.model.dto.DifficultyDto">
         SELECT easy_topic_id AS topicId, topic, topic_en
         FROM GameTopicEasy
-        WHERE is_used = 0
         ORDER BY RAND()
         LIMIT #{count}
     </select>
 
-    <update id="updateEasyTopicUsed">
-        UPDATE GameTopicEasy
-        SET is_used = 1
-        WHERE easy_topic_id = #{topicId}
-    </update>
+<!--    <update id="updateEasyTopicUsed">-->
+<!--        UPDATE GameTopicEasy-->
+<!--        SET is_used = 1-->
+<!--        WHERE easy_topic_id = #{topicId}-->
+<!--    </update>-->
 
     <!-- Normal 난이도 토픽 -->
     <select id="getNormalTopics" resultType="com.example.model.dto.DifficultyDto">
         SELECT normal_topic_id AS topicId, topic, topic_en
         FROM GameTopicNormal
-        WHERE is_used = 0
         ORDER BY RAND()
         LIMIT #{count}
     </select>
 
-    <update id="updateNormalTopicUsed">
-        UPDATE GameTopicNormal
-        SET is_used = 1
-        WHERE normal_topic_id = #{topicId}
-    </update>
+<!--    <update id="updateNormalTopicUsed">-->
+<!--        UPDATE GameTopicNormal-->
+<!--        SET is_used = 1-->
+<!--        WHERE normal_topic_id = #{topicId}-->
+<!--    </update>-->
 
     <!-- Hard 난이도 토픽 -->
     <select id="getHardTopics" resultType="com.example.model.dto.DifficultyDto">
         SELECT hard_topic_id AS topicId, topic, topic_en
         FROM GameTopicHard
-        WHERE is_used = 0
         ORDER BY RAND()
         LIMIT #{count}
     </select>
 
-    <update id="updateHardTopicUsed">
-        UPDATE GameTopicHard
-        SET is_used = 1
-        WHERE hard_topic_id = #{topicId}
-    </update>
+<!--    <update id="updateHardTopicUsed">-->
+<!--        UPDATE GameTopicHard-->
+<!--        SET is_used = 1-->
+<!--        WHERE hard_topic_id = #{topicId}-->
+<!--    </update>-->
 
 </mapper>
