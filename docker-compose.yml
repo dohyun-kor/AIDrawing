@@ -63,7 +63,7 @@ services:
 
     environment:
       - REDIS_ARGS=--requirepass ${REDIS_PASSWORD}
-
+      - RI_PROXY_PATH=/redis
     volumes:
       # redis-stack-data 라는 이름의 볼륨(또는 호스트 경로)을 생성하여 영구 저장
       - redis-stack-data:/data

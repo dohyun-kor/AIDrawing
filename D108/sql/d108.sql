@@ -666,10 +666,11 @@ INSERT INTO `Users` (`user_id`, `email`, `id`, `password`, `nickname`, `points`,
 -- 테이블 구조 `GuestBook`
 --
 
-CREATE TABLE `GuestBook` (
-                             `guest_book_id` int NOT NULL,
+CREATE TABLE `PaintingAssessment` (
+                             `painting_assessment_id` int NOT NULL,
                              `user_id` int NOT NULL,
                              `writer_id` int NOT NULL,
+                             'picture_id' int NOT NULL,
                              `content` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
                              `score` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -681,8 +682,8 @@ CREATE TABLE `GuestBook` (
 --
 -- 테이블의 인덱스 `GuestBook`
 --
-ALTER TABLE `GuestBook`
-    ADD PRIMARY KEY (`guest_book_id`),
+ALTER TABLE `PaintingAssessment`
+    ADD PRIMARY KEY (`painting_assessment_id`),
     ADD KEY `fk_userId` (`user_id`) USING BTREE;
 
 --
@@ -796,8 +797,8 @@ ALTER TABLE `Users`
 --
 -- 테이블의 AUTO_INCREMENT `GuestBook`
 --
-ALTER TABLE `GuestBook`
-    MODIFY `guest_book_id` int NOT NULL AUTO_INCREMENT;
+ALTER TABLE `PaintingAssessment`
+    MODIFY `painting_assessment_id` int NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 --
