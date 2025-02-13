@@ -14,11 +14,7 @@ public class MyRoomDto {
     // 전시된 그림 리스트
     public List<PictureDto> displayedPictures;
 
-    // 전시된 가구 리스트
-    public List<MyFurnitureDto> displayedFurniture;
-
-    public MyRoomDto(List<PictureDto> displayedPictures, List<MyFurnitureDto> displayedFurniture) {
+    public MyRoomDto(List<PictureDto> displayedPictures) {
         this.displayedPictures = displayedPictures;
-        this.displayedFurniture = displayedFurniture;
     }
 }

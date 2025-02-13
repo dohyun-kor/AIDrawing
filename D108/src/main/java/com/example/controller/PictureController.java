@@ -26,8 +26,8 @@ public class PictureController implements PictureControllerDocs {
     }
 
     // 특정 사용자의 마이룸 그림 전체 조회
-    @GetMapping("/list")
-    public ResponseEntity<List<PictureDto>> getPicturesByUserId(@RequestParam int userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<PictureDto>> getPicturesByUserId(@PathVariable int userId) {
         try {
             List<PictureDto> pictures = pictureService.getPicturesByUserId(userId);
             return ResponseEntity.ok(pictures);
@@ -67,13 +67,14 @@ public class PictureController implements PictureControllerDocs {
 
     /**
      * 그림의 제목과 설명을 수정하는 API
+     *
      * @param pictureUpdateRequestDto 수정할 그림 정보
      * @return 수정이 성공하면 true, 실패 시 500 에러 응답
      */
-    @PutMapping("/update")
-    public ResponseEntity<Boolean> updatePictureInfo(@RequestBody PictureUpdateRequestDto pictureUpdateRequestDto) {
+    @PutMapping("/{pictureId}")
+    public ResponseEntity<Boolean> updatePictureInfo(@PathVariable int pictureId, @RequestBody PictureUpdateRequestDto pictureUpdateRequestDto) {
         try {
-            int result = pictureService.updatePictureInfo(pictureUpdateRequestDto);
+            int result = pictureService.updatePictureInfo(pictureId, pictureUpdateRequestDto);
             if(result == 1){
                 return ResponseEntity.ok(true);
             } else {

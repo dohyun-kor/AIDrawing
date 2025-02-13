@@ -5,6 +5,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class PictureDto {
     private int pictureId;
     private int userId;
@@ -13,15 +14,8 @@ public class PictureDto {
     private String title;
     private String description;
     private boolean isDisplayed;
-
-
-    public PictureDto(int pictureId, int userId, String imageUrl, String topic, String title, String description, boolean isDisplayed) {
-        this.pictureId = pictureId;
-        this.userId = userId;
-        this.imageUrl = imageUrl;
-        this.topic = topic;
-        this.title = title;
-        this.description = description;
-        this.isDisplayed = isDisplayed;
-    }
+    private int rotation;
+    private float xVal;
+    private float yVal;
+    private int furniture;
 }

@@ -21,9 +21,6 @@ public class MyRoomServiceImpl implements MyRoomService {
     @Override
     public MyRoomDto getDisplayedItems(int userId) {
         List<PictureDto> displayedPictures = myRoomDao.getDisplayedPictures(userId);
-
-        List<MyFurnitureDto> displayedFurniture = myRoomDao.getDisplayedFurniture(userId);
-
-        return new MyRoomDto(displayedPictures, displayedFurniture);
+        return new MyRoomDto(displayedPictures);
     }
 }

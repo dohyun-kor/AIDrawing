@@ -12,8 +12,4 @@ public interface MyRoomDao {
 
     // 전시된 그림을 조회
     List<PictureDto> getDisplayedPictures(@Param("userId")int userId);
-
-    // 전시된 가구를 조회
-    List<MyFurnitureDto> getDisplayedFurniture(@Param("userId")int userId);
-
 }

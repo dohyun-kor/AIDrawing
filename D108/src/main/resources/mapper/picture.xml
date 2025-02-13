@@ -30,7 +30,8 @@
         is_displayed = 1,                                         <!-- 그림이 전시됨을 표시 -->
         rotation = #{pictureDisplayRequestDto.rotation},          <!-- 회전 정보 업데이트 -->
         x_val = #{pictureDisplayRequestDto.xVal},                 <!-- x 좌표 업데이트 -->
-        y_val = #{pictureDisplayRequestDto.yVal}                  <!-- y 좌표 업데이트 -->
+        y_val = #{pictureDisplayRequestDto.yVal},                 <!-- y 좌표 업데이트 -->
+        furniture = #{pictureDisplayRequestDto.furniture}         <!-- 액자 업데이트 -->
         WHERE user_id = #{userId}
         AND picture_id = #{pictureDisplayRequestDto.pictureId}          <!-- 그림 고유 아이디 조건 -->
     </update>
