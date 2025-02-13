@@ -86,12 +86,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
 //                roomDrawings.remove(roomId);
                 broadcastMessageToRoom(roomId, payload, null);
             } else if ("chat".equals(event)) {
+                correctCheck(roomId, payload);
                 broadcastMessageToRoom(roomId, payload, session);
             } else if ("start".equals(event)) {
                 gamestart(roomId, 0,1);
                 broadcastMessageToRoom(roomId, payload, session);
             } else if ("colorchange".equals(event) || "changeroominfo".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, session);
+            } else if ("topicselect".equals(event)){
+                topicSelect(roomId, payload);
             }
         } catch (Exception e) {
             System.err.println("WebSocket 메시지 처리 중 오류 발생: " + e.getMessage());
@@ -108,7 +111,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         redisTemplate.opsForHash().put(key, "maxround", room.getRounds());
         redisTemplate.opsForHash().put(key, "remaintime", room.getRoundTime());
         redisTemplate.opsForHash().put(key, "turn", nowturn);
+        redisTemplate.opsForHash().put(key, "status", "play");
         redisTemplate.opsForHash().put(key, "topic", "wait");
+        redisTemplate.opsForHash().put(key, "correct", 0);
 
 
         // 참여자 목록 가져오기
@@ -146,27 +151,67 @@ public class WebSocketHandler extends TextWebSocketHandler {
         waitTopicSelect(roomId,nowturn);
     }
 
-    public void waitTopicSelect(String roomId, int nowturn) throws IOException, InterruptedException {
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
+
+    public void waitTopicSelect(String roomId, int nowturn) {
         AtomicInteger remainTime = new AtomicInteger(15);
 
-        // 시간만큼 대기하며, 매초마다 broadcastRemainingTime 호출
-        while (remainTime.get()>0) {
-            String topic = (String) redisTemplate.opsForHash().get(ROOM_PREFIX+roomId,"topic");
-            if(!topic.equals("wait")) break;
-            // 방송하기 (remainTime을 전달)
-            broadcastRemainingTime(roomId, remainTime);
-            // 1초 대기
-            Thread.sleep(1000);
-            // remainTime 1초 감소
-            remainTime.decrementAndGet();
-        }
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                String topic = (String) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "topic");
+                if (!"wait".equals(topic) || remainTime.get() <= 0) {
+                    if (remainTime.get() <= 0) {
+                        try {
+                            endRound(roomId, nowturn);
+                        } catch (IOException | InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        Map<String, Object> messageMap = new HashMap<>();
+                        messageMap.put("event", "topicselect");
+                        messageMap.put("roomId", roomId);
+                        startRoundTimer(roomId, nowturn);
+                    }
+                    return;
+                }
 
-        Map<String, Object> messageMap = new HashMap<>();
-        messageMap.put("event", "topicselect");
-        messageMap.put("roomId", roomId); // 다음 라운드 번호
-        startRoundTimer(roomId,nowturn);
+                try {
+                    broadcastRemainingTime(roomId, remainTime);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                remainTime.decrementAndGet();
+
+                // 다음 1초 후 실행
+                scheduler.schedule(this, 1, TimeUnit.SECONDS);
+            }
+        };
+
+        // 즉시 실행 후 1초마다 실행
+        scheduler.schedule(task, 0, TimeUnit.SECONDS);
     }
 
+    // 토픽을 정했을 때
+    private void topicSelect(String roomId, String message){
+        Map<String, String> data = parseJson(message);
+        String topic = data.get("topic");
+        redisTemplate.opsForHash().put(ROOM_PREFIX+roomId , "topic", topic);
+    }
+
+    private void correctCheck(String roomId, String payload) throws IOException {
+        if(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status").equals("play")){
+            Map<String, String> data = parseJson(payload);
+            String answer = data.get("message");
+            String userId = data.get("userId");
+            if(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "topic").equals(answer)){
+                broadcastMessageToRoom(roomId, createCorrectMessage(roomId, userId), null);
+            }
+        }
+    }
+
+
+    // 라운드 시작시 Timer기능
     private void startRoundTimer(String roomId, int nowturn) {
         AtomicInteger remainingTime = new AtomicInteger((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "remaintime"));
 
@@ -191,6 +236,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
+
+    // 라운드 종료
     private void endRound(String roomId, int nowturn) throws IOException, InterruptedException {
         // 현재 라운드 번호를 가져와서 +1
         Integer round = (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "round");
@@ -216,7 +263,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
         gamestart(roomId, nextturn,curround+1);
     }
 
+    // 게임 종료
     private void endGame(String roomId) throws IOException {
+        redisTemplate.opsForHash().put(ROOM_PREFIX+roomId, "status", "wait");
+
         Map<String, Object> messageMap = new HashMap<>();
         messageMap.put("event", "endgame");
         messageMap.put("roomId", roomId);
@@ -225,6 +275,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
     }
 
+    // 라운드 타이머 멈추기
     private void cancelRoundTimer() {
         if (roundTimerTask != null && !roundTimerTask.isCancelled()) {
             roundTimerTask.cancel(true);
@@ -236,33 +287,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         messageMap.put("event", "remaintime");
         messageMap.put("remaintime", remainingTime);
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
-    }
-
-    private void handleUserLeave(WebSocketSession session, String roomId) throws IOException {
-        String userId = sessionUserMap.get(session.getId());
-        if (userId != null) {
-            String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
-
-            // 사용자가 방장이라면 방장 변경
-            if (userId.equals(currentHostId)) {
-                List<String> participants = rService.getParticipants(Integer.parseInt(roomId));
-                participants.remove(userId); // 떠나는 유저 제외
-
-                if (!participants.isEmpty()) {
-                    String newHostId = participants.get(0); // 첫 번째 유저를 새 방장으로 선택
-                    rService.setRoomHost(Integer.parseInt(roomId), newHostId); // Redis에서 변경
-
-                    // 방장 변경 메시지 broadcast
-                    broadcastHostChange(roomId, newHostId);
-                }
-            }
-
-            // 기존 로직 유지
-            rService.decrementUserCount(Integer.parseInt(roomId), userId);
-            sessionUserMap.remove(session.getId());
-        }
-        removeSessionFromRoom(roomId, session);
-        broadcastLeaveMessage(roomId, userId);
     }
 
     private void broadcastHostChange(String roomId, String newHostId) throws IOException {
@@ -338,7 +362,31 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
             // 클라이언트에게 전송
             sendMessageSafely(session, message);
+        }if(rService.getUserCount(Integer.parseInt(roomId)) >= 2){
+            broadcastMessageToRoom(roomId, createGameCanStartMessage(roomId),null);
         }
+    }
+
+    private String createGameCanStartMessage(String roomId){
+        Map<String, Object> messageMap = new HashMap<>();
+        messageMap.put("event", "gamecanstart");
+        messageMap.put("roomId", roomId);
+        return createJsonMessage(messageMap);
+    }
+
+    private String createGameCantStartMessage(String roomId){
+        Map<String, Object> messageMap = new HashMap<>();
+        messageMap.put("event", "gamecantstart");
+        messageMap.put("roomId", roomId);
+        return createJsonMessage(messageMap);
+    }
+
+    private String createCorrectMessage(String roomId, String userId){
+        Map<String , Object> messageMap = new HashMap<>();
+        messageMap.put("event", "correct");
+        messageMap.put("roomId", roomId);
+        messageMap.put("userId", userId);
+        return createJsonMessage(messageMap);
     }
 
     // 기존 참가자 정보와 hostId를 JSON 문자열로 변환
@@ -369,6 +417,42 @@ public class WebSocketHandler extends TextWebSocketHandler {
             }
         }
     }
+
+    private void handleUserLeave(WebSocketSession session, String roomId) throws IOException {
+        String userId = sessionUserMap.get(session.getId());
+        if (userId != null) {
+            String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
+
+            // 사용자가 방장이라면 방장 변경
+            if (userId.equals(currentHostId)) {
+                List<String> participants = rService.getParticipants(Integer.parseInt(roomId));
+                participants.remove(userId); // 떠나는 유저 제외
+
+                if (!participants.isEmpty()) {
+                    String newHostId = participants.get(0); // 첫 번째 유저를 새 방장으로 선택
+                    rService.setRoomHost(Integer.parseInt(roomId), newHostId); // Redis에서 변경
+
+                    // 방장 변경 메시지 broadcast
+                    broadcastHostChange(roomId, newHostId);
+                }
+            }
+
+            // 기존 로직 유지
+            rService.decrementUserCount(Integer.parseInt(roomId), userId);
+            sessionUserMap.remove(session.getId());
+            if(rService.getUserCount(Integer.parseInt(roomId)) < 2){
+                if(!(rService.getUserCount(Integer.parseInt(roomId)) == 0)){
+                    broadcastMessageToRoom(roomId, createGameCantStartMessage(roomId), null);
+                    if("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status"))){
+                        endGame(roomId);
+                    }
+                }
+            }
+        }
+        removeSessionFromRoom(roomId, session);
+        broadcastLeaveMessage(roomId, userId);
+    }
+
 
     private void handleUserDisconnect(WebSocketSession session) throws IOException {
         String userId = sessionUserMap.get(session.getId());
@@ -401,8 +485,17 @@ public class WebSocketHandler extends TextWebSocketHandler {
                             broadcastHostChange(roomId, newHostId);
                         }
                     }
+                    if(rService.getUserCount(Integer.parseInt(roomId)) < 2){
+                        if(!(rService.getUserCount(Integer.parseInt(roomId)) == 0)){
+                            broadcastMessageToRoom(roomId, createGameCantStartMessage(roomId), null);
+                            if("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status"))){
+                                endGame(roomId);
+                            }
+                        }
+                    }
                 }
             }
+
             sessionUserMap.remove(session.getId());
         }
         sessions.remove(session.getId());
