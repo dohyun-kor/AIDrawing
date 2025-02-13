@@ -31,8 +31,8 @@ public class PaintingAssessmentServiceImpl implements PaintingAssessmentService 
     }
 
     @Override
-    public int deletePaintingAssessment(int paintAssessmentId) {
-        return paintingAssessmentDao.deletePaintingAssessment(paintAssessmentId);
+    public int deletePaintingAssessment(int paintingAssessmentId) {
+        return paintingAssessmentDao.deletePaintingAssessment(paintingAssessmentId);
     }
 
     @Override

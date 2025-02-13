@@ -45,7 +45,7 @@ public interface PaintingAssessmentControllerDocs {
             description = "평가를 삭제합니다.\n\n"
                     + "삭제할 평가의 paintingAssessmentId를 쿼리 파라미터로 전달합니다."
     )
-    ResponseEntity<Boolean> deletePaintingAssessment(@RequestParam int paintingAssessmentId);
+    ResponseEntity<Boolean> deletePaintingAssessment(@PathVariable int paintingAssessmentId);
     /**
      * 사용자별 평가 조회 API
      * 특정 사용자의 전체 평가를 조회합니다.
