@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Tag(name = "사용자가 구매한 아이템", description = "사용자가 구매한 아이템 관련 API")
 @RestController
-@RequestMapping("/my-items")
+@RequestMapping("/myItems")
 public class MyItemController implements MyItemControllerDocs {
 
     @Autowired

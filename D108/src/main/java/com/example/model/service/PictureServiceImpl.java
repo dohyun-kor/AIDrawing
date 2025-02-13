@@ -54,7 +54,7 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
-    public int updatePictureInfo(PictureUpdateRequestDto pictureUpdateRequestDto) {
+    public int updatePictureInfo(int pictureId, PictureUpdateRequestDto pictureUpdateRequestDto) {
         return pictureDao.updatePictureInfo(pictureUpdateRequestDto);
     }
 }

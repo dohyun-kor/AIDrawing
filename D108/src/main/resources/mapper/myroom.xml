@@ -12,14 +12,5 @@
         AND user_id = #{userId}
     </select>
 
-    <!-- 전시된 가구 조회-->
-    <select id="getDisplayedFurniture" resultType="com.example.model.dto.MyFurnitureDto">
-        SELECT *
-        FROM MyFurniture
-        WHERE user_id = #{userId}
-
-    </select>
-
-
 </mapper>
 

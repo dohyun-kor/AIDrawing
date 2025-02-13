@@ -2,6 +2,7 @@ package com.example.docs;
 
 import com.example.model.dto.PictureDisplayRequestDto;
 import com.example.model.dto.PictureDto;
+import com.example.model.dto.PictureUpdateRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,12 @@ public interface PictureControllerDocs {
     public void deletePicture(@PathVariable int pictureId);
 
     @Operation(
+            summary = "마이룸에 있는 그림의 제목과 설명을 업데이트합니다.",
+            description = "pictureId에 해당하는 그림의 제목과 설명을 업데이트합니다."
+    )
+    public ResponseEntity<Boolean> updatePictureInfo(@PathVariable int pictureId, @RequestBody PictureUpdateRequestDto pictureUpdateRequestDto);
+
+    @Operation(
             summary = "해당 사용자의 마이룸에 그림을 전시합니다.",
             description =
                     "주어진 `userId`에 해당하는 사용자의 마이룸에 그림 전시 정보를 저장합니다.\n\n" +
@@ -42,12 +49,14 @@ public interface PictureControllerDocs {
                             "        \"rotation\": \"90\",\n" +
                             "        \"x_val\": \"6.7689\",\n" +
                             "        \"y_val\": \"39.7524\"\n" +
+                            "        \"furniture\": \"1\"\n" +
                             "    },\n" +
                             "    {\n" +
                             "        \"pictureId\": \"2\",\n" +
                             "        \"rotation\": \"0\",\n" +
                             "        \"x_val\": \"19.2345\",\n" +
                             "        \"y_val\": \"49.8646\"\n" +
+                            "        \"furniture\": \"2\"\n" +
                             "    }\n" +
                             "]\n" +
                             "```\n"

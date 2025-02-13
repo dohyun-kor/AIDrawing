@@ -663,7 +663,7 @@ INSERT INTO `Users` (`user_id`, `email`, `id`, `password`, `nickname`, `points`,
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `GuestBook`
+-- 테이블 구조 `PaintingAssessment`
 --
 
 CREATE TABLE `PaintingAssessment` (
@@ -680,7 +680,7 @@ CREATE TABLE `PaintingAssessment` (
 --
 
 --
--- 테이블의 인덱스 `GuestBook`
+-- 테이블의 인덱스 `PaintingAssessment`
 --
 ALTER TABLE `PaintingAssessment`
     ADD PRIMARY KEY (`painting_assessment_id`),
@@ -795,7 +795,7 @@ ALTER TABLE `Users`
 --
 
 --
--- 테이블의 AUTO_INCREMENT `GuestBook`
+-- 테이블의 AUTO_INCREMENT `PaintingAssessment`
 --
 ALTER TABLE `PaintingAssessment`
     MODIFY `painting_assessment_id` int NOT NULL AUTO_INCREMENT;

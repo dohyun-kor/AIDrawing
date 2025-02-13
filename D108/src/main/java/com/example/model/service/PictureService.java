@@ -19,5 +19,5 @@ public interface PictureService {
     int updatePictureDisplay(int userId, List<PictureDisplayRequestDto> pictureDisplayRequestDtoList);
 
     // 그림 정보 수정 메서드
-    int updatePictureInfo(PictureUpdateRequestDto pictureUpdateRequestDto);
+    int updatePictureInfo(int pictureId, PictureUpdateRequestDto pictureUpdateRequestDto);
 }
