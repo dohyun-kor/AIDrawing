@@ -117,7 +117,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         redisTemplate.opsForHash().put(key, "turn", nowturn);
         redisTemplate.opsForHash().put(key, "status", "play");
         redisTemplate.opsForHash().put(key, "topic", "wait");
-        redisTemplate.opsForHash().put(key, "correct", 0);
 
 
         // 참여자 목록 가져오기
@@ -143,6 +142,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 .collect(Collectors.toList());
 
         Map<String, Object> response = new HashMap<>();
+        response.put("event", "topic");
         response.put("topic", topicList);
         // JSON으로 변환하여 사용하거나, 다른 형태로 활용 가능
         try {
