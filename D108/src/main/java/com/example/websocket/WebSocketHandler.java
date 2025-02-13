@@ -1,3 +1,4 @@
+// WebSocketHandler.java
 package com.example.websocket;
 
 import com.example.model.dto.DifficultyDto;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,7 +50,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     // 방 별 세션 관리 (방 ID -> 해당 방에 접속한 세션 Set)
     private final Map<String, Set<WebSocketSession>> roomSessions = new ConcurrentHashMap<>();
 
-    private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
     private ScheduledFuture<?> roundTimerTask;
 
     @Override
@@ -72,18 +74,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 sessionUserMap.put(session.getId(), userId); // 세션 ID와 userId 매핑
 
                 addSessionToRoom(roomId, session);
-//                sendExistingDrawings(session, roomId);
                 rService.incrementUserCount(Integer.parseInt(roomId), userId);
                 sendExistingParticipants(session, roomId);
                 broadcastMessageToRoom(roomId, payload, session);
             } else if ("leave".equals(event)) {
                 handleUserLeave(session, roomId);
             } else if ("draw".equals(event)) {
-//                roomDrawings.putIfAbsent(roomId, new CopyOnWriteArrayList<>());
-//                roomDrawings.get(roomId).add(payload);
                 broadcastMessageToRoom(roomId, payload, session);
             } else if ("cleardrawing".equals(event)) {
-//                roomDrawings.remove(roomId);
                 broadcastMessageToRoom(roomId, payload, null);
             } else if ("chat".equals(event)) {
                 correctCheck(roomId, payload);
@@ -109,16 +107,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
         RoomDto room = rService.selectRoom(Integer.parseInt(roomId));
         String key = ROOM_PREFIX + roomId;
 
-        ArrayList<String> correctuser = new ArrayList<>();
-        redisTemplate.opsForHash().put(key, "currentround", currentround);
+        //Redis Set 초기화
+        redisTemplate.delete(ROOM_PREFIX + roomId + ":correctusers");
+
         redisTemplate.opsForHash().put(key, "maxround", room.getRounds());
         redisTemplate.opsForHash().put(key, "remaintime", room.getRoundTime());
-        redisTemplate.opsForHash().put(key, "correctuser", correctuser);
         redisTemplate.opsForHash().put(key, "turn", nowturn);
         redisTemplate.opsForHash().put(key, "status", "play");
         redisTemplate.opsForHash().put(key, "topic", "wait");
-        redisTemplate.opsForHash().put(key, "correct", 0);
-
 
         // 참여자 목록 가져오기
         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
@@ -156,92 +152,105 @@ public class WebSocketHandler extends TextWebSocketHandler {
         waitTopicSelect(roomId,nowturn);
     }
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
-
     public void waitTopicSelect(String roomId, int nowturn) {
         AtomicInteger remainTime = new AtomicInteger(15);
+        String key = ROOM_PREFIX + roomId;
 
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                String topic = (String) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "topic");
-                if (!"wait".equals(topic) || remainTime.get() <= 0) {
-                    if (remainTime.get() <= 0) {
-                        try {
-                            endRound(roomId, nowturn);
-                        } catch (IOException | InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else {
-                        Map<String, Object> messageMap = new HashMap<>();
-                        messageMap.put("event", "topicselect");
-                        messageMap.put("roomId", roomId);
-                        startRoundTimer(roomId, nowturn);
-                    }
-                    return;
-                }
+        // AtomicReference를 사용하여 future를 감싸줍니다.
+        AtomicReference<ScheduledFuture<?>> futureRef = new AtomicReference<>();
 
+        try {
+            ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
                 try {
+                    String topic = (String) redisTemplate.opsForHash().get(key, "topic");
+
+                    if (!"wait".equals(topic) || remainTime.get() <= 0) {
+                        // AtomicReference에서 future를 가져와 취소합니다.
+                        ScheduledFuture<?> future = futureRef.get();
+                        if (future != null) {
+                            future.cancel(true);
+                        }
+                        if (remainTime.get() <= 0) {
+                            try {
+                                endRound(roomId, nowturn);
+                            } catch (IOException | InterruptedException e) {
+                                System.err.println("waitTopicSelect endRound 중 오류 발생: " + e.getMessage());
+                            }
+                        } else {
+                            Map<String, Object> messageMap = new HashMap<>();
+                            messageMap.put("event", "topicselect");
+                            messageMap.put("roomId", roomId);
+                            try {
+                                broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
+                            } catch (IOException e) {
+                                System.err.println("topicselect 메시지 전송 중 오류 발생: " + e.getMessage());
+                            }
+                            startRoundTimer(roomId, nowturn);
+                        }
+                        return;
+                    }
+
                     broadcastRemainingTime(roomId, remainTime);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    remainTime.decrementAndGet();
+                    redisTemplate.opsForHash().put(key, "remaintime", remainTime.get());
+
+                } catch (Exception e) {
+                    System.err.println("waitTopicSelect 작업 중 오류 발생: " + e.getMessage());
+                    // AtomicReference에서 future를 가져와 취소합니다.
+                    ScheduledFuture<?> future = futureRef.get();
+                    if (future != null) {
+                        future.cancel(true);
+                    }
                 }
-                remainTime.decrementAndGet();
+            }, 0, 1, TimeUnit.SECONDS);
 
-                // 다음 1초 후 실행
-                scheduler.schedule(this, 1, TimeUnit.SECONDS);
-            }
-        };
-
-        // 즉시 실행 후 1초마다 실행
-        scheduler.schedule(task, 0, TimeUnit.SECONDS);
+            // 생성된 ScheduledFuture를 AtomicReference에 저장합니다.
+            futureRef.set(scheduledFuture);
+        } catch (Exception e) {
+            System.err.println("waitTopicSelect 스케줄링 중 오류 발생: " + e.getMessage());
+        }
     }
 
     // 토픽을 정했을 때
     private void topicSelect(String roomId, String message){
         Map<String, String> data = parseJson(message);
         String topic = data.get("topic");
-        redisTemplate.opsForHash().put(ROOM_PREFIX+roomId , "topic", topic);
+        rService.setTopic(Integer.parseInt(roomId),topic);
     }
 
     private void correctCheck(String roomId, String payload) throws IOException, InterruptedException {
-        if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
+        if ("play".equals(rService.getRoomInfo(Integer.parseInt(roomId),"status"))) {
             Map<String, String> data = parseJson(payload);
             String answer = data.get("message");
             String userId = data.get("userId");
 
-            if (answer.equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "topic"))) {
+            if (answer.equals(rService.getRoomInfo(Integer.parseInt(roomId),"topic"))) {
                 // 정답 메시지 전송
                 broadcastMessageToRoom(roomId, createCorrectMessage(roomId, userId), null);
 
-                // 정답자 리스트 가져오기
-                List<String> correctuser = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "correctuser");
-
-                if (correctuser == null) {
-                    correctuser = new ArrayList<>();
-                }
-
-                // CopyOnWriteArrayList로 변환 후 사용
-                CopyOnWriteArrayList<String> safeCorrectuse = new CopyOnWriteArrayList<>(correctuser);
-
-                if (!safeCorrectuse.contains(userId)) {
-                    safeCorrectuse.add(userId);
-                    redisTemplate.opsForHash().put(ROOM_PREFIX+roomId, "correctuser", safeCorrectuse); // ArrayList로 저장
-                }
+                // Redis Set에 정답 사용자 추가
+                redisTemplate.opsForSet().add(ROOM_PREFIX + roomId + ":correctusers", userId);
 
                 roundcheck(roomId);
             }
         }
     }
 
-
-
+    private void roundcheck(String roomId) throws IOException, InterruptedException {
+        // Redis Set에서 정답 사용자 수를 가져옵니다.
+        Long correctCount = redisTemplate.opsForSet().size(ROOM_PREFIX + roomId + ":correctusers");
+        int numbers = (int) rService.getRoomInfo(Integer.parseInt(roomId),"numbers");
+        if (correctCount != null && correctCount >= numbers / 2) {
+            int nowturn = (int) rService.getRoomInfo(Integer.parseInt(roomId),"turn");
+            endRound(roomId, nowturn);
+        }
+    }
 
     // 라운드 시작시 Timer기능
     private void startRoundTimer(String roomId, int nowturn) {
-        AtomicInteger remainingTime = new AtomicInteger((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "remaintime"));
+        AtomicInteger remainingTime = new AtomicInteger((Integer) rService.getRoomInfo(Integer.parseInt(roomId),"remaintime"));
 
-        roundTimerTask = scheduledExecutorService.scheduleAtFixedRate(() -> {
+        roundTimerTask = scheduler.scheduleAtFixedRate(() -> {
             if (remainingTime.get() <= 0) {
                 try {
                     endRound(roomId, nowturn);
@@ -256,12 +265,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 try {
                     broadcastRemainingTime(roomId, remainingTime);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    System.err.println("broadcastRemainingTime 에러"+ e.getMessage());
                 }
             }
         }, 0, 1, TimeUnit.SECONDS);
     }
-
 
     // 라운드 종료
     private void endRound(String roomId, int nowturn) throws IOException, InterruptedException {
@@ -269,14 +277,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
         cancelRoundTimer();
 
         // 현재 라운드와 최대 라운드 비교
-        int curround = (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "currentround");
-        int maxround = (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "maxround");
+        int curround = (int) rService.getRoomInfo(Integer.parseInt(roomId),"currentround");
+        int maxround = (int) rService.getRoomInfo(Integer.parseInt(roomId),"maxround");
         if (curround+1 > maxround) {
             endGame(roomId); // 게임 종료 처리
             return;
         }
 
-        int count = (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "numbers");
+        int count = (int) rService.getRoomInfo(Integer.parseInt(roomId),"numbers");
 
         // 다음 턴 유저 계산 (현재 턴 + 1, count로 나눈 나머지)
         int nextturn = (nowturn + 1) % count;
@@ -287,6 +295,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     // 게임 종료
     private void endGame(String roomId) throws IOException {
+        cancelRoundTimer();
         redisTemplate.opsForHash().put(ROOM_PREFIX+roomId, "status", "wait");
 
         Map<String, Object> messageMap = new HashMap<>();
@@ -376,214 +385,91 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private void sendExistingParticipants(WebSocketSession session, String roomId) throws IOException {
         System.out.println(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "numbers"));
         if (rService.getUserCount(Integer.parseInt(roomId)) >= 1) {
-            List<String> existingParticipants = rService.getParticipants(Integer.parseInt(roomId));
-            String hostId = rService.getRoomHost(Integer.parseInt(roomId));
+            List<String> participants = rService.getParticipants(Integer.parseInt(roomId));
+            Map<String, Object> messageMap = new HashMap<>();
+            messageMap.put("event", "participants");
+            messageMap.put("participants", participants);
 
-            // JSON 형태의 메시지 생성
-            String message = createExistingUserMessage(existingParticipants, hostId);
-
-            // 클라이언트에게 전송
-            sendMessageSafely(session, message);
-        }if(rService.getUserCount(Integer.parseInt(roomId)) >= 2){
-            broadcastMessageToRoom(roomId, createGameCanStartMessage(roomId),null);
+            sendMessageSafely(session, createJsonMessage(messageMap));
         }
     }
 
-    private String createGameCanStartMessage(String roomId){
-        Map<String, Object> messageMap = new HashMap<>();
-        messageMap.put("event", "gamecanstart");
-        messageMap.put("roomId", roomId);
-        return createJsonMessage(messageMap);
-    }
-
-    private String createGameCantStartMessage(String roomId){
-        Map<String, Object> messageMap = new HashMap<>();
-        messageMap.put("event", "gamecantstart");
-        messageMap.put("roomId", roomId);
-        return createJsonMessage(messageMap);
-    }
-
-    private String createCorrectMessage(String roomId, String userId){
-        Map<String , Object> messageMap = new HashMap<>();
-        messageMap.put("event", "correct");
-        messageMap.put("roomId", roomId);
-        messageMap.put("userId", userId);
-        return createJsonMessage(messageMap);
-    }
-
-    // 기존 참가자 정보와 hostId를 JSON 문자열로 변환
-    private String createExistingUserMessage(List<String> participants, String hostId) {
-        Map<String, Object> messageMap = new HashMap<>();
-        messageMap.put("event", "existinguser");
-        messageMap.put("users", participants);
-        messageMap.put("hostId", hostId);
-        return createJsonMessage(messageMap);
-    }
-
-
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws IOException, InterruptedException {
-        handleUserDisconnect(session);
-        System.out.println("사용자 연결 종료: " + session.getId() + " 상태: " + status);
-    }
-
-    @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws IOException, InterruptedException {
-        System.err.println("WebSocket 오류 발생: " + exception.toString());
-        handleUserDisconnect(session);
-        if (session.isOpen()) {
-            try {
-                session.close(CloseStatus.SERVER_ERROR);
-            } catch (IOException e) {
-                System.err.println("소켓 종료 오류: " + e.getMessage());
-            }
-        }
-    }
-
-    private void handleUserLeave(WebSocketSession session, String roomId) throws IOException, InterruptedException {
-        String userId = sessionUserMap.get(session.getId());
-        if (userId != null) {
-            String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
-
-            // 사용자가 방장이라면 방장 변경
-            if (userId.equals(currentHostId)) {
-                List<String> participants = rService.getParticipants(Integer.parseInt(roomId));
-                participants.remove(userId); // 떠나는 유저 제외
-
-                if (!participants.isEmpty()) {
-                    String newHostId = participants.get(0); // 첫 번째 유저를 새 방장으로 선택
-                    rService.setRoomHost(Integer.parseInt(roomId), newHostId); // Redis에서 변경
-
-                    // 방장 변경 메시지 broadcast
-                    broadcastHostChange(roomId, newHostId);
-                }
-            }
-
-            // 정답자 목록에서 떠난 유저 제거
-            removeUserFromCorrectUsers(roomId, userId);
-
-            // 기존 로직 유지
-            rService.decrementUserCount(Integer.parseInt(roomId), userId);
-            sessionUserMap.remove(session.getId());
-
-            if(rService.getUserCount(Integer.parseInt(roomId)) < 2){
-                if(rService.getUserCount(Integer.parseInt(roomId)) == 1){
-                    broadcastMessageToRoom(roomId, createGameCantStartMessage(roomId), null);
-                    if("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status"))){
-                        endGame(roomId);
-                    }
-                }
-            }
-        }
-        removeSessionFromRoom(roomId, session);
-        broadcastLeaveMessage(roomId, userId);
-    }
-
-
-    private void handleUserDisconnect(WebSocketSession session) throws IOException, InterruptedException {
-        String userId = sessionUserMap.get(session.getId());
-        if (userId != null) {
-            for (String roomId : roomSessions.keySet()) {
-                if (roomSessions.get(roomId).contains(session)) {
-                    // 현재 방장의 ID 확인
-                    String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
-
-                    // 유저 카운트 감소 및 방에서 제거
-                    rService.decrementUserCount(Integer.parseInt(roomId), userId);
-                    removeSessionFromRoom(roomId, session);
-
-                    // 정답자 목록에서 떠난 유저 제거
-                    removeUserFromCorrectUsers(roomId, userId);
-
-                    // 모든 사용자에게 leave 이벤트 알림
-                    broadcastLeaveMessage(roomId, userId);
-
-                    // 현재 떠나는 유저가 방장인지 확인
-                    if (userId.equals(currentHostId)) {
-                        // 새로운 방장 선택
-                        Set<WebSocketSession> remainingSessions = roomSessions.get(roomId);
-                        if (remainingSessions != null && !remainingSessions.isEmpty()) {
-                            // 남아있는 유저 중 무작위로 새로운 방장 선택
-                            WebSocketSession newHostSession = remainingSessions.iterator().next();
-                            String newHostId = sessionUserMap.get(newHostSession.getId());
-
-                            // Redis에서 새로운 방장 정보 업데이트
-                            rService.setRoomHost(Integer.parseInt(roomId), newHostId);
-
-                            // 새로운 방장 정보를 모든 클라이언트에게 broadcast
-                            broadcastHostChange(roomId, newHostId);
-                        }
-                    }
-                    if(rService.getUserCount(Integer.parseInt(roomId)) < 2){
-                        if(rService.getUserCount(Integer.parseInt(roomId)) == 1){
-                            broadcastMessageToRoom(roomId, createGameCantStartMessage(roomId), null);
-                            if("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status"))){
-                                endGame(roomId);
-                            }
-                        }
-                    }
-                }
-            }
-
-            sessionUserMap.remove(session.getId());
-        }
-        sessions.remove(session.getId());
-    }
-
-    /**
-     * 정답자 목록에서 나간 유저 제거
-     */
-    private void removeUserFromCorrectUsers(String roomId, String userId) throws IOException, InterruptedException {
-        List<String> correctuser = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "correctuser");
-        if (correctuser != null) {
-            if (correctuser.contains(userId)) {
-                correctuser.remove(userId);
-                redisTemplate.opsForHash().put(ROOM_PREFIX + roomId, "correctuse", correctuser);
-            }
-        }
-        roundcheck(roomId);
-    }
-
-    private void roundcheck(String roomId) throws IOException, InterruptedException {
-        // 최신 참가자 목록 가져오기 (방을 나간 유저 제외)
-        List<String> participants = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-        List<String> correctusers = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "correctuser");
-
-        // null 체크 후 빈 리스트로 초기화
-        if (participants == null) {
-            participants = new ArrayList<>();
-        }
-        if (correctusers == null) {
-            correctusers = new ArrayList<>();
-        }
-
-        // 정답자 수와 참가자 수 비교
-        if (correctusers.size() == participants.size() &&redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status").equals("play")) {
-            endRound(roomId, (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "currentround"));
-        }
-    }
-
-
-
-    private Map<String, String> parseJson(String json) {
-        Map<String, String> map = new HashMap<>();
-        json = json.replaceAll("[{}\"]", "");
-        for (String pair : json.split(",")) {
-            String[] keyValue = pair.split(":");
-            if (keyValue.length == 2) {
-                map.put(keyValue[0], keyValue[1]);
-            }
-        }
-        return map;
-    }
-
-    private String createJsonMessage(Map<String, Object> messageMap) {
+    private Map<String, String> parseJson(String jsonString) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.writeValueAsString(messageMap);
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(jsonString, Map.class);
         } catch (IOException e) {
-            System.err.println("JSON 변환 오류: " + e.getMessage());
+            System.err.println("JSON 파싱 오류: " + e.getMessage());
             return null;
         }
+    }
+
+    private String createJsonMessage(Object messageObject) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(messageObject);
+    }
+
+    private String createCorrectMessage(String roomId, String userId) throws IOException {
+        Map<String, Object> messageMap = new HashMap<>();
+        messageMap.put("event", "correct");
+        messageMap.put("userId", userId);
+        messageMap.put("roomId", roomId);
+
+        return createJsonMessage(messageMap);
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        String userId = sessionUserMap.get(session.getId());
+        if (userId != null) {
+            // 퇴장 처리 로직 호출
+            handleUserLeave(session, null);
+        }
+        sessions.remove(session.getId());
+        System.out.println("사용자 연결 해제됨: " + session.getId() + ", 상태: " + status);
+    }
+
+    private void handleUserLeave(WebSocketSession session, String roomId) throws IOException {
+        String userId = sessionUserMap.get(session.getId());
+        if (roomId == null) {
+            for (Map.Entry<String, Set<WebSocketSession>> entry : roomSessions.entrySet()) {
+                if (entry.getValue().contains(session)) {
+                    roomId = entry.getKey();
+                    break;
+                }
+            }
+        }
+
+        if (roomId != null && userId != null) {
+            removeSessionFromRoom(roomId, session);
+            rService.decrementUserCount(Integer.parseInt(roomId), userId);
+            broadcastLeaveMessage(roomId, userId);
+
+            String roomHost = rService.getRoomHost(Integer.parseInt(roomId));
+
+            // 방에 남은 유저가 없을 때 방을 삭제하는 로직
+            Set<WebSocketSession> roomUsers = roomSessions.get(roomId);
+            if (roomUsers == null || roomUsers.isEmpty()) {
+                // Redis 및 DB에서 방 정보 삭제
+                rService.deleteRoom(Integer.parseInt(roomId));
+                System.out.println("방 " + roomId + " 가 삭제되었습니다.");
+            } else if (roomHost != null && roomHost.equals(userId)) {
+                // 방장이 나갔을 경우 방장 교체 로직
+                Optional<WebSocketSession> newHostSession = roomUsers.stream().findAny();
+                if (newHostSession.isPresent()) {
+                    String newHostId = sessionUserMap.get(newHostSession.get().getId());
+                    rService.setRoomHost(Integer.parseInt(roomId), newHostId);
+                    broadcastHostChange(roomId, newHostId);
+                    System.out.println("방 " + roomId + " 의 방장이 " + newHostId + " 로 변경되었습니다.");
+                }
+            }
+        }
+
+        sessionUserMap.remove(session.getId());
+    }
+
+    @Override
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+        System.err.println("WebSocket 전송 오류: " + exception.getMessage());
     }
 }
