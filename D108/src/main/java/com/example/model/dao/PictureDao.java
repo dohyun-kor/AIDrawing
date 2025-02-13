@@ -23,5 +23,5 @@ public interface PictureDao {
     // 유저의 모든 그림을 초기화 (is_displayed = 0)
     int resetPictureDisplayForUser(int userId);
 
-    int updatePictureInfo(PictureUpdateRequestDto pictureUpdateRequestDto);
+    int updatePictureInfo(int pictureId, PictureUpdateRequestDto pictureUpdateRequestDto);
 }

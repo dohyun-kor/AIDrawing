@@ -29,7 +29,7 @@ public interface PaintingAssessmentDao {
      * @param paintingAssessmentId, 삭제할 평가의 고유 아이디
      * @return 삭제된 행의 수
      */
-    int deletePaintingAssessment(@Param("paintingAssessmentId") int paintingAssessmentId);
+    int deletePaintingAssessment(int paintingAssessmentId);
 
     /**
      * 사용자별 평가 조회

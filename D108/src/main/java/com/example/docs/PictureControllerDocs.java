@@ -23,7 +23,7 @@ public interface PictureControllerDocs {
                     "```"
 
     )
-    public ResponseEntity<List<PictureDto>> getPicturesByUserId(@RequestParam int userId);
+    public ResponseEntity<List<PictureDto>> getPicturesByUserId(@PathVariable int userId);
 
     @Operation(
             summary = "마이룸에 있는 해당 그림을 삭제합니다.",

@@ -51,8 +51,8 @@
     <update id="updatePictureInfo" parameterType="com.example.model.dto.PictureUpdateRequestDto">
         UPDATE Picture
         SET
-        title = #{title},
-        description = #{description}
+        title = #{pictureUpdateRequestDto.title},
+        description = #{pictureUpdateRequestDto.description}
         WHERE picture_id = #{pictureId}
     </update>
 

@@ -8,8 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PictureUpdateRequestDto {
-    // 그림 고유 아이디
-    private int pictureId;
     // 수정할 제목
     private String title;
     // 수정할 설명
