@@ -257,5 +257,21 @@ public class UserController implements UserControllerDocs {
         }
     }
 
+    // 닉네임만 수정한다.
+    @PutMapping("/nickname/{userId}")
+    public ResponseEntity<Boolean> updateUserNickname(@PathVariable int userId, @RequestParam String nickname) {
+        int result = 0;
+        try {
+            result = userService.updateUserNickname(userId, nickname);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (result == 1) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 }

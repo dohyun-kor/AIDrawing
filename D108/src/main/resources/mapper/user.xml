@@ -55,6 +55,15 @@
         WHERE user_id = #{userId}
     </update>
 
+    <!-- 닉네임 수정-->
+    <update id="updateUserNickname" parameterType="java.util.Map">
+        UPDATE Users
+        SET
+        nickname = #{nickname}
+        WHERE user_id = #{userId}
+    </update>
+
+
     <!-- userId로 point 조회-->
     <select id="findPointByUserId" parameterType="int" resultType="int">
         SELECT points
