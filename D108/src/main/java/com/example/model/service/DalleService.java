@@ -13,6 +13,8 @@ public class DalleService {
     @Value("${openai.api.key}")
     private String apiKey;
 
+    @Value("${openai.api.url}")
+    private String apiUrl; // API URL 설정 파일에서 가져오기
     private final RestTemplate restTemplate;
 
     public DalleService(RestTemplate restTemplate) {
@@ -23,12 +25,11 @@ public class DalleService {
      * DALL·E API 호출 메서드
      * @param subject 단어
      * @param size 이미지 크기 (e.g., 1024x1024)
+     * @param count 생성할 이미지 개수
      * @return DalleResponseDto 응답 객체
      */
     public DalleResponseDto generateImage(String subject, String size, int count) {
         DalleRequestDto dalleRequestDto = new DalleRequestDto(subject, size, count);
-
-        String url = "https://api.openai.com/v1/images/generations";
 
         // 헤더 설정
         HttpHeaders headers = new HttpHeaders();
@@ -39,7 +40,7 @@ public class DalleService {
         HttpEntity<DalleRequestDto> entity = new HttpEntity<>(dalleRequestDto, headers);
 
         // API 호출
-        ResponseEntity<DalleResponseDto> response = restTemplate.postForEntity(url, entity, DalleResponseDto.class);
+        ResponseEntity<DalleResponseDto> response = restTemplate.postForEntity(apiUrl, entity, DalleResponseDto.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();
