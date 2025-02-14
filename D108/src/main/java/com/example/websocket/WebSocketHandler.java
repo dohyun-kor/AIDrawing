@@ -117,6 +117,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         redisTemplate.opsForHash().put(key, "status", "play");
         redisTemplate.opsForHash().put(key, "topic", "wait");
 
+        
 
         // 참여자 목록 가져오기
         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
