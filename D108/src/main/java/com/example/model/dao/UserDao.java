@@ -5,6 +5,8 @@ import com.example.model.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper  // MyBatis Mapper 설정
 public interface UserDao {
 
@@ -83,4 +85,10 @@ public interface UserDao {
      * @return 업데이트된 행의 수
      */
     public int updateUser(@Param("userId")int userId, @Param("signUpDto") SignUpDto signUpDto);
+
+    /**
+     * 모든 사용자 정보를 가져온다.
+     * @return
+     */
+    List<UserDto> getAllUsers();
 }

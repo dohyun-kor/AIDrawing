@@ -75,4 +75,13 @@
         WHERE user_id = #{userId}
     </update>
 
+    <!--
+      모든 사용자 정보를 가져온다.
+      UserDto 리스트를 반환한다.
+    -->
+    <select id="getAllUsers" resultType="com.example.model.dto.UserDto">
+        SELECT *
+        FROM Users
+    </select>
+
 </mapper>

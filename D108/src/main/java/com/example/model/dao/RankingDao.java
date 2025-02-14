@@ -12,5 +12,10 @@ public interface RankingDao {
 
     // 특정 유저의 랭킹 조회한다.
     RankingDto getUserRanking(int userId);
+
+    // 랭킹 업데이트
+    int updateUserRanking(RankingDto rankingDto);
+
+    void insertRanking(RankingDto rankingDto);
 }
 

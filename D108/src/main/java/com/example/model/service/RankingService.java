@@ -12,4 +12,5 @@ public interface RankingService {
     // 특정 유저의 랭킹 조회
     public RankingDto getUserRanking(int userId);
 
+    RankingDto updateUserRanking(int userId, RankingDto rankingDto);
 }
