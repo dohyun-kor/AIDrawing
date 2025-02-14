@@ -22,4 +22,17 @@
         WHERE r.user_id = #{userId};
     </select>
 
+    <!--랭킹 업데이트-->
+    <update id="updateUserRanking" parameterType="com.example.model.dto.RankingDto">
+        UPDATE Ranking
+        SET rank_position = #{rankPosition},
+            win_rate = #{winRate}
+        WHERE user_id = #{userId}
+    </update>
+
+    <insert id="insertRanking" parameterType="com.example.model.dto.RankingDto">
+        INSERT INTO Ranking (user_id, rank_position, win_rate)
+        VALUES (#{userId}, 0,0)
+    </insert>
+
 </mapper>
