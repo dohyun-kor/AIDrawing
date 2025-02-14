@@ -13,7 +13,6 @@ public interface DalleControllerDocs {
                             "```json\n" +
                             "{\n" +
                             "    \"difficulty\": \"easy\",\n" +
-                            "    \"count\": \"2\",\n" +
                             "    \"size\": 1024x1024,\n" +
                             "}\n" +
                             "```\n" +
@@ -23,9 +22,6 @@ public interface DalleControllerDocs {
                             "    \"data\": [\n" +
                             "        {\n" +
                             "            \"url\": \"https://example.com/image1.png\"\n" +
-                            "        },\n" +
-                            "        {\n" +
-                            "            \"url\": \"https://example.com/image2.png\"\n" +
                             "        }\n" +
                             "    ]\n" +
                             "}\n" +
@@ -33,6 +29,5 @@ public interface DalleControllerDocs {
     )
     public ResponseEntity<DalleResponseDto> generateImage(
             @RequestParam String difficulty,
-            @RequestParam int count,
             @RequestParam(required = false) String size);
 }
