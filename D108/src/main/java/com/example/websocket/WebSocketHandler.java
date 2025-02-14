@@ -86,7 +86,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 //                roomDrawings.remove(roomId);
                 broadcastMessageToRoom(roomId, payload, null);
             } else if ("chat".equals(event)) {
-                correctCheck(roomId, payload);
+                correctCheck(roomId, payload, session);
             } else if ("start".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, session);
                 gamestart(roomId, 0,1);
@@ -133,7 +133,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
 
         List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 2);
-        System.out.println("선정된 주제들"+topics);
 
         // 원하는 형태로 topic을 가공
         List<String> topicList = topics.stream()
@@ -172,9 +171,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
                             throw new RuntimeException(e);
                         }
                     } else {
+                        System.out.println("토픽 선택됐음");
                         Map<String, Object> messageMap = new HashMap<>();
                         messageMap.put("event", "topicselect");
                         messageMap.put("roomId", roomId);
+                        try {
+                            broadcastMessageToRoom(roomId,createJsonMessage(messageMap),null);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         startRoundTimer(roomId, nowturn);
                     }
                     return;
@@ -193,7 +198,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
         };
 
         // 즉시 실행 후 1초마다 실행
-        scheduler.schedule(task, 0, TimeUnit.SECONDS);
+        scheduler.schedule(() -> {
+            try {
+                task.run();
+            } catch (Exception e) {
+                System.out.println("스케줄러 실행 중 예외 발생: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }, 0, TimeUnit.SECONDS);
+
     }
 
     // 토픽을 정했을 때
@@ -203,7 +216,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         redisTemplate.opsForHash().put(ROOM_PREFIX+roomId , "topic", topic);
     }
 
-    private void correctCheck(String roomId, String payload) throws IOException, InterruptedException {
+    private void correctCheck(String roomId, String payload , WebSocketSession session) throws IOException, InterruptedException {
         if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
             Map<String, String> data = parseJson(payload);
             String answer = data.get("message");
@@ -230,10 +243,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
                 roundcheck(roomId);
             }else{
-                broadcastMessageToRoom(roomId, payload, null);
+                broadcastMessageToRoom(roomId, payload, session);
             }
         }else{
-            broadcastMessageToRoom(roomId, payload, null);
+            broadcastMessageToRoom(roomId, payload, session);
         }
     }
 
@@ -247,6 +260,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         roundTimerTask = scheduledExecutorService.scheduleAtFixedRate(() -> {
             if (remainingTime.get() <= 0) {
                 try {
+                    System.out.println("라운드 넘어갔음");
                     endRound(roomId, nowturn);
                 } catch (IOException | InterruptedException e) {
                     System.out.println("다음 라운드로 넘어가는 도중 에러 발생");
@@ -270,20 +284,29 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private void endRound(String roomId, int nowturn) throws IOException, InterruptedException {
         // 타이머 종료
         cancelRoundTimer();
-
         // 현재 라운드와 최대 라운드 비교
-        int curround = (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "currentround");
-        int maxround = (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "maxround");
+        Object curRoundObj = redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "currentround");
+        int curround = curRoundObj != null ? Integer.parseInt(curRoundObj.toString()) : 0;
+
+        Object curMaxRoundObj = redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "maxround");
+        int maxround = curMaxRoundObj != null ? Integer.parseInt(curMaxRoundObj.toString()) : 0;
+        System.out.println("현재 라운드 : " + curround + " 최대 라운드 : " + maxround);
+
         if (curround+1 > maxround) {
+            System.out.println("겜 끝");
             endGame(roomId); // 게임 종료 처리
             return;
         }
 
-        int count = (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "numbers");
+        Object curCountObj = redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "numbers");
+        int count = curCountObj != null ? Integer.parseInt(curCountObj.toString()) : 0;
+        System.out.println("현재 그 방안에 있는 사람 수 : " + count);
 
         // 다음 턴 유저 계산 (현재 턴 + 1, count로 나눈 나머지)
         int nextturn = (nowturn + 1) % count;
 
+        System.out.println("라운드 시작합니다.");
+        System.out.println("현재 라운드 : " + curround + " 최대 라운드 : " + maxround + " 현재 차례 : " + nowturn + " 다음 차례 : " + nextturn);
         // 새로운 라운드 시작
         gamestart(roomId, nextturn,curround+1);
     }
@@ -303,7 +326,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     // 라운드 타이머 멈추기
     private void cancelRoundTimer() {
         if (roundTimerTask != null && !roundTimerTask.isCancelled()) {
-            roundTimerTask.cancel(true);
+            roundTimerTask.cancel(false);
         }
     }
 
