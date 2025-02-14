@@ -113,4 +113,9 @@ public class UserServiceImpl implements UserService {
     public int updateUser(int userId, SignUpDto signUpDto) {
         return userDao.updateUser(userId, signUpDto);
     }
+
+    @Override
+    public int updateUserNickname(int userId, String nickname) {
+        return userDao.updateUserNickname(userId, nickname);
+    }
 }

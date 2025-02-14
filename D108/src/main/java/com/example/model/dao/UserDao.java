@@ -90,6 +90,14 @@ public interface UserDao {
     public int updateUser(@Param("userId")int userId, @Param("signUpDto") SignUpDto signUpDto);
 
     /**
+     * 닉네임을 업데이트한다.
+     * @param userId 닉네임을 변경할 사용자 ID
+     * @param nickname 새 닉네임
+     * @return 업데이트된 행의 수
+     */
+    public int updateUserNickname(@Param("userId")int userId, @Param("nickname") String nickname);
+
+    /**
      * 모든 사용자 정보를 가져온다.
      * @return
      */

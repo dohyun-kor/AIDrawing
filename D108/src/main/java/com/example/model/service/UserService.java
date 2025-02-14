@@ -64,4 +64,12 @@ public interface UserService {
      * @return 업데이트된 행의 수
      */
     public int updateUser(int userId, SignUpDto signUpDto);
+
+    /**
+     * 닉네임을 수정한다.
+     *  @param userId 닉네임을 수정할 사용자의 고유 ID
+     *  @param nickname 새로운 닉네임
+     * @return 업데이트된 행의 수
+     */
+    public int updateUserNickname(int userId, String nickname);
 }
