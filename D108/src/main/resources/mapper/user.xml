@@ -69,6 +69,21 @@
         WHERE user_id = #{userId}
     </update>
 
+
+    <update id="updateEXP">
+        UPDATE Users
+        SET points += #{points},
+            total_games += total_games+1
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateWinner">
+        UPDATE Users
+        SET games_won += games_won+1
+        WHERE user_id = #{userId}
+    </update>
+
+
     <update id="changeProfile" parameterType="java.util.Map">
         UPDATE Users
         SET userProfileItemId = #{itemId}

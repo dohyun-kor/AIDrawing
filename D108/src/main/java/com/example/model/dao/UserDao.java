@@ -72,6 +72,9 @@ public interface UserDao {
      * @return
      */
     int updatePoint(@Param("userId") int userId, @Param("points") int points);
+    int updateEXP(@Param("userId") int userId, @Param("exp") int exp);
+    int updateWinner(@Param("userId") int userId);
+
 
 
     int changeProfile(@Param("userId") int userId, @Param("itemId") int itemId);

@@ -1,5 +1,6 @@
 package com.example.websocket;
 
+import com.example.model.dao.UserDao;
 import com.example.model.dto.DifficultyDto;
 import com.example.model.dto.RoomDto;
 import com.example.model.service.DifficultyService;
@@ -31,12 +32,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
     RoomService rService;
 
     @Autowired
+    UserDao uDao;
+
+    @Autowired
     RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     DifficultyService difficultyService;
 
     private static final String ROOM_PREFIX = "room:";
+
     // 세션 ID ↔ userId 매핑
     private final Map<String, String> sessionUserMap = new ConcurrentHashMap<>();
 
@@ -49,7 +54,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
     // 방 별 세션 관리 (방 ID -> 해당 방에 접속한 세션 Set)
     private final Map<String, Set<WebSocketSession>> roomSessions = new ConcurrentHashMap<>();
 
-    private final Map<String, ScheduledExecutorService> roomSchedulers = new ConcurrentHashMap<>();
     private final Map<String, ScheduledFuture<?>> roomTimerTasks = new ConcurrentHashMap<>();
 
     @Override
@@ -90,13 +94,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 correctCheck(roomId, payload, session);
             } else if ("start".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, session);
-                gamestart(roomId, 0,1);
+                gamestart(roomId, 0, 1);
             } else if ("colorchange".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, session);
-            } else if("changeroominfo".equals(event)){
+            } else if ("changeroominfo".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, null);
-            } else if ("topicselect".equals(event)){
+            } else if ("topicselect".equals(event)) {
                 topicSelect(roomId, payload);
+            } else if ("resultscore".equals(event)) {
+                scoreupdate(data);
             }
         } catch (Exception e) {
             System.err.println("WebSocket 메시지 처리 중 오류 발생: " + e.getMessage());
@@ -105,7 +111,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private void gamestart(String roomId, int nowturn, int currentround) throws IOException, InterruptedException {
+    private void gamestart(String roomId, int nowturn, int currentround) throws IOException {
         RoomDto room = rService.selectRoom(Integer.parseInt(roomId));
         String key = ROOM_PREFIX + roomId;
 
@@ -117,8 +123,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         redisTemplate.opsForHash().put(key, "turn", nowturn);
         redisTemplate.opsForHash().put(key, "status", "play");
         redisTemplate.opsForHash().put(key, "topic", "wait");
+        redisTemplate.opsForHash().put(key, "score", 100);
 
-        
 
         // 참여자 목록 가져오기
         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
@@ -153,7 +159,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         } catch (IOException e) {
             System.err.println("JSON 변환 오류: " + e.getMessage());
         }
-        waitTopicSelect(roomId,nowturn);
+        waitTopicSelect(roomId, nowturn);
     }
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
@@ -226,13 +232,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 
     // 토픽을 정했을 때
-    private void topicSelect(String roomId, String message){
+    private void topicSelect(String roomId, String message) {
         Map<String, String> data = parseJson(message);
         String topic = data.get("topic");
-        redisTemplate.opsForHash().put(ROOM_PREFIX+roomId , "topic", topic);
+        redisTemplate.opsForHash().put(ROOM_PREFIX + roomId, "topic", topic);
     }
 
-    private void correctCheck(String roomId, String payload , WebSocketSession session) throws IOException, InterruptedException {
+    private void correctCheck(String roomId, String payload, WebSocketSession session) throws IOException, InterruptedException {
         if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
             Map<String, String> data = parseJson(payload);
             String answer = data.get("message");
@@ -241,9 +247,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
             if (answer.equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "topic"))) {
                 // 정답 메시지 전송
                 broadcastMessageToRoom(roomId, createCorrectMessage(roomId, userId), null);
+                broadcastMessageToRoom(roomId, createScoreMessage(roomId, userId), null);
+                redisTemplate.opsForHash().increment(ROOM_PREFIX + roomId, "score", -10);
 
                 // 정답자 리스트 가져오기
-                List<String> correctuser = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "correctuser");
+                List<String> correctuser = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "correctuser");
 
                 if (correctuser == null) {
                     correctuser = new ArrayList<>();
@@ -254,19 +262,17 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
                 if (!safeCorrectuse.contains(userId)) {
                     safeCorrectuse.add(userId);
-                    redisTemplate.opsForHash().put(ROOM_PREFIX+roomId, "correctuser", safeCorrectuse); // ArrayList로 저장
+                    redisTemplate.opsForHash().put(ROOM_PREFIX + roomId, "correctuser", safeCorrectuse); // ArrayList로 저장
                 }
 
                 roundcheck(roomId);
-            }else{
+            } else {
                 broadcastMessageToRoom(roomId, payload, session);
             }
-        }else{
+        } else {
             broadcastMessageToRoom(roomId, payload, session);
         }
     }
-
-
 
 
     // 라운드 시작시 Timer기능 (수정됨)
@@ -300,13 +306,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
 
-
-
     // 라운드 종료
     private void endRound(String roomId, int nowturn) throws IOException, InterruptedException {
         // 타이머 종료
         cancelRoundTimer(roomId);
-//        cancelRoundTimer();
+
+        redisTemplate.opsForHash().put(ROOM_PREFIX + roomId, "score", 100);
+
         // 현재 라운드와 최대 라운드 비교
         Object curRoundObj = redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "currentround");
         int curround = curRoundObj != null ? Integer.parseInt(curRoundObj.toString()) : 0;
@@ -315,7 +321,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         int maxround = curMaxRoundObj != null ? Integer.parseInt(curMaxRoundObj.toString()) : 0;
         System.out.println("현재 라운드 : " + curround + " 최대 라운드 : " + maxround);
 
-        if (curround+1 > maxround) {
+        if (curround + 1 > maxround) {
             System.out.println("겜 끝");
             endGame(roomId); // 게임 종료 처리
             return;
@@ -331,7 +337,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         System.out.println("라운드 시작합니다.");
         System.out.println("현재 라운드 : " + curround + " 최대 라운드 : " + maxround + " 현재 차례 : " + nowturn + " 다음 차례 : " + nextturn);
         // 새로운 라운드 시작
-        gamestart(roomId, nextturn,curround+1);
+        gamestart(roomId, nextturn, curround + 1);
     }
 
     // 게임 종료
@@ -342,7 +348,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
         cancelRoundTimer(roomId);
         roomRunningStatus.remove(roomId); // 게임 종료 후 상태 제거
-        redisTemplate.opsForHash().put(ROOM_PREFIX+roomId, "status", "wait");
+        redisTemplate.opsForHash().put(ROOM_PREFIX + roomId, "status", "wait");
 
         Map<String, Object> messageMap = new HashMap<>();
         messageMap.put("event", "endgame");
@@ -434,7 +440,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     private void sendExistingParticipants(WebSocketSession session, String roomId) throws IOException {
-        System.out.println(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "numbers"));
+        System.out.println(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "numbers"));
         if (rService.getUserCount(Integer.parseInt(roomId)) >= 1) {
             List<String> existingParticipants = rService.getParticipants(Integer.parseInt(roomId));
             String hostId = rService.getRoomHost(Integer.parseInt(roomId));
@@ -444,30 +450,40 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
             // 클라이언트에게 전송
             sendMessageSafely(session, message);
-        }if(rService.getUserCount(Integer.parseInt(roomId)) >= 2){
-            broadcastMessageToRoom(roomId, createGameCanStartMessage(roomId),null);
+        }
+        if (rService.getUserCount(Integer.parseInt(roomId)) >= 2) {
+            broadcastMessageToRoom(roomId, createGameCanStartMessage(roomId), null);
         }
     }
 
-    private String createGameCanStartMessage(String roomId){
+    private String createGameCanStartMessage(String roomId) {
         Map<String, Object> messageMap = new HashMap<>();
         messageMap.put("event", "gamecanstart");
         messageMap.put("roomId", roomId);
         return createJsonMessage(messageMap);
     }
 
-    private String createGameCantStartMessage(String roomId){
+    private String createGameCantStartMessage(String roomId) {
         Map<String, Object> messageMap = new HashMap<>();
         messageMap.put("event", "gamecantstart");
         messageMap.put("roomId", roomId);
         return createJsonMessage(messageMap);
     }
 
-    private String createCorrectMessage(String roomId, String userId){
-        Map<String , Object> messageMap = new HashMap<>();
+    private String createCorrectMessage(String roomId, String userId) {
+        Map<String, Object> messageMap = new HashMap<>();
         messageMap.put("event", "correct");
         messageMap.put("roomId", roomId);
         messageMap.put("userId", userId);
+        return createJsonMessage(messageMap);
+    }
+
+    private String createScoreMessage(String roomId, String userId) {
+        Map<String, Object> messageMap = new HashMap<>();
+        messageMap.put("event", "score");
+        messageMap.put("roomId", roomId);
+        messageMap.put("userId", userId);
+        messageMap.put("score", redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "score").toString());
         return createJsonMessage(messageMap);
     }
 
@@ -526,14 +542,20 @@ public class WebSocketHandler extends TextWebSocketHandler {
             rService.decrementUserCount(Integer.parseInt(roomId), userId);
             sessionUserMap.remove(session.getId());
 
-            if(rService.getUserCount(Integer.parseInt(roomId)) < 2){
-                if(rService.getUserCount(Integer.parseInt(roomId)) == 1){
+            if (rService.getUserCount(Integer.parseInt(roomId)) < 2) {
+                if (rService.getUserCount(Integer.parseInt(roomId)) == 1) {
                     broadcastMessageToRoom(roomId, createGameCantStartMessage(roomId), null);
-                    if("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status"))){
+                    if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
                         endGame(roomId);
                     }
                 }
             }
+            ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
+            String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
+            if (userId.equals(currentPlayer)) {
+                roundcheck(roomId);
+            }
+
         }
         removeSessionFromRoom(roomId, session);
         broadcastLeaveMessage(roomId, userId);
@@ -574,13 +596,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
                             broadcastHostChange(roomId, newHostId);
                         }
                     }
-                    if(rService.getUserCount(Integer.parseInt(roomId)) < 2){
-                        if(rService.getUserCount(Integer.parseInt(roomId)) == 1){
+                    if (rService.getUserCount(Integer.parseInt(roomId)) < 2) {
+                        if (rService.getUserCount(Integer.parseInt(roomId)) == 1) {
                             broadcastMessageToRoom(roomId, createGameCantStartMessage(roomId), null);
-                            if("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status"))){
+                            if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
                                 endGame(roomId);
                             }
                         }
+                    }
+                    ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
+                    String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
+                    if (userId.equals(currentPlayer)) {
+                        roundcheck(roomId);
                     }
                 }
             }
@@ -594,7 +621,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * 정답자 목록에서 나간 유저 제거
      */
     private void removeUserFromCorrectUsers(String roomId, String userId) throws IOException, InterruptedException {
-        List<String> correctuser = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "correctuser");
+        List<String> correctuser = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "correctuser");
         if (correctuser != null) {
             if (correctuser.contains(userId)) {
                 correctuser.remove(userId);
@@ -618,9 +645,20 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
 
         // 정답자 수와 참가자 수 비교
-        if (correctusers.size() == participants.size()-1 && redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status").equals("play")) {
+        if (correctusers.size() == participants.size() - 1 && redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status").equals("play")) {
             endRound(roomId, (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
         }
+    }
+
+    private void scoreupdate(Map<String, String> data) {
+        int userId = Integer.parseInt(data.get("userId"));
+        int score = Integer.parseInt(data.get("score"));
+        String roomId = data.get("roomId");
+        
+
+
+        uDao.updateEXP(userId, (int) (score * 1.7));
+        uDao.updatePoint(userId, (int) (score * 0.2));
     }
 
 
