@@ -17,6 +17,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -156,15 +157,22 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
+    private final Map<String, AtomicBoolean> roomRunningStatus = new ConcurrentHashMap<>();
 
     public void waitTopicSelect(String roomId, int nowturn) {
         AtomicInteger remainTime = new AtomicInteger(15);
+        AtomicBoolean isRunning = roomRunningStatus.computeIfAbsent(roomId, k -> new AtomicBoolean(true));
 
         Runnable task = new Runnable() {
             @Override
             public void run() {
+                if (!isRunning.get()) {
+                    return; // 게임이 종료되었으면 작업 중단
+                }
                 String topic = (String) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "topic");
                 if (!"wait".equals(topic) || remainTime.get() <= 0) {
+                    // 타이머 작업 취소
+                    cancelRoundTimer(roomId);
                     if (remainTime.get() <= 0) {
                         try {
                             endRound(roomId, nowturn);
@@ -183,8 +191,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                         }
                         startRoundTimer(roomId, nowturn);
                     }
-                    // 타이머 작업 취소
-                    cancelRoundTimer(roomId);
                     return;
                 }
 
@@ -196,7 +202,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 remainTime.decrementAndGet();
 
                 // 다음 1초 후 실행
-                scheduler.schedule(this, 1, TimeUnit.SECONDS);
+                if (isRunning.get()) {
+                    scheduler.schedule(this, 1, TimeUnit.SECONDS);
+                }
             }
         };
 
@@ -328,7 +336,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     // 게임 종료
     private void endGame(String roomId) throws IOException {
+        AtomicBoolean isRunning = roomRunningStatus.get(roomId);
+        if (isRunning != null) {
+            isRunning.set(false);
+        }
         cancelRoundTimer(roomId);
+        roomRunningStatus.remove(roomId); // 게임 종료 후 상태 제거
         redisTemplate.opsForHash().put(ROOM_PREFIX+roomId, "status", "wait");
 
         Map<String, Object> messageMap = new HashMap<>();
@@ -339,7 +352,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
     }
 
-    // 라운드 타이머 멈추기
     // 라운드 타이머 멈추기 (수정됨)
     private void cancelRoundTimer(String roomId) {
         // 해당 방에 스케줄된 작업이 있는지 확인하고 취소
