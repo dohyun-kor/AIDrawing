@@ -561,7 +561,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
 
         // 정답자 수와 참가자 수 비교
-        if (correctusers.size() == participants.size() &&redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status").equals("play")) {
+        if (correctusers.size() == participants.size()-1 && redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "status").equals("play")) {
             endRound(roomId, (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "currentround"));
         }
     }
