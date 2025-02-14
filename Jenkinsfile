@@ -43,6 +43,7 @@ pipeline {
                         cp "$APP_PROPS" D108/src/main/resources/application.properties
                     '''
                 }
+
                 // D108 디렉토리로 이동하여 Maven 빌드 실행
                 dir('D108') {
                     // 패키징
