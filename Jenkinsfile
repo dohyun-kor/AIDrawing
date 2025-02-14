@@ -38,6 +38,7 @@ pipeline {
                     // 복사할 디렉토리 생성 (존재하지 않을 수 있으므로 미리 생성)
                     sh '''
                         #!/bin/bash
+                        rm -f D108/src/main/resources/application.properties
                         mkdir -p D108/src/main/resources
                         cp "$APP_PROPS" D108/src/main/resources/application.properties
                     '''
