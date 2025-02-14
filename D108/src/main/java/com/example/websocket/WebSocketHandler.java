@@ -87,7 +87,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 broadcastMessageToRoom(roomId, payload, null);
             } else if ("chat".equals(event)) {
                 correctCheck(roomId, payload);
-                broadcastMessageToRoom(roomId, payload, session);
             } else if ("start".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, session);
                 gamestart(roomId, 0,1);
@@ -230,7 +229,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 }
 
                 roundcheck(roomId);
+            }else{
+                broadcastMessageToRoom(roomId, payload, null);
             }
+        }else{
+            broadcastMessageToRoom(roomId, payload, null);
         }
     }
 
