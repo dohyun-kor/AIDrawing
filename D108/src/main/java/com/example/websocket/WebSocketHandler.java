@@ -557,6 +557,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     roundcheck(roomId);
                 }
             }
+            
 
         }
         removeSessionFromRoom(roomId, session);
