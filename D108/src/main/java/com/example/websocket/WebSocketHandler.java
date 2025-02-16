@@ -518,12 +518,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private void handleUserLeave(WebSocketSession session, String roomId) throws IOException, InterruptedException {
         String userId = sessionUserMap.get(session.getId());
+        ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
+        String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
         if (userId != null) {
             String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
 
             // 사용자가 방장이라면 방장 변경
             if (userId.equals(currentHostId)) {
-                List<String> participants = rService.getParticipants(Integer.parseInt(roomId));
                 participants.remove(userId); // 떠나는 유저 제외
 
                 if (!participants.isEmpty()) {
@@ -551,8 +552,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 }
             }
             else if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
-                ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-                String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
                 System.out.println(userId + " 가 나감." + " 현재 플레이어 : " + currentPlayer);
                 if (userId.equals(currentPlayer)) {
                     System.out.println("endRound 호출");
@@ -561,8 +560,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     roundcheck(roomId);
                 }
             }
-            
-
         }
         removeSessionFromRoom(roomId, session);
         broadcastLeaveMessage(roomId, userId);
@@ -571,11 +568,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private void handleUserDisconnect(WebSocketSession session) throws IOException, InterruptedException {
         String userId = sessionUserMap.get(session.getId());
+
         if (userId != null) {
             for (String roomId : roomSessions.keySet()) {
                 if (roomSessions.get(roomId).contains(session)) {
                     // 현재 방장의 ID 확인
                     String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
+
+                    ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
+                    String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
 
                     // 유저 카운트 감소 및 방에서 제거
                     rService.decrementUserCount(Integer.parseInt(roomId), userId);
@@ -612,9 +613,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                         }
                     }
                     else if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
-                        ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-                        String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
-                        if (userId.equals(currentPlayer)) {
+                         if (userId.equals(currentPlayer)) {
                             endRound(roomId, (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
                         }else{
                             roundcheck(roomId);
