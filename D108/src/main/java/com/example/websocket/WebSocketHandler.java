@@ -550,10 +550,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     }
                 }
             }
-            ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-            String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
-            if (userId.equals(currentPlayer)) {
-                roundcheck(roomId);
+            if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
+                ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
+                String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
+                if (userId.equals(currentPlayer)) {
+                    roundcheck(roomId);
+                }
             }
 
         }
@@ -604,10 +606,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
                             }
                         }
                     }
-                    ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-                    String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
-                    if (userId.equals(currentPlayer)) {
-                        roundcheck(roomId);
+                    if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
+                        ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
+                        String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
+                        if (userId.equals(currentPlayer)) {
+                            roundcheck(roomId);
+                        }
                     }
                 }
             }
@@ -654,13 +658,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
         int userId = Integer.parseInt(data.get("userId"));
         int score = Integer.parseInt(data.get("score"));
         String roomId = data.get("roomId");
-        
 
 
         uDao.updateEXP(userId, (int) (score * 1.7));
         uDao.updatePoint(userId, (int) (score * 0.2));
     }
-
 
 
     private Map<String, String> parseJson(String json) {
