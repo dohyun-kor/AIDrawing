@@ -550,10 +550,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     }
                 }
             }
-            if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
+            else if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
                 ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
                 String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
                 if (userId.equals(currentPlayer)) {
+                    endRound(roomId, (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
+                }else{
                     roundcheck(roomId);
                 }
             }
@@ -607,10 +609,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
                             }
                         }
                     }
-                    if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
+                    else if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
                         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
                         String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
                         if (userId.equals(currentPlayer)) {
+                            endRound(roomId, (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
+                        }else{
                             roundcheck(roomId);
                         }
                     }
