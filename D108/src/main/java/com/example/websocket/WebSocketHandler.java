@@ -553,7 +553,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
             else if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
                 ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
                 String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
+                System.out.println(userId + " 가 나감." + " 현재 플레이어 : " + currentPlayer);
                 if (userId.equals(currentPlayer)) {
+                    System.out.println("endRound 호출");
                     endRound(roomId, (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
                 }else{
                     roundcheck(roomId);
