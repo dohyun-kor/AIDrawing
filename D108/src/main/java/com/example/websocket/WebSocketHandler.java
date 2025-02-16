@@ -523,6 +523,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         if (userId != null) {
             String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
 
+            broadcastLeaveMessage(roomId, userId);
+
             // 사용자가 방장이라면 방장 변경
             if (userId.equals(currentHostId)) {
                 participants.remove(userId); // 떠나는 유저 제외
@@ -562,7 +564,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
             }
         }
         removeSessionFromRoom(roomId, session);
-        broadcastLeaveMessage(roomId, userId);
     }
 
 
@@ -572,6 +573,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         if (userId != null) {
             for (String roomId : roomSessions.keySet()) {
                 if (roomSessions.get(roomId).contains(session)) {
+                    // 모든 사용자에게 leave 이벤트 알림
+                    broadcastLeaveMessage(roomId, userId);
                     // 현재 방장의 ID 확인
                     String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
 
@@ -585,8 +588,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     // 정답자 목록에서 떠난 유저 제거
                     removeUserFromCorrectUsers(roomId, userId);
 
-                    // 모든 사용자에게 leave 이벤트 알림
-                    broadcastLeaveMessage(roomId, userId);
 
                     // 현재 떠나는 유저가 방장인지 확인
                     if (userId.equals(currentHostId)) {
