@@ -17,7 +17,7 @@ public class MyItemDto {
     private int itemId;                 // 아이템 고유 ID
     private int userId;                 // 사용자 고유 ID
     private String itemName;            // 아이템 이름 (조인 결과에 따라)
-    private String purchaseDate;        // 구매일 (string 또는 localDateTime 등으로 구성 가능)
     private String category;
+    private String purchaseDate;        // 구매일 (string 또는 localDateTime 등으로 구성 가능)
 
 }

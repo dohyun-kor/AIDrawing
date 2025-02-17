@@ -50,16 +50,17 @@ public class MyItemController implements MyItemControllerDocs {
 
     @PostMapping
     public boolean purchaseItem(@RequestBody PurchaseRequestDto purchaseRequestDto) {
-        // 1) PurchaseRequestDto에서 userId, itemId, itemPrice 추출
+        // 1) PurchaseRequestDto에서 userId, itemId, itemPrice, category 추출
         int userId = purchaseRequestDto.getUserId();
         int itemId = purchaseRequestDto.getItemId();
         int itemPrice = purchaseRequestDto.getItemPrice();
+        String category = purchaseRequestDto.getCategory();
 
         // 2) MyItemDto 생성 (userId, itemId 설정)
         MyItemDto myItemDto = new MyItemDto();
         myItemDto.setUserId(userId);
         myItemDto.setItemId(itemId);
-        // 필요하다면 purchaseDate 등 다른 필드도 세팅할 수 있음
+        myItemDto.setCategory(category);
 
         // 3) Service를 통해 구매 로직 실행
         try {
