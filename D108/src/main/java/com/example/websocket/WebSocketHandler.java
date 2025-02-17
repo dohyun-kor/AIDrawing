@@ -94,7 +94,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 //                roomDrawings.remove(roomId);
                 broadcastMessageToRoom(roomId, payload, null);
             } else if ("chat".equals(event)) {
-                correctCheck(roomId, payload, session);
+                correctCheck(roomId, payload, null);
             } else if ("start".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, session);
                 gamestart(roomId, 0, 1);
@@ -270,10 +270,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
                 roundcheck(roomId);
             } else {
-                broadcastMessageToRoom(roomId, payload, session);
+                broadcastChatMessageToRoom(roomId, payload, session);
             }
         } else {
-            broadcastMessageToRoom(roomId, payload, session);
+            broadcastChatMessageToRoom(roomId, payload, session);
         }
     }
 
@@ -360,36 +360,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // ObjectMapper를 사용해 메시지 객체를 JSON 형식으로 변환
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
 
-
-// 1. 룸의 점수 정보를 가져온다.
-        Map<String, Integer> roomScoreMap = roomScores.get(roomId);
-
-        // 룸의 점수 정보가 있을 때만 최고 점수 유저를 찾고 winner 이벤트를 보낸다.
-        if (roomScoreMap != null && !roomScoreMap.isEmpty()) {
-            // 2. 최고점수 유저를 찾는다.
-            String winnerId = null;
-            int maxScore = Integer.MIN_VALUE;
-
-            for (Map.Entry<String, Integer> entry : roomScoreMap.entrySet()) {
-                if (entry.getValue() > maxScore) {
-                    maxScore = entry.getValue();
-                    winnerId = entry.getKey();
-                }
-            }
-            // 3. 클라이언트에 winner이벤트와 함께 최고점수 유저의 ID를 보낸다.
-            Map<String, Object> winnerMessage = new HashMap<>();
-            winnerMessage.put("event", "winner");
-            winnerMessage.put("userId", winnerId);
-            winnerMessage.put("score", maxScore);
-            broadcastMessageToRoom(roomId, createJsonMessage(winnerMessage), null);
-        } else {
-            // 룸에 점수 정보가 없는 경우, winner 정보를 "none"으로 설정하여 보낸다.
-            Map<String, Object> winnerMessage = new HashMap<>();
-            winnerMessage.put("event", "winner");
-            winnerMessage.put("userId", -1); // 또는 null, 0 등 적절한 값
-            winnerMessage.put("score", 0);
-            broadcastMessageToRoom(roomId, createJsonMessage(winnerMessage), null);
-        }
     }
 
     // 라운드 타이머 멈추기 (수정됨)
@@ -423,6 +393,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
         messageMap.put("event", "leave");
         messageMap.put("userId", userId);
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
+    }
+
+    private void broadcastChatMessageToRoom(String roomId, String payload, WebSocketSession session) throws IOException {
+        Map<String, String> data = parseJson(payload);
+        Map<String, Object> chatMessage = new HashMap<>();
+        chatMessage.put("roomId", roomId);
+        chatMessage.put("event" , "chat");
+        chatMessage.put("message", data.get("nickname") + " : " + data.get("message"));
+        chatMessage.put("userId", data.get("userId"));
+        broadcastMessageToRoom(roomId, createJsonMessage(chatMessage), null);
     }
 
 
@@ -572,7 +552,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         int leaverIndex = participants.indexOf(userId);
         if (leaverIndex != -1 && currentTurn != null) {
             if (leaverIndex <= currentTurn) {
-                currentTurn = (currentTurn - 1 + participants.size()) % participants.size();
+                currentTurn = (currentTurn - 1 + participants.size()) % participants.size()-1;
+                if(currentTurn <0) currentTurn = 0;
                 redisTemplate.opsForHash().put(ROOM_PREFIX + roomId, "turn", currentTurn);
             }
         }
@@ -657,7 +638,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private void scoreupdate(Map<String, String> data) {
+    private void scoreupdate(Map<String, String> data) throws IOException {
         String userId = data.get("userId");
         int score = Integer.parseInt(data.get("score"));
         String roomId = data.get("roomId");
@@ -668,10 +649,43 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         // 유저 점수 업데이트
         roomScores.get(roomId).put(userId, score);
+        if(roomScores.get(roomId).size() == (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "numbers")){
+            calculateAndBroadcastResults(roomId);
+            roomScores.remove(roomId);
+        }
 
         uDao.updateEXP(intuserId, (int) (score * 1.7));
         uDao.updatePoint(intuserId, (int) (score * 0.2));
     }
+
+    private void calculateAndBroadcastResults(String roomId) throws IOException {
+        Map<String, Integer> scores = roomScores.get(roomId);
+        if (scores == null || scores.isEmpty()) {
+            return;
+        }
+
+        String winnerId = null;
+        int maxScore = Integer.MIN_VALUE;
+
+        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+            String userId = entry.getKey();
+            int score = entry.getValue();
+            if (score > maxScore) {
+                maxScore = score;
+                winnerId = userId;
+            }
+        }
+
+        // 결과 메시지 생성
+        Map<String, Object> resultMessage = new HashMap<>();
+        resultMessage.put("event", "winner");
+        resultMessage.put("userId", winnerId != null ? winnerId : -1);
+        resultMessage.put("score", maxScore != Integer.MIN_VALUE ? maxScore : 0);
+
+        // 결과 방송
+        broadcastMessageToRoom(roomId, createJsonMessage(resultMessage), null);
+    }
+
 
 
     private Map<String, String> parseJson(String json) {
