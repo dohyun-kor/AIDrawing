@@ -81,7 +81,7 @@
 
     <update id="updateEXP">
         UPDATE Users
-        SET exp += #{exp},
+        SET exp = exp + #{exp},
             total_games = total_games + 1
         WHERE user_id = #{userId}
     </update>
