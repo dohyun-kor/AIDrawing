@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.docs.MyRoomControllerDocs;
 import com.example.model.dto.MyRoomDto;
+import com.example.model.dto.PictureDto;
 import com.example.model.service.MyRoomService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Tag(name = "마이룸", description = "마이룸 관련 API")
 @RestController
@@ -25,10 +28,10 @@ public class MyRoomController implements MyRoomControllerDocs {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<MyRoomDto> getDisplayedItems(@PathVariable int userId) {
+    public ResponseEntity<List<PictureDto>> getDisplayedItems(@PathVariable int userId) {
         try {
             MyRoomDto myRoomDto = myRoomService.getDisplayedItems(userId);
-            return ResponseEntity.ok(myRoomDto);
+            return ResponseEntity.ok(myRoomDto.getDisplayedPictures());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
