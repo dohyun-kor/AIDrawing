@@ -356,6 +356,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         // ObjectMapper를 사용해 메시지 객체를 JSON 형식으로 변환
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
+
+        Map<String, Object> messageMap2 = new HashMap<>();
+        messageMap.put("event", "winner");
+        messageMap.put("userId", 0);
+        broadcastMessageToRoom(roomId, createJsonMessage(messageMap2),null);
     }
 
     // 라운드 타이머 멈추기 (수정됨)
