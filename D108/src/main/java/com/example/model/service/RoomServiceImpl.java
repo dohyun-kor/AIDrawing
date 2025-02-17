@@ -34,6 +34,7 @@ public class RoomServiceImpl implements RoomService {
         participants.add(String.valueOf(roomDto.getHostId()));
         redisTemplate.opsForHash().put(key, "participants", participants);
         redisTemplate.opsForHash().put(key, "status", "wait");
+        redisTemplate.opsForHash().put(key, "turn", 0);
 
         // 게임 인원 수 초기화
         redisTemplate.opsForHash().put(key, "numbers", 1);
