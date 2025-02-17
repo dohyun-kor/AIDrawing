@@ -1,6 +1,7 @@
 // C:\SSAFY\Do\gitlab_repo\D108\D108\src\main\java\com\example\model\dto\MyItemDto.java
 package com.example.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class MyItemDto {
 
     private int purchaseId;             // 구매 고유 ID
@@ -16,13 +18,6 @@ public class MyItemDto {
     private int userId;                 // 사용자 고유 ID
     private String itemName;            // 아이템 이름 (조인 결과에 따라)
     private String purchaseDate;        // 구매일 (string 또는 localDateTime 등으로 구성 가능)
+    private String category;
 
-    // 모든 필드를 받는 생성자
-    public MyItemDto(int purchaseId, int itemId, int userId, String itemName , String purchaseDate) {
-        this.purchaseId = purchaseId;
-        this.itemId = itemId;
-        this.userId = userId;
-        this.itemName = itemName;
-        this.purchaseDate = purchaseDate;
-    }
 }
