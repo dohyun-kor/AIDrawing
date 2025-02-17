@@ -519,7 +519,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private void handleUserLeave(WebSocketSession session, String roomId) throws IOException, InterruptedException {
         String userId = sessionUserMap.get(session.getId());
         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-        String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
         if (userId != null) {
             String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
 
@@ -554,6 +553,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 }
             }
             else if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
+                String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
                 System.out.println(userId + " 가 나감." + " 현재 플레이어 : " + currentPlayer);
                 if (userId.equals(currentPlayer)) {
                     System.out.println("endRound 호출");
@@ -579,7 +579,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
 
                     ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-                    String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
 
                     // 유저 카운트 감소 및 방에서 제거
                     rService.decrementUserCount(Integer.parseInt(roomId), userId);
@@ -614,6 +613,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                         }
                     }
                     else if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
+                        String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
                          if (userId.equals(currentPlayer)) {
                             endRound(roomId, (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
                         }else{
