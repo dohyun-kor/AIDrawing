@@ -54,6 +54,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
     // 방 별 세션 관리 (방 ID -> 해당 방에 접속한 세션 Set)
     private final Map<String, Set<WebSocketSession>> roomSessions = new ConcurrentHashMap<>();
 
+    // 방 별 점수 저장
+    private final Map<String, Map<String, Integer>> roomScores = new ConcurrentHashMap<>();
+
     private final Map<String, ScheduledFuture<?>> roomTimerTasks = new ConcurrentHashMap<>();
 
     @Override
@@ -357,10 +360,36 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // ObjectMapper를 사용해 메시지 객체를 JSON 형식으로 변환
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
 
-        Map<String, Object> messageMap2 = new HashMap<>();
-        messageMap2.put("event", "winner");
-        messageMap2.put("userId", 0);
-        broadcastMessageToRoom(roomId, createJsonMessage(messageMap2),null);
+
+// 1. 룸의 점수 정보를 가져온다.
+        Map<String, Integer> roomScoreMap = roomScores.get(roomId);
+
+        // 룸의 점수 정보가 있을 때만 최고 점수 유저를 찾고 winner 이벤트를 보낸다.
+        if (roomScoreMap != null && !roomScoreMap.isEmpty()) {
+            // 2. 최고점수 유저를 찾는다.
+            String winnerId = null;
+            int maxScore = Integer.MIN_VALUE;
+
+            for (Map.Entry<String, Integer> entry : roomScoreMap.entrySet()) {
+                if (entry.getValue() > maxScore) {
+                    maxScore = entry.getValue();
+                    winnerId = entry.getKey();
+                }
+            }
+            // 3. 클라이언트에 winner이벤트와 함께 최고점수 유저의 ID를 보낸다.
+            Map<String, Object> winnerMessage = new HashMap<>();
+            winnerMessage.put("event", "winner");
+            winnerMessage.put("userId", winnerId);
+            winnerMessage.put("score", maxScore);
+            broadcastMessageToRoom(roomId, createJsonMessage(winnerMessage), null);
+        } else {
+            // 룸에 점수 정보가 없는 경우, winner 정보를 "none"으로 설정하여 보낸다.
+            Map<String, Object> winnerMessage = new HashMap<>();
+            winnerMessage.put("event", "winner");
+            winnerMessage.put("userId", -1); // 또는 null, 0 등 적절한 값
+            winnerMessage.put("score", 0);
+            broadcastMessageToRoom(roomId, createJsonMessage(winnerMessage), null);
+        }
     }
 
     // 라운드 타이머 멈추기 (수정됨)
@@ -629,13 +658,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     private void scoreupdate(Map<String, String> data) {
-        int userId = Integer.parseInt(data.get("userId"));
+        String userId = data.get("userId");
         int score = Integer.parseInt(data.get("score"));
         String roomId = data.get("roomId");
+        int intuserId = Integer.parseInt(data.get("userId"));
 
+        // 룸별 점수 맵이 없다면 생성
+        roomScores.computeIfAbsent(roomId, k -> new ConcurrentHashMap<>());
 
-        uDao.updateEXP(userId, (int) (score * 1.7));
-        uDao.updatePoint(userId, (int) (score * 0.2));
+        // 유저 점수 업데이트
+        roomScores.get(roomId).put(userId, score);
+
+        uDao.updateEXP(intuserId, (int) (score * 1.7));
+        uDao.updatePoint(intuserId, (int) (score * 0.2));
     }
 
 
