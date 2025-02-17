@@ -546,7 +546,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         rService.decrementUserCount(Integer.parseInt(roomId), userId);
 
         participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-        String currentPlayer = participants.isEmpty() ? null : participants.get(currentTurn);
+        String currentPlayer = participants == null || participants.isEmpty() ? null : participants.get(currentTurn);
 
         String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
 
