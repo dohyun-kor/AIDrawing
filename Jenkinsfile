@@ -80,7 +80,7 @@ pipeline {
                         docker.withRegistry('https://index.docker.io/v1/', REGISTRY_CREDENTIAL) {
                             // docker build (DOOD)
                             // 컨테이너 내부에서 실행되지만, 실제로는 호스트 도커 데몬에서 빌드
-                            def app = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", ".")
+                            def app = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", "--no-cache ." )
 
                             // 빌드된 이미지는 호스트 데몬에 등록됨
                             // docker info를 통해 확인
