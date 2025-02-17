@@ -1,13 +1,12 @@
 package com.example.config;
 
+import com.example.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.web.SecurityFilterChain;
-import com.example.security.JwtAuthenticationFilter;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -24,33 +23,34 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // ✅ Swagger, WebSocket 엔드포인트를 허용할 경로 목록
-        String[] swaggerWhitelist = {
+        // ✅ Swagger, WebSocket, Item 엔드포인트를 허용할 경로 목록
+        String[] whitelistPaths = {
                 "/swagger-ui/**",
                 "/v3/api-docs/**",
-                "/user/login",   // 로그인 엔드포인트
-                "/user/signup",   // 회원가입 엔드포인트
-                "/user/nickname/isUsed", // 닉네임 중복 조회
-                "/user/isUsed", // 아이디 중복 조회
-                "/user/*/info" // 해당 유저 정보 조회
+                "/user/login",
+                "/user/signup",
+                "/user/nickname/isUsed",
+                "/user/isUsed",
+                "/user/*/info",
+                "/api/static/item/**"  // Item 이미지에 대한 경로 추가
         };
 
         return http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/ws/**") // ✅ WebSocket은 CSRF 보호 제외
+                        .ignoringRequestMatchers("/ws/**")
                         .disable()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(swaggerWhitelist).permitAll() // ✅ Swagger 관련 경로 허용
-                        .requestMatchers("/ws/**").permitAll() // ✅ WebSocket 엔드포인트 허용
-                        .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
+                        .requestMatchers(whitelistPaths).permitAll() // 화이트리스트 경로 허용
+                        .requestMatchers("/ws/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                // ✅ JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 추가
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(Customizer.withDefaults()) // 테스트용 formLogin 활성화
+                .formLogin(Customizer.withDefaults())
                 .build();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
