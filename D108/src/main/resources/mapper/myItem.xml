@@ -33,8 +33,8 @@
     <!-- 새 MyItem 등록 -->
     <insert id="insertMyItem" parameterType="com.example.model.dto.MyItemDto">
         INSERT INTO MyItem
-        (item_id, user_id, purchase_date)
+        (item_id, user_id, purchase_date, category)
         VALUES
-        (#{itemId}, #{userId}, NOW())
+        (#{itemId}, #{userId}, NOW(), #{category})
     </insert>
 </mapper>
