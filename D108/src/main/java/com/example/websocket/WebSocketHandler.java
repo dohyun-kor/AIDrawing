@@ -82,7 +82,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 sendExistingParticipants(session, roomId);
                 broadcastMessageToRoom(roomId, payload, session);
             } else if ("leave".equals(event)) {
-                handleUserLeave(session, roomId);
+                handleUserLeave(session);
             } else if ("draw".equals(event)) {
 //                roomDrawings.putIfAbsent(roomId, new CopyOnWriteArrayList<>());
 //                roomDrawings.get(roomId).add(payload);
@@ -499,14 +499,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws IOException, InterruptedException {
-        handleUserDisconnect(session);
+        handleUserLeave(session);
         System.out.println("사용자 연결 종료: " + session.getId() + " 상태: " + status);
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws IOException, InterruptedException {
         System.err.println("WebSocket 오류 발생: " + exception.toString());
-        handleUserDisconnect(session);
+        handleUserLeave(session);
         if (session.isOpen()) {
             try {
                 session.close(CloseStatus.SERVER_ERROR);
@@ -516,117 +516,80 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private void handleUserLeave(WebSocketSession session, String roomId) throws IOException, InterruptedException {
+    private void handleUserLeave(WebSocketSession session) throws IOException, InterruptedException {
         String userId = sessionUserMap.get(session.getId());
+        if (userId == null) return;
+
+        String roomId = null;
+        for (Map.Entry<String, Set<WebSocketSession>> entry : roomSessions.entrySet()) {
+            if (entry.getValue().contains(session)) {
+                roomId = entry.getKey();
+                break;
+            }
+        }
+        if (roomId == null) return;
+
         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-        String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
-        if (userId != null) {
-            String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
+        if (participants.isEmpty()) return;
 
-            broadcastLeaveMessage(roomId, userId);
+        Integer currentTurn = (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn");
 
-            // 사용자가 방장이라면 방장 변경
-            if (userId.equals(currentHostId)) {
-                participants.remove(userId); // 떠나는 유저 제외
-
-                if (!participants.isEmpty()) {
-                    String newHostId = participants.get(0); // 첫 번째 유저를 새 방장으로 선택
-                    rService.setRoomHost(Integer.parseInt(roomId), newHostId); // Redis에서 변경
-
-                    // 방장 변경 메시지 broadcast
-                    broadcastHostChange(roomId, newHostId);
-                }
-            }
-
-            // 정답자 목록에서 떠난 유저 제거
-            removeUserFromCorrectUsers(roomId, userId);
-
-            // 기존 로직 유지
-            rService.decrementUserCount(Integer.parseInt(roomId), userId);
-            sessionUserMap.remove(session.getId());
-
-            if (rService.getUserCount(Integer.parseInt(roomId)) < 2) {
-                if (rService.getUserCount(Integer.parseInt(roomId)) == 1) {
-                    broadcastMessageToRoom(roomId, createGameCantStartMessage(roomId), null);
-                    if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
-                        endGame(roomId);
-                    }
-                }
-            }
-            else if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
-                System.out.println(userId + " 가 나감." + " 현재 플레이어 : " + currentPlayer);
-                if (userId.equals(currentPlayer)) {
-                    System.out.println("endRound 호출");
-                    endRound(roomId, (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
-                }else{
-                    roundcheck(roomId);
-                }
+        // 턴 조정 로직
+        int leaverIndex = participants.indexOf(userId);
+        if (leaverIndex != -1 && currentTurn != null) {
+            if (leaverIndex <= currentTurn) {
+                currentTurn = (currentTurn - 1 + participants.size()) % participants.size();
+                redisTemplate.opsForHash().put(ROOM_PREFIX + roomId, "turn", currentTurn);
             }
         }
+
+        participants.remove(userId);
+        redisTemplate.opsForHash().put(ROOM_PREFIX + roomId, "participants", participants);
+
+        String currentPlayer = participants.isEmpty() ? null : participants.get(currentTurn);
+
+        String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
+
+        broadcastLeaveMessage(roomId, userId);
+
+        // 사용자가 방장이라면 방장 변경
+        if (userId.equals(currentHostId)) {
+            if (!participants.isEmpty()) {
+                String newHostId = participants.get(0);
+                rService.setRoomHost(Integer.parseInt(roomId), newHostId);
+                broadcastHostChange(roomId, newHostId);
+            }
+        }
+
+        // 정답자 목록에서 떠난 유저 제거
+        removeUserFromCorrectUsers(roomId, userId);
+
+        // 유저 카운트 감소 및 세션 정보 제거
+        rService.decrementUserCount(Integer.parseInt(roomId), userId);
+        sessionUserMap.remove(session.getId());
         removeSessionFromRoom(roomId, session);
-    }
 
-
-    private void handleUserDisconnect(WebSocketSession session) throws IOException, InterruptedException {
-        String userId = sessionUserMap.get(session.getId());
-
-        if (userId != null) {
-            for (String roomId : roomSessions.keySet()) {
-                if (roomSessions.get(roomId).contains(session)) {
-                    // 모든 사용자에게 leave 이벤트 알림
-                    broadcastLeaveMessage(roomId, userId);
-                    // 현재 방장의 ID 확인
-                    String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
-
-                    ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-                    String currentPlayer = participants.get((Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
-
-                    // 유저 카운트 감소 및 방에서 제거
-                    rService.decrementUserCount(Integer.parseInt(roomId), userId);
-                    removeSessionFromRoom(roomId, session);
-
-                    // 정답자 목록에서 떠난 유저 제거
-                    removeUserFromCorrectUsers(roomId, userId);
-
-
-                    // 현재 떠나는 유저가 방장인지 확인
-                    if (userId.equals(currentHostId)) {
-                        // 새로운 방장 선택
-                        Set<WebSocketSession> remainingSessions = roomSessions.get(roomId);
-                        if (remainingSessions != null && !remainingSessions.isEmpty()) {
-                            // 남아있는 유저 중 무작위로 새로운 방장 선택
-                            WebSocketSession newHostSession = remainingSessions.iterator().next();
-                            String newHostId = sessionUserMap.get(newHostSession.getId());
-
-                            // Redis에서 새로운 방장 정보 업데이트
-                            rService.setRoomHost(Integer.parseInt(roomId), newHostId);
-
-                            // 새로운 방장 정보를 모든 클라이언트에게 broadcast
-                            broadcastHostChange(roomId, newHostId);
-                        }
-                    }
-                    if (rService.getUserCount(Integer.parseInt(roomId)) < 2) {
-                        if (rService.getUserCount(Integer.parseInt(roomId)) == 1) {
-                            broadcastMessageToRoom(roomId, createGameCantStartMessage(roomId), null);
-                            if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
-                                endGame(roomId);
-                            }
-                        }
-                    }
-                    else if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
-                         if (userId.equals(currentPlayer)) {
-                            endRound(roomId, (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
-                        }else{
-                            roundcheck(roomId);
-                        }
-                    }
+        int userCount = rService.getUserCount(Integer.parseInt(roomId));
+        if (userCount < 2) {
+            if (userCount == 1) {
+                broadcastMessageToRoom(roomId, createGameCantStartMessage(roomId), null);
+                if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
+                    endGame(roomId);
                 }
             }
-
-            sessionUserMap.remove(session.getId());
+        } else if ("play".equals(redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status"))) {
+            System.out.println(userId + " 가 나감." + " 현재 플레이어 : " + currentPlayer);
+            if (userId.equals(currentPlayer)) {
+                System.out.println("endRound 호출");
+                endRound(roomId, currentTurn);
+            } else {
+                roundcheck(roomId);
+            }
         }
+
         sessions.remove(session.getId());
     }
+
 
     /**
      * 정답자 목록에서 나간 유저 제거
