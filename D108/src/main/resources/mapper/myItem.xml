@@ -11,6 +11,7 @@
         m.item_id     AS itemId,
         m.user_id     AS userId,
         i.name        AS itemName,
+        m.category    AS category,
         m.purchase_date AS purchaseDate
         FROM MyItem m
         JOIN Item i ON m.item_id = i.item_id
@@ -33,8 +34,8 @@
     <!-- 새 MyItem 등록 -->
     <insert id="insertMyItem" parameterType="com.example.model.dto.MyItemDto">
         INSERT INTO MyItem
-        (item_id, user_id, purchase_date, category)
+        (item_id, user_id,  category, purchase_date)
         VALUES
-        (#{itemId}, #{userId}, NOW(), #{category})
+        (#{itemId}, #{userId}, #{category}, NOW())
     </insert>
 </mapper>
