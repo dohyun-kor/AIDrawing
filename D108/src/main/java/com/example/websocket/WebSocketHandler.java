@@ -358,8 +358,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
 
         Map<String, Object> messageMap2 = new HashMap<>();
-        messageMap.put("event", "winner");
-        messageMap.put("userId", 0);
+        messageMap2.put("event", "winner");
+        messageMap2.put("userId", 0);
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap2),null);
     }
 
