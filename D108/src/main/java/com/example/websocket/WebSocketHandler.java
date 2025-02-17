@@ -530,7 +530,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         if (roomId == null) return;
 
         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-        if (participants.isEmpty()) return;
+        if (participants==null || participants.isEmpty()) return;
 
         Integer currentTurn = (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn");
 
