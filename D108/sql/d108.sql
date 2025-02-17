@@ -581,7 +581,7 @@ CREATE TABLE `Item` (
 
 INSERT INTO `Item` (`item_id`, `name`, `category`, `price`, `description`, `link`) VALUES
                                                                                        (1, 'sonic', '1', 1000, '쏘닉 아이콘입니다. 항상 빠릅니다.', 'https://i12d108.p.ssafy.io/api/item/sonic.png'),
-                                                                                       (2, 'mario', '1', 1000, '마 리 오', 'https://i12d108.p.ssafy.io/api/item/frame7.png'),
+                                                                                       (2, 'mario', '1', 1000, '마 리 오', 'https://i12d108.p.ssafy.io/api/item/mario.png'),
                                                                                        (3, 'frame', '2', 1000, '굉장히 사실적인 액자 틀\r\n세기의 명화를 담기에 좋다.', 'https://i12d108.p.ssafy.io/api/item/frame.png');
 
 -- --------------------------------------------------------
