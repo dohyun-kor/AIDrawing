@@ -32,7 +32,8 @@ public class SecurityConfig {
                 "/user/nickname/isUsed",
                 "/user/isUsed",
                 "/user/*/info",
-                "/api/static/item/**"  // Item 이미지에 대한 경로 추가
+                "/api/static/item/**",  // Item 이미지에 대한 경로 추가
+                "/api/item/**"  // Item 이미지에 대한 경로 추가
         };
 
         return http
