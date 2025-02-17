@@ -543,9 +543,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
             }
         }
 
-        participants.remove(userId);
-        redisTemplate.opsForHash().put(ROOM_PREFIX + roomId, "participants", participants);
+        rService.decrementUserCount(Integer.parseInt(roomId), userId);
 
+        participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
         String currentPlayer = participants.isEmpty() ? null : participants.get(currentTurn);
 
         String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
@@ -565,7 +565,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         removeUserFromCorrectUsers(roomId, userId);
 
         // 유저 카운트 감소 및 세션 정보 제거
-        rService.decrementUserCount(Integer.parseInt(roomId), userId);
         sessionUserMap.remove(session.getId());
         removeSessionFromRoom(roomId, session);
 
