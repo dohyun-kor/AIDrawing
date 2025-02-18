@@ -1,5 +1,8 @@
 package com.example.model.dto;
 
+import com.example.model.Enum.LEVEL;
+import com.example.model.Enum.MODE;
+import com.example.model.Enum.RoomStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,35 +23,11 @@ public class RoomDto {
     private LEVEL level;
     private int roundTime;
 
-    private enum RoomStatus{
-        WAIT,
-        PLAY;
-    }
-    private enum MODE{
-        USER,
-        AI;
-    }
-
-    public enum LEVEL{
-        EASY,
-        NORMAL,
-        HARD;
-    }
 
     public RoomDto(int hostId, String roomName, RoomStatus status, int maxPlayers) {
         this.hostId = hostId;
         this.roomName = roomName;
         this.status = status;
         this.maxPlayers = maxPlayers;
-    }
-
-    @Override
-    public String toString() {
-        return "Room{" +
-                "hostId=" + hostId +
-                ", roomName='" + roomName + '\'' +
-                ", status=" + status +
-                ", maxPlayers=" + maxPlayers +
-                '}';
     }
 }
