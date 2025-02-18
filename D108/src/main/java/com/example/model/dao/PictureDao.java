@@ -4,8 +4,10 @@ package com.example.model.dao;
 import com.example.model.dto.PictureDto;
 import com.example.model.dto.PictureDisplayRequestDto;
 import com.example.model.dto.PictureUpdateRequestDto;
+import com.example.model.dto.PictureUploadDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,4 +26,9 @@ public interface PictureDao {
     int resetPictureDisplayForUser(int userId);
 
     int updatePictureInfo(int pictureId, PictureUpdateRequestDto pictureUpdateRequestDto);
+
+    // 그림 db에 등록
+    int uploadPicture(int userId, MultipartFile file, String topic);
+
+    int insertNewPicture(PictureDto pictureDto);
 }

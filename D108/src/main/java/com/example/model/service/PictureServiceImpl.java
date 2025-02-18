@@ -5,14 +5,18 @@ import com.example.model.dao.PictureDao;
 import com.example.model.dto.PictureDisplayRequestDto;
 import com.example.model.dto.PictureDto;
 import com.example.model.dto.PictureUpdateRequestDto;
+import com.example.util.S3Uploader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Service
 public class PictureServiceImpl implements PictureService {
 
     private final PictureDao pictureDao;
+    private S3Uploader s3Uploader;
 
     @Autowired
     public PictureServiceImpl(PictureDao pictureDao) {
@@ -56,5 +60,41 @@ public class PictureServiceImpl implements PictureService {
     @Override
     public int updatePictureInfo(int pictureId, PictureUpdateRequestDto pictureUpdateRequestDto) {
         return pictureDao.updatePictureInfo(pictureId, pictureUpdateRequestDto);
+    }
+
+    @Override
+    public int uploadPicture(int userId, MultipartFile file, String topic) {
+        try {
+            // 1) MultipartFile → byte[]
+            byte[] fileBytes = file.getBytes();
+            String originalFilename = file.getOriginalFilename();
+            String ext = "";
+            if (originalFilename != null && originalFilename.lastIndexOf(".") != -1) {
+                ext = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+
+            // 2) 유니크한 파일명
+            String uniqueFileName = "user_" + userId + "_" + System.currentTimeMillis() + ext;
+            String contentType = file.getContentType() != null ? file.getContentType() : "image/png";
+
+            // 3) S3 업로드 => URL 반환
+            String s3Url = s3Uploader.uploadFile(fileBytes, uniqueFileName, contentType);
+
+            // 4) DB에 INSERT Dto
+            PictureDto picDto = new PictureDto();
+            picDto.setUserId(userId);
+            picDto.setImageUrl(s3Url);
+            picDto.setTopic(topic);
+
+            // 5) INSERT 수행
+            int rowCount = pictureDao.insertNewPicture(picDto);
+
+            // rowCount == 1 이면 성공
+            // picDto.getPictureId() 에 새로 생성된 PK가 세팅됨
+            return picDto.getPictureId(); // pictureId 반환 (혹은 rowCount 반환)
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0; // 실패 시 0 또는 -1
+        }
     }
 }

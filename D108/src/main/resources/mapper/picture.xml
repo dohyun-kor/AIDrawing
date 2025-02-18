@@ -56,4 +56,33 @@
         WHERE picture_id = #{pictureId}
     </update>
 
+    <!-- 그림 업로드 시, Picture 테이블에 새 레코드 INSERT -->
+    <insert id="insertNewPicture" parameterType="com.example.model.dto.PictureDto" useGeneratedKeys="true" keyProperty="pictureId">
+        INSERT INTO Picture (
+        user_id,
+        image_url,
+        topic,
+        title,
+        description,
+        is_displayed,
+        rotation,
+        x_val,
+        y_val,
+        furniture,
+        created_at
+        ) VALUES (
+        #{userId},
+        #{imageUrl},
+        #{topic},
+        NULL,
+        NULL,
+        0,       -- 처음엔 전시 안된 상태
+        0,
+        0,
+        0,
+        0,
+        NOW()
+        )
+    </insert>
+
 </mapper>
