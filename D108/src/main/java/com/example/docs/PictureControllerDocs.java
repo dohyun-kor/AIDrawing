@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -62,4 +63,14 @@ public interface PictureControllerDocs {
                             "```\n"
     )
     public ResponseEntity<Boolean> updatePictureDisplay(@PathVariable int userId, @RequestBody List<PictureDisplayRequestDto> pictureDisplayRequestDto);
+
+    @Operation(
+            summary = "마이룸에 그림을 업로드합니다.",
+            description = "주어진 userId를 가진 사용자의 마이룸에 그림 파일을 업로드하고, 업로드된 그림의 pictureId를 반환합니다."
+    )
+    public ResponseEntity<Integer> uploadPicture(
+            @PathVariable int userId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("topic") String topic
+    );
 }
