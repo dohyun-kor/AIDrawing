@@ -2,6 +2,7 @@ package com.example.docs;
 
 import com.example.model.dto.RoomDto;
 import com.example.model.dto.RoomListDto;
+import com.example.model.dto.SelectRoomDto;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,5 +61,5 @@ public interface RoomControllerDocs {
     @Operation(
             summary = "roomId에 대한 게임 방 정보 조회합니다"
     )
-    public ResponseEntity<RoomDto> selectRoom(@PathVariable int roomId);
+    public ResponseEntity<SelectRoomDto> selectRoom(@PathVariable int roomId);
 }

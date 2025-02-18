@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.docs.RoomControllerDocs;
 import com.example.model.dto.RoomDto;
 import com.example.model.dto.RoomListDto;
+import com.example.model.dto.SelectRoomDto;
 import com.example.model.service.RoomService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,10 +73,12 @@ public class RoomController implements RoomControllerDocs {
     }
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<RoomDto> selectRoom(@PathVariable int roomId){
+    public ResponseEntity<SelectRoomDto> selectRoom(@PathVariable int roomId){
         try{
             RoomDto room = roomService.selectRoom(roomId);
-            return ResponseEntity.ok(room);
+            int nowPlayers = roomService.getUserCount(roomId);
+            SelectRoomDto selectRoomDto = new SelectRoomDto(room, nowPlayers);
+            return ResponseEntity.ok(selectRoomDto);
         }catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
