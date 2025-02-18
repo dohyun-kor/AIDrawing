@@ -84,6 +84,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 rService.incrementUserCount(Integer.parseInt(roomId), userId);
                 sendExistingParticipants(session, roomId);
                 broadcastMessageToRoom(roomId, payload, session);
+                broadcastJoinChatMessage(roomId, userId);
             } else if ("leave".equals(event)) {
                 handleUserLeave(session);
             } else if ("draw".equals(event)) {
@@ -95,6 +96,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 broadcastMessageToRoom(roomId, payload, null);
             } else if ("chat".equals(event)) {
                 correctCheck(roomId, payload, null);
+            } else if ("correctchat".equals(event)){
+                broadcastMessageToRoom(roomId, payload,null);
             } else if ("start".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, session);
                 gamestart(roomId, 0, 1);
@@ -405,6 +408,23 @@ public class WebSocketHandler extends TextWebSocketHandler {
         broadcastMessageToRoom(roomId, createJsonMessage(chatMessage), null);
     }
 
+    private void broadcastLeaveChatMessage(String roomId, String userId) throws IOException {
+        Map<String, Object> chatMassage = new HashMap<>();
+        chatMassage.put("roomId" , roomId);
+        chatMassage.put("event" , "chat");
+        String userNickName = uDao.findByUserId(Integer.parseInt(userId)).getNickname();
+        chatMassage.put("message" , userNickName +  " 님이 퇴장하셨습니다.");
+        broadcastMessageToRoom(roomId, createJsonMessage(chatMassage), null);
+    }
+    private void broadcastJoinChatMessage(String roomId, String userId) throws IOException {
+        Map<String, Object> chatMassage = new HashMap<>();
+        chatMassage.put("roomId" , roomId);
+        chatMassage.put("event" , "chat");
+        String userNickName = uDao.findByUserId(Integer.parseInt(userId)).getNickname();
+        chatMassage.put("message" , userNickName +  " 님이 입장하셨습니다.");
+        broadcastMessageToRoom(roomId, createJsonMessage(chatMassage), null);
+    }
+
 
     private void addSessionToRoom(String roomId, WebSocketSession session) {
         roomSessions.putIfAbsent(roomId, ConcurrentHashMap.newKeySet());
@@ -566,6 +586,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
 
         broadcastLeaveMessage(roomId, userId);
+        broadcastLeaveChatMessage(roomId, userId);
 
         // 사용자가 방장이라면 방장 변경
         if (userId.equals(currentHostId)) {
@@ -681,6 +702,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
         resultMessage.put("event", "winner");
         resultMessage.put("userId", winnerId != null ? winnerId : -1);
         resultMessage.put("score", maxScore != Integer.MIN_VALUE ? maxScore : 0);
+
+        if(winnerId != null){
+            try{
+                uDao.updateWinner(Integer.parseInt(winnerId));
+            }catch (Exception e){
+                e.printStackTrace();;
+            }
+        }
 
         // 결과 방송
         broadcastMessageToRoom(roomId, createJsonMessage(resultMessage), null);
