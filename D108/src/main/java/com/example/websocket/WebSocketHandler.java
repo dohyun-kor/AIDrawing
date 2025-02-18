@@ -97,7 +97,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
             } else if ("chat".equals(event)) {
                 correctCheck(roomId, payload, null);
             } else if ("correctchat".equals(event)){
-                broadcastMessageToRoom(roomId, payload,null);
+                broadcastCorrectChatMessageToRoom(roomId, payload,null);
             } else if ("start".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, session);
                 gamestart(roomId, 0, 1);
@@ -196,6 +196,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                         Map<String, Object> messageMap = new HashMap<>();
                         messageMap.put("event", "topicselect");
                         messageMap.put("roomId", roomId);
+                        messageMap.put("topic", topic);
                         try {
                             broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
                         } catch (IOException e) {
@@ -411,7 +412,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private void broadcastLeaveChatMessage(String roomId, String userId) throws IOException {
         Map<String, Object> chatMassage = new HashMap<>();
         chatMassage.put("roomId" , roomId);
-        chatMassage.put("event" , "chat");
+        chatMassage.put("event" , "leavemessage");
         String userNickName = uDao.findByUserId(Integer.parseInt(userId)).getNickname();
         chatMassage.put("message" , userNickName +  " 님이 퇴장하셨습니다.");
         broadcastMessageToRoom(roomId, createJsonMessage(chatMassage), null);
@@ -419,12 +420,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private void broadcastJoinChatMessage(String roomId, String userId) throws IOException {
         Map<String, Object> chatMassage = new HashMap<>();
         chatMassage.put("roomId" , roomId);
-        chatMassage.put("event" , "chat");
+        chatMassage.put("event" , "joinmessage");
         String userNickName = uDao.findByUserId(Integer.parseInt(userId)).getNickname();
         chatMassage.put("message" , userNickName +  " 님이 입장하셨습니다.");
         broadcastMessageToRoom(roomId, createJsonMessage(chatMassage), null);
     }
 
+    private void broadcastCorrectChatMessageToRoom(String roomId, String payload, WebSocketSession session) throws IOException {
+        Map<String, String> data = parseJson(payload);
+        Map<String, Object> chatMassage = new HashMap<>();
+        chatMassage.put("event" , "correctchat");
+        chatMassage.put("message" , data.get("message"));
+        broadcastMessageToRoom(roomId, createJsonMessage(chatMassage), null);
+    }
 
     private void addSessionToRoom(String roomId, WebSocketSession session) {
         roomSessions.putIfAbsent(roomId, ConcurrentHashMap.newKeySet());
