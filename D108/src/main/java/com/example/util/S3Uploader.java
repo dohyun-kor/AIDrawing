@@ -26,19 +26,18 @@ public class S3Uploader {
      * @return 업로드된 파일의 public URL
      */
     public String uploadFile(byte[] fileBytes, String fileName, String contentType) throws IOException {
-        String key = "images/" + fileName; // S3 내부 경로(key)
+        String key = "d108/" + fileName; // S3 내부 경로(key)
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .contentType(contentType)
-                .acl("public-read") // 해당 파일을 public-read로 설정(선택사항)
                 .build();
 
         // putObject 호출
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileBytes));
 
         // public-read일 경우 접근 URL 예시
-        return "https://" + bucketName + ".s3.ap-northeast-2.amazonaws.com/d108/" + key;
+        return "https://" + bucketName + ".s3.ap-northeast-2.amazonaws.com/" + key;
     }
 }
