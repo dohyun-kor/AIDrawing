@@ -136,6 +136,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
         String currentPlayer = participants.get(nowturn);
         System.out.println("현재차례 : " + nowturn + " 현재 턴인 유저 : " + currentPlayer);
+        String currentNickName = uDao.findByUserId(Integer.parseInt(currentPlayer)).getNickname();
 
         // 넥스트 라운드로 보낼 메시지 내용 생성
         Map<String, Object> messageMap = new HashMap<>();
@@ -156,6 +157,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("event", "topic");
         response.put("topic", topicList);
+        response.put("nickname", currentNickName);
         // JSON으로 변환하여 사용하거나, 다른 형태로 활용 가능
         try {
             String jsonResponse = createJsonMessage(response);
@@ -165,13 +167,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
         } catch (IOException e) {
             System.err.println("JSON 변환 오류: " + e.getMessage());
         }
-        waitTopicSelect(roomId, nowturn);
+        waitTopicSelect(roomId, nowturn, currentNickName);
     }
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
     private final Map<String, AtomicBoolean> roomRunningStatus = new ConcurrentHashMap<>();
 
-    public void waitTopicSelect(String roomId, int nowturn) {
+    public void waitTopicSelect(String roomId, int nowturn, String nickname) {
         AtomicInteger remainTime = new AtomicInteger(15);
         AtomicBoolean isRunning = roomRunningStatus.computeIfAbsent(roomId, k -> new AtomicBoolean(true));
 
@@ -185,6 +187,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 if (!"wait".equals(topic) || remainTime.get() <= 0) {
                     // 타이머 작업 취소
                     cancelRoundTimer(roomId);
+
                     if (remainTime.get() <= 0) {
                         try {
                             endRound(roomId, nowturn);
@@ -197,6 +200,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                         messageMap.put("event", "topicselect");
                         messageMap.put("roomId", roomId);
                         messageMap.put("topic", topic);
+                        messageMap.put("nickname", nickname);
                         try {
                             broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
                         } catch (IOException e) {
