@@ -127,4 +127,9 @@ public class RoomServiceImpl implements RoomService {
         String key = ROOM_PREFIX + roomId;
         redisTemplate.opsForHash().put(key, "host", newHostId);
     }
+
+    @Override
+    public void setRoomStatus(int roomId, String status) {
+        roomDao.updateStatus(roomId, status);
+    }
 }

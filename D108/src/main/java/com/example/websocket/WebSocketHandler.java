@@ -128,6 +128,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         redisTemplate.opsForHash().put(key, "topic", "wait");
         redisTemplate.opsForHash().put(key, "score", 100);
 
+        rService.setRoomStatus(Integer.parseInt(roomId), "PLAY");
 
         // 참여자 목록 가져오기
         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
@@ -360,6 +361,22 @@ public class WebSocketHandler extends TextWebSocketHandler {
         int maxround = curMaxRoundObj != null ? Integer.parseInt(curMaxRoundObj.toString()) : 0;
         System.out.println("현재 라운드 : " + curround + " 최대 라운드 : " + maxround);
 
+        String answer = (String) redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "topic");
+        if(!answer.equals("wait")){
+            String finalAnswer = answer; // 람다식에서 사용하기 위해 final 변수로 복사
+            scheduler.schedule(() -> {
+                try {
+                    Map<String, Object> messageMap = new HashMap<>();
+                    messageMap.put("event", "answerchat");
+                    messageMap.put("roomId", roomId);
+                    messageMap.put("message", "🎉 정답 공개 🎉\n✨ \"" + finalAnswer + "\" ✨");
+                    broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
+                } catch (IOException e) {
+                    System.err.println("정답 메시지 전송 중 오류: " + e.getMessage());
+                }
+            }, 100, TimeUnit.MILLISECONDS);
+        }
+
         if (curround + 1 > maxround) {
             System.out.println("겜 끝");
             endGame(roomId); // 게임 종료 처리
@@ -375,6 +392,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         System.out.println("라운드 시작합니다.");
         System.out.println("현재 라운드 : " + curround + " 최대 라운드 : " + maxround + " 현재 차례 : " + nowturn + " 다음 차례 : " + nextturn);
+
+
         // 새로운 라운드 시작
         gamestart(roomId, nextturn, curround + 1);
     }
@@ -395,6 +414,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         // ObjectMapper를 사용해 메시지 객체를 JSON 형식으로 변환
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
+        rService.setRoomStatus(Integer.parseInt(roomId), "WAIT");
 
     }
 
@@ -600,6 +620,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         if (participants == null || participants.isEmpty()) return;
 
         Integer currentTurn = (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn");
+        participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
+        String currentPlayer = participants == null || participants.isEmpty() ? null : participants.get(currentTurn);
 
         // 턴 조정 로직
         int leaverIndex = participants.indexOf(userId);
@@ -612,9 +634,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
 
         rService.decrementUserCount(Integer.parseInt(roomId), userId);
-
         participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-        String currentPlayer = participants == null || participants.isEmpty() ? null : participants.get(currentTurn);
+
 
         String currentHostId = rService.getRoomHost(Integer.parseInt(roomId));
 
