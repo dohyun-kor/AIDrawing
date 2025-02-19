@@ -6,7 +6,6 @@ import com.example.docs.PictureControllerDocs;
 import com.example.model.dto.PictureDisplayRequestDto;
 import com.example.model.dto.PictureDto;
 import com.example.model.dto.PictureUpdateRequestDto;
-import com.example.model.dto.PictureUploadDto;
 import com.example.model.service.PictureService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,20 +89,22 @@ public class PictureController implements PictureControllerDocs {
         }
     }
 
-    @PostMapping(value = "/upload/{userId}", consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Integer> uploadPicture(@PathVariable int userId, @RequestParam("file") MultipartFile file, @RequestParam("topic") String topic) {
-          try {
-              int pictureId = pictureService.uploadPicture(userId, file, topic);
+    @PostMapping(value = "/upload/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Boolean> uploadPicture(
+            @PathVariable int userId,                   // URL 경로의 userId 파라미터
+            @RequestParam("file") MultipartFile file,    // 업로드할 파일
+            @RequestParam("topic") String topic) {       // 추가적인 topic 정보
+        try {
+            // pictureService.uploadPicture()를 호출하여 업로드 수행
+            // 성공하면 pictureId가 0보다 큰 값이 리턴됩니다.
+            int pictureId = pictureService.uploadPicture(userId, file, topic);
 
-              if (pictureId > 0) {
-                  return ResponseEntity.ok(pictureId);
-              } else {
-                  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-              }
-          } catch (Exception e) {
-              e.printStackTrace();
-              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-          }
-
+            // 업로드 성공 여부에 따라 true 또는 false를 리턴합니다.
+            return ResponseEntity.ok(pictureId > 0);
+        } catch (Exception e) {
+            // 예외 발생 시 콘솔에 예외 정보를 출력하고 false를 리턴합니다.
+            e.printStackTrace();
+            return ResponseEntity.ok(false);
+        }
     }
 }
