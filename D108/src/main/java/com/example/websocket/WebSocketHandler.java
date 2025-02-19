@@ -1,8 +1,6 @@
 package com.example.websocket;
 
 import com.example.model.dao.UserDao;
-import com.example.model.dto.DalleRequestDto;
-import com.example.model.dto.DalleResponseDto;
 import com.example.model.dto.DifficultyDto;
 import com.example.model.dto.RoomDto;
 import com.example.model.service.DalleService;
@@ -81,7 +79,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
             if ("join".equals(event)) {
                 String userId = data.get("userId");
                 sessionUserMap.put(session.getId(), userId); // 세션 ID와 userId 매핑
-
                 addSessionToRoom(roomId, session);
                 rService.incrementUserCount(Integer.parseInt(roomId), userId);
                 sendExistingParticipants(session, roomId);
@@ -95,8 +92,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 broadcastMessageToRoom(roomId, payload, null);
             } else if ("chat".equals(event)) {
                 correctCheck(roomId, payload, null);
-            } else if ("correctchat".equals(event)){
-                broadcastCorrectChatMessageToRoom(roomId, payload,null);
+            } else if ("correctchat".equals(event)) {
+                broadcastCorrectChatMessageToRoom(roomId, payload, null);
             } else if ("start".equals(event)) {
                 broadcastMessageToRoom(roomId, payload, session);
                 gamestart(roomId, 0, 1);
@@ -147,28 +144,32 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // 방의 모든 유저에게 메시지 전송
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
 
-        if ("AI".equals(redisTemplate.opsForHash().get(key, "mode"))){
+        if ("AI".equals(redisTemplate.opsForHash().get(key, "mode"))) {
             // AI 모드일 때 난이도를 가져오는 로직
-            List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 1);
-            String subject = topics.get(0).getTopicEn();
-
-            // AI가 그림을 그리는 로직
-            DalleResponseDto responseDto = dalleService.generateImage(subject, "1024x1024", 1);
-            // AI가 생성한 이미지를 클라이언트에게 브로드캐스트
-            Map<String, Object> resultMessage = new HashMap<>();
-            resultMessage.put("event", "aiMode");
-
-            // URL이 하나만 반환된다면, 그 URL을 images에 담아서 보냄
-            String imageUrl = responseDto.getData().get(0).getUrl();
-            resultMessage.put("images", imageUrl);
-
-            try {
-                System.out.println("Dalle Response: " + createJsonMessage(resultMessage));  // 예시: 콘솔에 출력
-                broadcastMessageToRoom(roomId, createJsonMessage(resultMessage), null);
-            } catch (IOException e) {
-                System.err.println("JSON 변환 오류: " + e.getMessage());
-            }
-
+//            List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 1);
+//            String subject = topics.get(0).getTopicEn();
+//            String aitopic = topics.get(0).getTopic();
+//            redisTemplate.opsForHash().put(key, "topic", aitopic);
+//
+//            CompletableFuture.supplyAsync(() -> dalleService.generateImage(subject, "1024x1024", 1))
+//                    .thenAccept(responseDto -> {
+//                                if (responseDto != null && responseDto.getData() != null && !responseDto.getData().isEmpty()) {
+//                                    String imageUrl = responseDto.getData().get(0).getUrl();
+//
+//                                    Map<String, Object> resultMessage = new HashMap<>();
+//                                    resultMessage.put("event", "aidrawing");
+//                                    resultMessage.put("images", imageUrl);
+//
+//                                    try {
+//                                        System.out.println("Dalle Response: " + createJsonMessage(resultMessage));
+//                                        broadcastMessageToRoom(roomId, createJsonMessage(resultMessage), null);
+//                                        startRoundTimer(roomId, nowturn);
+//                                    } catch (IOException e) {
+//                                        System.err.println("JSON 변환 오류: " + e.getMessage());
+//                                    }
+//                                }
+//                            }
+//                    );
         } else {
             List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 2);
 
@@ -433,7 +434,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         Map<String, String> data = parseJson(payload);
         Map<String, Object> chatMessage = new HashMap<>();
         chatMessage.put("roomId", roomId);
-        chatMessage.put("event" , "chat");
+        chatMessage.put("event", "chat");
         chatMessage.put("message", data.get("nickname") + " : " + data.get("message"));
         chatMessage.put("userId", data.get("userId"));
         broadcastMessageToRoom(roomId, createJsonMessage(chatMessage), null);
@@ -441,26 +442,27 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private void broadcastLeaveChatMessage(String roomId, String userId) throws IOException {
         Map<String, Object> chatMassage = new HashMap<>();
-        chatMassage.put("roomId" , roomId);
-        chatMassage.put("event" , "leavemessage");
+        chatMassage.put("roomId", roomId);
+        chatMassage.put("event", "leavemessage");
         String userNickName = uDao.findByUserId(Integer.parseInt(userId)).getNickname();
-        chatMassage.put("message" , userNickName +  " 님이 퇴장하셨습니다.");
+        chatMassage.put("message", userNickName + " 님이 퇴장하셨습니다.");
         broadcastMessageToRoom(roomId, createJsonMessage(chatMassage), null);
     }
+
     private void broadcastJoinChatMessage(String roomId, String userId) throws IOException {
         Map<String, Object> chatMassage = new HashMap<>();
-        chatMassage.put("roomId" , roomId);
-        chatMassage.put("event" , "joinmessage");
+        chatMassage.put("roomId", roomId);
+        chatMassage.put("event", "joinmessage");
         String userNickName = uDao.findByUserId(Integer.parseInt(userId)).getNickname();
-        chatMassage.put("message" , userNickName +  " 님이 입장하셨습니다.");
+        chatMassage.put("message", userNickName + " 님이 입장하셨습니다.");
         broadcastMessageToRoom(roomId, createJsonMessage(chatMassage), null);
     }
 
     private void broadcastCorrectChatMessageToRoom(String roomId, String payload, WebSocketSession session) throws IOException {
         Map<String, String> data = parseJson(payload);
         Map<String, Object> chatMassage = new HashMap<>();
-        chatMassage.put("event" , "correctchat");
-        chatMassage.put("message" , data.get("message"));
+        chatMassage.put("event", "correctchat");
+        chatMassage.put("message", data.get("message"));
         broadcastMessageToRoom(roomId, createJsonMessage(chatMassage), null);
     }
 
@@ -594,7 +596,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         if (roomId == null) return;
 
         ArrayList<String> participants = (ArrayList<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
-        if (participants==null || participants.isEmpty()) return;
+        if (participants == null || participants.isEmpty()) return;
 
         Integer currentTurn = (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn");
 
@@ -602,8 +604,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         int leaverIndex = participants.indexOf(userId);
         if (leaverIndex != -1 && currentTurn != null) {
             if (leaverIndex <= currentTurn) {
-                currentTurn = (currentTurn - 1 + participants.size()) % participants.size()-1;
-                if(currentTurn <0) currentTurn = 0;
+                currentTurn = (currentTurn - 1 + participants.size()) % participants.size() - 1;
+                if (currentTurn < 0) currentTurn = 0;
                 redisTemplate.opsForHash().put(ROOM_PREFIX + roomId, "turn", currentTurn);
             }
         }
@@ -683,9 +685,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
             correctusers = new ArrayList<>();
         }
 
-        // 정답자 수와 참가자 수 비교
-        if (correctusers.size() == participants.size() - 1 && redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status").equals("play")) {
-            endRound(roomId, (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
+        if("USER".equals(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "mode"))){
+            // 정답자 수와 참가자 수 비교
+            if (correctusers.size() == participants.size() - 1 && redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status").equals("play")) {
+                endRound(roomId, (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
+            }
+        }else{
+            // AI 모드 시 정답자 수 == 참가자 수 일 때 다음라운드 진행
+            if (correctusers.size() == participants.size() && redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status").equals("play")) {
+                endRound(roomId, (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
+            }
         }
     }
 
@@ -700,7 +709,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         // 유저 점수 업데이트
         roomScores.get(roomId).put(userId, score);
-        if(roomScores.get(roomId).size() == (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "numbers")){
+        if (roomScores.get(roomId).size() == (Integer) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "numbers")) {
             calculateAndBroadcastResults(roomId);
             roomScores.remove(roomId);
         }
@@ -733,11 +742,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
         resultMessage.put("userId", winnerId != null ? winnerId : -1);
         resultMessage.put("score", maxScore != Integer.MIN_VALUE ? maxScore : 0);
 
-        if(winnerId != null){
-            try{
+        if (winnerId != null) {
+            try {
                 uDao.updateWinner(Integer.parseInt(winnerId));
-            }catch (Exception e){
-                e.printStackTrace();;
+            } catch (Exception e) {
+                e.printStackTrace();
+                ;
             }
         }
 
