@@ -37,7 +37,6 @@ public class SecurityConfig {
                 "/myItems/**",
                 "/picture/upload/**",
                 "/myroom/**",
-                "/picture/list/**"
         };
 
         return http
