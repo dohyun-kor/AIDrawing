@@ -1,3 +1,4 @@
+// C:\SSAFY\Do\gitlab_repo\D108\D108\src\main\java\com\example\controller\PictureController.java
 package com.example.controller;
 
 
@@ -5,12 +6,15 @@ import com.example.docs.PictureControllerDocs;
 import com.example.model.dto.PictureDisplayRequestDto;
 import com.example.model.dto.PictureDto;
 import com.example.model.dto.PictureUpdateRequestDto;
+import com.example.model.dto.PictureUploadDto;
 import com.example.model.service.PictureService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -84,5 +88,22 @@ public class PictureController implements PictureControllerDocs {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @PostMapping(value = "/upload/{userId}", consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Integer> uploadPicture(@PathVariable int userId, @RequestParam("file") MultipartFile file, @RequestParam("topic") String topic) {
+          try {
+              int pictureId = pictureService.uploadPicture(userId, file, topic);
+
+              if (pictureId > 0) {
+                  return ResponseEntity.ok(pictureId);
+              } else {
+                  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+              }
+          } catch (Exception e) {
+              e.printStackTrace();
+              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+          }
+
     }
 }

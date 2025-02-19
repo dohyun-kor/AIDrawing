@@ -4,6 +4,8 @@ package com.example.model.service;
 import com.example.model.dto.PictureDisplayRequestDto;
 import com.example.model.dto.PictureDto;
 import com.example.model.dto.PictureUpdateRequestDto;
+import com.example.model.dto.PictureUploadDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,4 +22,7 @@ public interface PictureService {
 
     // 그림 정보 수정 메서드
     int updatePictureInfo(int pictureId, PictureUpdateRequestDto pictureUpdateRequestDto);
+
+    // 그림 파일 업도르 메서드
+    int uploadPicture(int userId, MultipartFile file, String topic);
 }

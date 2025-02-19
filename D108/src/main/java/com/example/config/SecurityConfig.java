@@ -34,7 +34,9 @@ public class SecurityConfig {
                 "/user/*/info",
                 "/static/item/**",  // Item 이미지에 대한 경로 추가
                 "/item/**",  // Item 이미지에 대한 경로 추가
-                "/myItems/**"
+                "/myItems/**",
+                "/picture/upload/**",
+                "/myroom/**"
         };
 
         return http
