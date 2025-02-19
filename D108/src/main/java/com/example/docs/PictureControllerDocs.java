@@ -68,7 +68,7 @@ public interface PictureControllerDocs {
             summary = "마이룸에 그림을 업로드합니다.",
             description = "주어진 userId를 가진 사용자의 마이룸에 그림 파일을 업로드하고, 업로드된 그림의 pictureId를 반환합니다."
     )
-    public ResponseEntity<Integer> uploadPicture(
+    public ResponseEntity<Boolean> uploadPicture(
             @PathVariable int userId,
             @RequestParam("file") MultipartFile file,
             @RequestParam("topic") String topic
