@@ -15,7 +15,7 @@ public class DalleRequestDto {
 
     // 생성자
     public DalleRequestDto(String subject, String size, int n) {
-        this.prompt = "A quick, simple, sketch of a " + subject + " as if drawn by a person in 30 seconds, with minimal details and bold, easy-to-recognize shapes.";
+        this.prompt = "A quick, simple, sketch of a " + subject + " as if drawn by a person in 40 seconds, with minimal details and bold, easy-to-recognize shapes.";
         this.size = size;
         this.n = n;
     }

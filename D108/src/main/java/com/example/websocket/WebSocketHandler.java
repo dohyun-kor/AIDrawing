@@ -1,8 +1,11 @@
 package com.example.websocket;
 
 import com.example.model.dao.UserDao;
+import com.example.model.dto.DalleRequestDto;
+import com.example.model.dto.DalleResponseDto;
 import com.example.model.dto.DifficultyDto;
 import com.example.model.dto.RoomDto;
+import com.example.model.service.DalleService;
 import com.example.model.service.DifficultyService;
 import com.example.model.service.RoomService;
 import com.example.model.service.UserService;
@@ -39,6 +42,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     DifficultyService difficultyService;
+
+    @Autowired
+    DalleService dalleService;
 
     private static final String ROOM_PREFIX = "room:";
 
@@ -127,6 +133,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         redisTemplate.opsForHash().put(key, "remaintime", room.getRoundTime());
         redisTemplate.opsForHash().put(key, "correctuser", correctuser);
         redisTemplate.opsForHash().put(key, "turn", nowturn);
+        redisTemplate.opsForHash().put(key, "mode", room.getMode());
         redisTemplate.opsForHash().put(key, "status", "play");
         redisTemplate.opsForHash().put(key, "topic", "wait");
         redisTemplate.opsForHash().put(key, "score", 100);
@@ -146,27 +153,53 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // 방의 모든 유저에게 메시지 전송
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
 
-        List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 2);
+        if ("AI".equals(redisTemplate.opsForHash().get(key, "mode"))){
+            // AI 모드일 때 난이도를 가져오는 로직
+            List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 1);
+            String subject = topics.get(0).getTopicEn();
 
-        // 원하는 형태로 topic을 가공
-        List<String> topicList = topics.stream()
-                .map(DifficultyDto::getTopic)
-                .collect(Collectors.toList());
+            // AI가 그림을 그리는 로직
+            DalleResponseDto responseDto = dalleService.generateImage(subject, "1024x1024", 1);
+            // AI가 생성한 이미지를 클라이언트에게 브로드캐스트
+            Map<String, Object> resultMessage = new HashMap<>();
+            resultMessage.put("event", "aiMode");
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("event", "topic");
-        response.put("topic", topicList);
-        // JSON으로 변환하여 사용하거나, 다른 형태로 활용 가능
-        try {
-            String jsonResponse = createJsonMessage(response);
-            // jsonResponse를 broadcast하거나, 다른 용도로 사용
-            System.out.println("topic Response: " + jsonResponse);  // 예시: 콘솔에 출력
-            broadcastMessageToRoom(roomId, jsonResponse, null); // 추가: 클라이언트에 전송
-        } catch (IOException e) {
-            System.err.println("JSON 변환 오류: " + e.getMessage());
+            // URL이 하나만 반환된다면, 그 URL을 images에 담아서 보냄
+            String imageUrl = responseDto.getData().get(0).getUrl();
+            resultMessage.put("images", imageUrl);
+
+            try {
+                System.out.println("Dalle Response: " + createJsonMessage(resultMessage));  // 예시: 콘솔에 출력
+                broadcastMessageToRoom(roomId, createJsonMessage(resultMessage), null);
+            } catch (IOException e) {
+                System.err.println("JSON 변환 오류: " + e.getMessage());
+            }
+
+        } else {
+            List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 2);
+
+            // 원하는 형태로 topic을 가공
+            List<String> topicList = topics.stream()
+                    .map(DifficultyDto::getTopic)
+                    .collect(Collectors.toList());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("event", "topic");
+            response.put("topic", topicList);
+            // JSON으로 변환하여 사용하거나, 다른 형태로 활용 가능
+            try {
+                String jsonResponse = createJsonMessage(response);
+                // jsonResponse를 broadcast하거나, 다른 용도로 사용
+                System.out.println("topic Response: " + jsonResponse);  // 예시: 콘솔에 출력
+                broadcastMessageToRoom(roomId, jsonResponse, null); // 추가: 클라이언트에 전송
+            } catch (IOException e) {
+                System.err.println("JSON 변환 오류: " + e.getMessage());
+            }
+
+            waitTopicSelect(roomId, nowturn);
         }
-        waitTopicSelect(roomId, nowturn);
     }
+
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
     private final Map<String, AtomicBoolean> roomRunningStatus = new ConcurrentHashMap<>();
@@ -714,7 +747,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // 결과 방송
         broadcastMessageToRoom(roomId, createJsonMessage(resultMessage), null);
     }
-
 
 
     private Map<String, String> parseJson(String json) {
