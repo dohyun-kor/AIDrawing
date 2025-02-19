@@ -145,7 +145,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
 
         if ("AI".equals(redisTemplate.opsForHash().get(key, "mode"))) {
-            // AI 모드일 때 난이도를 가져오는 로직
+//            // AI 모드일 때 난이도를 가져오는 로직
 //            List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 1);
 //            String subject = topics.get(0).getTopicEn();
 //            String aitopic = topics.get(0).getTopic();
