@@ -32,4 +32,6 @@ public interface RoomService {
     public String getRoomHost(int roomId);
 
     public void setRoomHost(int roomId, String newHostId);
+
+    public void setRoomStatus(int roomId, String status);
 }

@@ -56,5 +56,12 @@
         WHERE room_id = #{roomId}
     </select>
 
+    <update id="updateStatus" parameterType = "java.util.Map">
+        UPDATE Room
+        SET
+            status = #{status}
+        WHERE room_id = #{roomId}
+    </update>
+
 
 </mapper>

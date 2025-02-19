@@ -21,4 +21,6 @@ public interface RoomDao {
     public void deleteRoom(int roomId);
 
     public RoomDto selectRoom(int roodId);
+
+    public void updateStatus(@Param("roomId")int roomId, @Param("status")String status);
 }
