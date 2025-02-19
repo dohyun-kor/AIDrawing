@@ -35,7 +35,6 @@ public class SecurityConfig {
                 "/static/item/**",  // Item 이미지에 대한 경로 추가
                 "/item/**",  // Item 이미지에 대한 경로 추가
                 "/myItems/**",
-                "/picture/upload/**",
                 "/myroom/**",
                 "/picture/**"
         };
