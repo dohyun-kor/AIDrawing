@@ -145,31 +145,32 @@ public class WebSocketHandler extends TextWebSocketHandler {
         broadcastMessageToRoom(roomId, createJsonMessage(messageMap), null);
 
         if ("AI".equals(redisTemplate.opsForHash().get(key, "mode"))) {
-//            // AI 모드일 때 난이도를 가져오는 로직
-//            List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 1);
-//            String subject = topics.get(0).getTopicEn();
-//            String aitopic = topics.get(0).getTopic();
-//            redisTemplate.opsForHash().put(key, "topic", aitopic);
-//
-//            CompletableFuture.supplyAsync(() -> dalleService.generateImage(subject, "1024x1024", 1))
-//                    .thenAccept(responseDto -> {
-//                                if (responseDto != null && responseDto.getData() != null && !responseDto.getData().isEmpty()) {
-//                                    String imageUrl = responseDto.getData().get(0).getUrl();
-//
-//                                    Map<String, Object> resultMessage = new HashMap<>();
-//                                    resultMessage.put("event", "aidrawing");
-//                                    resultMessage.put("images", imageUrl);
-//
-//                                    try {
-//                                        System.out.println("Dalle Response: " + createJsonMessage(resultMessage));
-//                                        broadcastMessageToRoom(roomId, createJsonMessage(resultMessage), null);
-//                                        startRoundTimer(roomId, nowturn);
-//                                    } catch (IOException e) {
-//                                        System.err.println("JSON 변환 오류: " + e.getMessage());
-//                                    }
-//                                }
-//                            }
-//                    );
+            // AI 모드일 때 난이도를 가져오는 로직
+            List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 1);
+            String subject = topics.get(0).getTopicEn();
+            String aitopic = topics.get(0).getTopic();
+            redisTemplate.opsForHash().put(key, "topic", aitopic);
+
+            CompletableFuture.supplyAsync(() -> dalleService.generateImage(subject, "512x512", 1))
+                    .thenAccept(responseDto -> {
+                                if (responseDto != null && responseDto.getData() != null && !responseDto.getData().isEmpty()) {
+                                    String imageUrl = responseDto.getData().get(0).getUrl();
+//                                    String imageUrl = "https://placehold.co/1024x1024";
+
+                                    Map<String, Object> resultMessage = new HashMap<>();
+                                    resultMessage.put("event", "aidrawing");
+                                    resultMessage.put("images", imageUrl);
+
+                                    try {
+                                        System.out.println("Dalle Response: " + createJsonMessage(resultMessage));
+                                        broadcastMessageToRoom(roomId, createJsonMessage(resultMessage), null);
+                                        startRoundTimer(roomId, nowturn);
+                                    } catch (IOException e) {
+                                        System.err.println("JSON 변환 오류: " + e.getMessage());
+                                    }
+                                }
+                            }
+                    );
         } else {
             List<DifficultyDto> topics = difficultyService.getTopicsByDifficulty(room.getLevel().toString(), 2);
 
@@ -676,6 +677,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // 최신 참가자 목록 가져오기 (방을 나간 유저 제외)
         List<String> participants = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "participants");
         List<String> correctusers = (List<String>) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "correctuser");
+        String mode = (String) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status");
 
         // null 체크 후 빈 리스트로 초기화
         if (participants == null) {
@@ -684,15 +686,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
         if (correctusers == null) {
             correctusers = new ArrayList<>();
         }
+        if( mode == null ){
+            return;
+        }
 
         if("USER".equals(redisTemplate.opsForHash().get(ROOM_PREFIX+roomId, "mode"))){
             // 정답자 수와 참가자 수 비교
-            if (correctusers.size() == participants.size() - 1 && redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status").equals("play")) {
+            if (correctusers.size() == participants.size() - 1 && mode.equals("play")) {
                 endRound(roomId, (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
             }
         }else{
             // AI 모드 시 정답자 수 == 참가자 수 일 때 다음라운드 진행
-            if (correctusers.size() == participants.size() && redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "status").equals("play")) {
+            if (correctusers.size() == participants.size() && mode.equals("play")) {
                 endRound(roomId, (int) redisTemplate.opsForHash().get(ROOM_PREFIX + roomId, "turn"));
             }
         }
