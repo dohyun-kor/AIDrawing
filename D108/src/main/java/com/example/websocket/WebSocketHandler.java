@@ -45,9 +45,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
     // 세션 ID ↔ userId 매핑
     private final Map<String, String> sessionUserMap = new ConcurrentHashMap<>();
 
-    // 방 별 그림 데이터 저장
-    private final Map<String, List<String>> roomDrawings = new ConcurrentHashMap<>();
-
     // 전체 클라이언트 세션 (세션 ID -> 세션 객체)
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
@@ -80,7 +77,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 sessionUserMap.put(session.getId(), userId); // 세션 ID와 userId 매핑
 
                 addSessionToRoom(roomId, session);
-//                sendExistingDrawings(session, roomId);
                 rService.incrementUserCount(Integer.parseInt(roomId), userId);
                 sendExistingParticipants(session, roomId);
                 broadcastMessageToRoom(roomId, payload, session);
@@ -88,11 +84,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
             } else if ("leave".equals(event)) {
                 handleUserLeave(session);
             } else if ("draw".equals(event)) {
-//                roomDrawings.putIfAbsent(roomId, new CopyOnWriteArrayList<>());
-//                roomDrawings.get(roomId).add(payload);
                 broadcastMessageToRoom(roomId, payload, session);
             } else if ("cleardrawing".equals(event)) {
-//                roomDrawings.remove(roomId);
                 broadcastMessageToRoom(roomId, payload, null);
             } else if ("chat".equals(event)) {
                 correctCheck(roomId, payload, null);
@@ -473,14 +466,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 } catch (IOException e) {
                     System.err.println("메시지 전송 오류: " + e.getMessage());
                 }
-            }
-        }
-    }
-
-    private void sendExistingDrawings(WebSocketSession session, String roomId) throws IOException {
-        if (roomDrawings.containsKey(roomId)) {
-            for (String drawing : roomDrawings.get(roomId)) {
-                sendMessageSafely(session, drawing);
             }
         }
     }
