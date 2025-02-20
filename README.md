@@ -36,9 +36,9 @@ AI를 활용하여 주제, 난이도 등을 기반으로 그림을 생성.
 
 
 ## 🛠 기술스택 (Tech Stack) 조금 수정필요
-- **Backend**: SpringBoot 
+- **Backend**: SpringBoot, SptingSecurity
 - **Frontend**: Android Studio(LadyB ug), Kotlin 1.9.21
-- **Database**: MySQL, Redis
+- **Database**: MySQL, Redis, S3
 - **Infra**: Docker, Jenkins, AWS
 - **AI 모델**: DALL-E API
 
