@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bottom_sheet_background"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <!-- 상단 드래그 핸들 -->
+    <View
+        android:layout_width="32dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="8dp"
+        android:background="@drawable/bottom_sheet_handle"/>
+
+    <!-- 타이틀 -->
+
+    <!-- 스크롤 가능한 아이템 그리드 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/itemGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:maxHeight="400dp"/>
+
+</LinearLayout> 

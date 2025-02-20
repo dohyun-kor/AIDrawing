@@ -7,8 +7,11 @@
     <color name="yellow">#FFFF00</color>
     <color name="green">#ADFF2F</color>
     <color name="blue">#0000FF</color>
-    <color name="navy_blue">#000080</color>
+    <color name="mint">#FF00CFC3</color>
     <color name="purple">#800080</color>
     <color name="ssafy_blue_light">#7C8DE1</color>
     <color name="ssafy_gray">#B2B2B2</color>
+    <color name="ssafy_green">#19E71F</color>
+    <color name="roomDisable">#626D77</color>
+    <color name="answer">#F44336</color>
 </resources>

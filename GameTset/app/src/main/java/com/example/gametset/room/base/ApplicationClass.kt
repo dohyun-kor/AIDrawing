@@ -2,6 +2,7 @@ package com.example.gametset.room.base
 
 import android.Manifest
 import android.app.Application
+import android.util.Log
 import com.example.gametset.room.data.local.SharedPreferencesUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -13,6 +14,7 @@ import java.util.concurrent.TimeUnit
 class ApplicationClass: Application() {
     companion object{
         const val SERVER_URL = "https://i12d108.p.ssafy.io/api/"
+//        const val SERVER_URL = "http://192.168.100.203:9987/api/"
 
         lateinit var sharedPreferencesUtil: SharedPreferencesUtil
         lateinit var retrofit: Retrofit
@@ -32,13 +34,31 @@ class ApplicationClass: Application() {
 
         // 레트로핏 인스턴스를 생성하고, 레트로핏에 각종 설정값들을 지정해줍니다.
         // 연결 타임아웃시간은 5초로 지정이 되어있고, HttpLoggingInterceptor를 붙여서 어떤 요청이 나가고 들어오는지를 보여줍니다.
+        Log.d("Retrofit_Request_Method3", "intercept3: ${ApplicationClass.sharedPreferencesUtil.getUser().token}")
         val okHttpClient = OkHttpClient.Builder()
             .readTimeout(5000, TimeUnit.MILLISECONDS)
             .connectTimeout(5000, TimeUnit.MILLISECONDS)
-            // 로그캣에 okhttp.OkHttpClient로 검색하면 http 통신 내용을 보여줍니다.
-//            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .followRedirects(false)  // 리다이렉트 비활성화
+            .followSslRedirects(false)  // SSL 리다이렉트 비활성화
+            .addInterceptor { chain ->
+                val request = chain.request()
+                val response = chain.proceed(request)
+                
+                // 302 응답을 성공으로 처리
+                if (response.code == 302) {
+                    return@addInterceptor response.newBuilder()
+                        .code(200)
+                        .build()
+                }
+                response
+            }
+            .addInterceptor(AuthInterceptor(sharedPreferencesUtil))
             .addInterceptor(AddCookiesInterceptor())
-            .addInterceptor(ReceivedCookiesInterceptor()).build()
+            .addInterceptor(LoggingInterceptor())
+            .addInterceptor(ReceivedCookiesInterceptor())
+            .build()
+        Log.d("Retrofit_Request_Method3", "intercept4: ${ApplicationClass.sharedPreferencesUtil.getUser().token}")
+
 
         // 앱이 처음 생성되는 순간, retrofit 인스턴스를 생성
         retrofit = Retrofit.Builder()

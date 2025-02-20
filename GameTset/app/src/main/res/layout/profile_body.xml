@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-16dp">
+
+        <ImageView
+            android:id="@+id/profileBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/profile_body_js"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.37"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.038" />
+
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="40dp"
+            app:layout_constraintStart_toStartOf="@+id/profileBody"
+            app:layout_constraintTop_toTopOf="@+id/profileBody" />
+
+        <TextView
+            android:id="@+id/editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginTop="16dp"
+            android:text="수정하기"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            app:layout_constraintStart_toStartOf="@+id/profileBody"
+            app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
+        <!-- 닉네임 섹션 -->
+
+        <TextView
+            android:id="@+id/profileDownText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="12dp"
+            android:text="프로필 내리기"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            app:layout_constraintStart_toStartOf="@+id/profileBody"
+            app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+        <ImageView
+            android:id="@+id/nicknameIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/profile_nickname_logo_js"
+            app:layout_constraintStart_toEndOf="@+id/profileImage"
+            app:layout_constraintTop_toTopOf="@+id/profileImage" />
+
+        <TextView
+            android:id="@+id/nicknameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="닉네임"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/nicknameIcon"
+            app:layout_constraintStart_toEndOf="@+id/nicknameIcon"
+            app:layout_constraintTop_toTopOf="@+id/nicknameIcon" />
+
+        <ImageView
+            android:id="@+id/nicknameLine"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/profile_underbar_js"
+            app:layout_constraintEnd_toEndOf="@+id/profileBody"
+            app:layout_constraintStart_toStartOf="@+id/nicknameIcon"
+            app:layout_constraintTop_toBottomOf="@+id/nicknameIcon" />
+
+        <!-- 레벨 섹션 -->
+        <ImageView
+            android:id="@+id/starIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/profile_star_logo_js"
+            app:layout_constraintStart_toStartOf="@+id/nicknameIcon"
+            app:layout_constraintTop_toBottomOf="@+id/nicknameLine" />
+
+        <TextView
+            android:id="@+id/levelText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Level"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/starIcon"
+            app:layout_constraintStart_toEndOf="@+id/starIcon"
+            app:layout_constraintTop_toTopOf="@+id/starIcon" />
+
+        <ImageView
+            android:id="@+id/levelLine"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/profile_underbar_js"
+            app:layout_constraintEnd_toEndOf="@+id/profileBody"
+            app:layout_constraintStart_toStartOf="@+id/starIcon"
+            app:layout_constraintTop_toBottomOf="@+id/starIcon" />
+
+        <!-- 코인 섹션 -->
+        <ImageView
+            android:id="@+id/coinIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/profile_coin_logo_js"
+            app:layout_constraintStart_toStartOf="@+id/starIcon"
+            app:layout_constraintTop_toBottomOf="@+id/levelLine" />
+
+        <TextView
+            android:id="@+id/coinText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="1000"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/coinIcon"
+            app:layout_constraintStart_toEndOf="@+id/coinIcon"
+            app:layout_constraintTop_toTopOf="@+id/coinIcon" />
+
+        <ImageView
+            android:id="@+id/coinLine"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/profile_underbar_js"
+            app:layout_constraintEnd_toEndOf="@+id/profileBody"
+            app:layout_constraintStart_toStartOf="@+id/coinIcon"
+            app:layout_constraintTop_toBottomOf="@+id/coinIcon" />
+
+        <!-- 크라운 섹션 -->
+
+        <ImageView
+            android:id="@+id/crownIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/profile_crown_logo_js"
+            app:layout_constraintStart_toStartOf="@+id/coinIcon"
+            app:layout_constraintTop_toBottomOf="@+id/coinLine" />
+
+        <TextView
+            android:id="@+id/crownText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="5"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/crownIcon"
+            app:layout_constraintStart_toEndOf="@+id/crownIcon"
+            app:layout_constraintTop_toTopOf="@+id/crownIcon" />
+
+        <ImageView
+            android:id="@+id/crownLine"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/profile_underbar_js"
+            app:layout_constraintEnd_toEndOf="@+id/profileBody"
+            app:layout_constraintStart_toStartOf="@+id/crownIcon"
+            app:layout_constraintTop_toBottomOf="@+id/crownIcon" />
+
+        <!-- 트로피 섹션 -->
+        <ImageView
+            android:id="@+id/trophyIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/profile_trophy_logo_js"
+            app:layout_constraintStart_toStartOf="@+id/crownIcon"
+            app:layout_constraintTop_toBottomOf="@+id/crownLine" />
+
+        <TextView
+            android:id="@+id/trophyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="0"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/trophyIcon"
+            app:layout_constraintStart_toEndOf="@+id/trophyIcon"
+            app:layout_constraintTop_toTopOf="@+id/trophyIcon" />
+
+        <ImageView
+            android:id="@+id/trophyLine"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/profile_underbar_js"
+            app:layout_constraintEnd_toEndOf="@+id/profileBody"
+            app:layout_constraintStart_toStartOf="@+id/trophyIcon"
+            app:layout_constraintTop_toBottomOf="@+id/trophyIcon" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

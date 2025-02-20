@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/black_border_sw"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/btn_add_drawing"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="그림 추가"
+        android:gravity="center"
+        android:padding="8dp"
+        android:background="?attr/selectableItemBackground"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/ssafy_gray"/>
+
+    <TextView
+        android:id="@+id/btn_info"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="상세정보" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"/>
+
+    <TextView
+        android:id="@+id/btn_rotate"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="회전"
+        android:gravity="center"
+        android:padding="8dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"/>
+
+    <TextView
+        android:id="@+id/btn_delete"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="삭제"
+        android:gravity="center"
+        android:padding="8dp"
+        android:background="?attr/selectableItemBackground"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"/>
+
+</LinearLayout>

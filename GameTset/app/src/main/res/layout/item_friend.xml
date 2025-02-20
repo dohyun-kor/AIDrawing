@@ -5,67 +5,98 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/userProfile"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintlayout2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/user_profile"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.518" />
-
-
-    <TextView
-        android:id="@+id/userNicknameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="사용자 이름"
-        android:textSize="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/userProfile"
-        app:layout_constraintStart_toEndOf="@+id/userProfile"
-        app:layout_constraintTop_toTopOf="@+id/userProfile"
-        app:layout_constraintVertical_bias="0.766" />
-
-    <ImageButton
-        android:id="@+id/imageButton8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/signup_button_control_js"
-        app:layout_constraintBottom_toBottomOf="@+id/userProfile"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton7"
-        app:layout_constraintTop_toTopOf="@+id/userProfile" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="수락"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton8"
-        app:layout_constraintEnd_toEndOf="@+id/imageButton8"
-        app:layout_constraintStart_toStartOf="@+id/imageButton8"
-        app:layout_constraintTop_toTopOf="@+id/imageButton8" />
-
-    <ImageButton
-        android:id="@+id/imageButton7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/signup_button_control_js"
-        app:layout_constraintBottom_toBottomOf="@+id/userProfile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/userProfile" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="수락"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton7"
-        app:layout_constraintEnd_toEndOf="@+id/imageButton7"
-        app:layout_constraintStart_toStartOf="@+id/imageButton7"
-        app:layout_constraintTop_toTopOf="@+id/imageButton7" />
+        <ImageView
+            android:id="@+id/userProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/user_profile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/userNicknameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="사용자 이름"
+            android:textSize="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/userProfile"
+            app:layout_constraintStart_toEndOf="@+id/userProfile"
+            app:layout_constraintTop_toTopOf="@+id/userProfile"
+            app:layout_constraintVertical_bias="0.766" />
+
+        <ImageButton
+            android:id="@+id/friend_delete_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/close_button_logo"
+            app:layout_constraintBottom_toBottomOf="@+id/userProfile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/userProfile" />
+
+        <ImageButton
+            android:id="@+id/friendAcceptanceBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/signup_button_control_js"
+            app:layout_constraintStart_toStartOf="@+id/userProfile"
+            app:layout_constraintTop_toBottomOf="@+id/userProfile" />
+
+        <TextView
+            android:id="@+id/acceptTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="수락"
+            app:layout_constraintBottom_toBottomOf="@+id/friendAcceptanceBtn"
+            app:layout_constraintEnd_toEndOf="@+id/friendAcceptanceBtn"
+            app:layout_constraintStart_toStartOf="@+id/friendAcceptanceBtn"
+            app:layout_constraintTop_toTopOf="@+id/friendAcceptanceBtn" />
+
+        <ImageButton
+            android:id="@+id/friendRejectionBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/signup_button_control_js"
+            app:layout_constraintBottom_toBottomOf="@+id/friendAcceptanceBtn"
+            app:layout_constraintStart_toEndOf="@+id/friendAcceptanceBtn"
+            app:layout_constraintTop_toTopOf="@+id/friendAcceptanceBtn" />
+
+        <TextView
+            android:id="@+id/rejectTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="거절"
+            app:layout_constraintBottom_toBottomOf="@+id/friendRejectionBtn"
+            app:layout_constraintEnd_toEndOf="@+id/friendRejectionBtn"
+            app:layout_constraintStart_toStartOf="@+id/friendRejectionBtn"
+            app:layout_constraintTop_toTopOf="@+id/friendRejectionBtn" />
+
+        <ImageButton
+            android:id="@+id/btnVisitMyroom"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="60dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="마이룸 방문"
+            android:src="@drawable/nav_myroom"
+            app:layout_constraintBottom_toBottomOf="@+id/userProfile"
+            app:layout_constraintEnd_toStartOf="@id/friend_delete_btn"
+            app:layout_constraintStart_toEndOf="@+id/userNicknameTextView"
+            app:layout_constraintTop_toTopOf="@+id/userProfile" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/imageView7"
@@ -77,6 +108,6 @@
         android:background="@drawable/beeline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintlayout2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

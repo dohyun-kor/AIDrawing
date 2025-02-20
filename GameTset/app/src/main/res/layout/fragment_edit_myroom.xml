@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- 미니룸 미리보기 영역 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="0dp"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <FrameLayout
+                android:id="@+id/roomCanvas"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/pic7"
+                android:scaleType="centerCrop"/>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 액자 추가 버튼 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEditRoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="24dp"
+            android:text="액자 추가"
+            android:textSize="16sp"
+            android:alpha="0.9"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            app:cornerRadius="24dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp"
+            app:icon="@drawable/baseline_edit_24"
+            app:iconTint="@color/black"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/albumButtonJw"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- 앨범 버튼 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/albumButtonJw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="24dp"
+            android:text="앨범"
+            android:textSize="16sp"
+            android:alpha="0.9"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            app:cornerRadius="24dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp"
+            app:icon="@drawable/album_icon_jw"
+            app:iconTint="@color/black"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_save_all"
+            app:layout_constraintStart_toEndOf="@+id/btnEditRoom" />
+
+        <!-- 전체 저장 버튼 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="24dp"
+            android:text="전체 저장"
+            android:textSize="16sp"
+            android:alpha="0.9"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            app:cornerRadius="24dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp"
+            app:icon="@drawable/save_drawing_icon_jw"
+            app:iconTint="@color/black"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/albumButtonJw" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Bottom Sheet -->
+    <include
+        android:id="@+id/bottomSheet"
+        layout="@layout/layout_item_selection_bottom_sheet"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout> 

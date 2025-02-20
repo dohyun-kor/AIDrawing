@@ -21,107 +21,91 @@ import com.example.gametset.R
 import com.example.gametset.databinding.FragmentLoginBinding
 import com.example.gametset.databinding.FragmentStoreBinding
 import com.example.gametset.room.MainActivity
-import com.example.gametset.room.data.StoreDatabase
+import com.example.gametset.room.base.ApplicationClass
+import com.example.gametset.room.data.local.SharedPreferencesUtil
 import com.example.gametset.room.data.model.dto.StoreDto
 import com.example.gametset.room.data.remote.RetrofitUtil
 import kotlinx.coroutines.launch
 
 class StoreFragment : Fragment() {
     private lateinit var storeAdapter: StoreAdapter
-    lateinit var binding: FragmentStoreBinding
-    lateinit var mainActivity: MainActivity
+    private lateinit var binding: FragmentStoreBinding
+    private lateinit var mainActivity: MainActivity
+    private val user = ApplicationClass.sharedPreferencesUtil.getUser()
+    private var storeFilterVector1state = 1
+    private var storeFilterVector2state = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentStoreBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        AllItem()
+
+        setupUI()
+        setupRecyclerView()
+        setupFilterButtons()
+    }
+
+    private fun setupUI() {
         binding.storeFilterVector1.background =
             ContextCompat.getDrawable(requireContext(), R.drawable.signup_button2_selector_js)
-        var storeFilterVector1state = 1
-        var storeFilterVector2state = 0
+    }
 
-        // RecyclerView 설정
-        val recyclerView = view.findViewById<RecyclerView>(R.id.store_item)
-
-        // 기존에 선언된 storeAdapter 사용
+    private fun setupRecyclerView() {
         storeAdapter = StoreAdapter()
-
-        // 아이템 클릭 리스너 설정
-        storeAdapter.setOnItemClickListener { storeDto ->
-            showStoreModal(storeDto)
+        binding.storeItem.apply {
+            layoutManager = GridLayoutManager(requireContext(), 3)
+            adapter = storeAdapter
         }
+    }
 
-        // GridLayoutManager를 사용하여 3열로 설정
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
-        recyclerView.adapter = storeAdapter
-
-        // 더미 데이터 설정 및 초기 필터링
-        val dummyData = StoreDatabase.generateDummyData()
-        storeAdapter.submitList(dummyData)
-        storeAdapter.filterByCategory("one")  // 초기 필터링을 "one" 카테고리로 설정
-
+    private fun setupFilterButtons() {
         binding.storeFilterVector1.setOnClickListener {
             if (storeFilterVector1state != 1) {
-                binding.storeFilterVector1.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.signup_button2_selector_js
-                )
-                binding.storeFilterVector2.background =
-                    ContextCompat.getDrawable(requireContext(), R.drawable.signup_button2_js)
+                updateFilterState(true)
                 storeFilterVector1state = 1
                 storeFilterVector2state = 0
-                storeAdapter.filterByCategory("one")  // "one" 카테고리 필터링
+                storeAdapter.filterByCategory("1")
             }
         }
 
         binding.storeFilterVector2.setOnClickListener {
             if (storeFilterVector2state != 1) {
-                binding.storeFilterVector2.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.signup_button2_selector_js
-                )
-                binding.storeFilterVector1.background =
-                    ContextCompat.getDrawable(requireContext(), R.drawable.signup_button2_js)
+                updateFilterState(false)
                 storeFilterVector2state = 1
                 storeFilterVector1state = 0
-                storeAdapter.filterByCategory("two")  // "two" 카테고리 필터링
+                storeAdapter.filterByCategory("2")
             }
         }
     }
 
-    private fun showStoreModal(storeDto: StoreDto) {
-        val modalFragment = StoreModalFragment.newInstance()
-
-        // 현재 Fragment가 있는 container ID를 사용
-        val containerId = (view?.parent as? ViewGroup)?.id ?: android.R.id.content
-
-        parentFragmentManager.beginTransaction()
-            .replace(containerId, modalFragment)
-            .addToBackStack(null)
-            .commit()
+    private fun updateFilterState(isFirstFilter: Boolean) {
+        binding.storeFilterVector1.background = ContextCompat.getDrawable(
+            requireContext(),
+            if (isFirstFilter) R.drawable.signup_button2_selector_js else R.drawable.signup_button2_js
+        )
+        binding.storeFilterVector2.background = ContextCompat.getDrawable(
+            requireContext(),
+            if (isFirstFilter) R.drawable.signup_button2_js else R.drawable.signup_button2_selector_js
+        )
     }
 
     override fun onResume() {
         super.onResume()
         mainActivity.hideBottomNav(false)
         mainActivity.hideToolBar(false)
+        refreshStore()  // 화면이 표시될 때마다 데이터 새로고침
     }
 
     override fun onStop() {
@@ -130,11 +114,25 @@ class StoreFragment : Fragment() {
         mainActivity.hideToolBar(true)
     }
 
-    private fun AllItem() {
+    fun refreshStore() {
         lifecycleScope.launch {
-            runCatching {
-                val response_item = RetrofitUtil.storeService.getItem()
-                Log.d("스토어 아이템", "${response_item}")
+            try {
+                val storeItems = RetrofitUtil.storeService.getItem()
+                val result = RetrofitUtil.myItemService.myItemsList(user.userId)
+                
+                storeAdapter.setPurchasedItems(result)
+                storeAdapter.submitList(storeItems)
+                
+                // 현재 선택된 필터 상태에 따라 카테고리 필터링
+                if (storeFilterVector1state == 1) {
+                    storeAdapter.filterByCategory("1")
+                    updateFilterState(true)
+                } else {
+                    storeAdapter.filterByCategory("2")
+                    updateFilterState(false)
+                }
+            } catch (e: Exception) {
+                Log.e("Store", "새로고침 실패", e)
             }
         }
     }

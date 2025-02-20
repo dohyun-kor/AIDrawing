@@ -26,8 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- FrameLayout (TextView 바로 아래에 위치) -->
-        <FrameLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/store_item_frame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,37 +34,89 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- store_item_box_js 벡터 에셋 -->
+            <!-- storeItemBody를 원래대로 되돌립니다 -->
             <ImageButton
-                android:id="@+id/store_item_vector1"
+                android:id="@+id/storeItemBody"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:padding="0dp"
-                android:src="@drawable/store_item_box_js" />
+                android:src="@drawable/store_item_box_js"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-            <!-- test1.png 이미지를 벡터 중간에 배치 -->
+            <!-- store_item_image도 원래대로 되돌립니다 -->
             <ImageView
                 android:id="@+id/store_item_image"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/test1" />
+                app:imageUrl="@{item.link}"
+                app:layout_constraintBottom_toTopOf="@+id/imageView6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/storeItemBody" />
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="3dp"
+                android:layout_marginBottom="30dp"
+                android:foregroundGravity="center"
+                android:src="@drawable/store_item_underline_js"
+                app:layout_constraintBottom_toBottomOf="@+id/storeItemBody"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!-- purchased_overlay도 원래대로 되돌립니다 -->
+            <ImageView
+                android:id="@+id/purchased_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#8000"
+                android:src="@drawable/store_item_box_js" />
+
+            <!-- 보유중 텍스트 -->
+
+            <TextView
+                android:id="@+id/purchased_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="보유중"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+
+                app:layout_constraintBottom_toTopOf="@+id/imageView6"
+                app:layout_constraintEnd_toEndOf="@+id/storeItemBody"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/storeItemBody" />
+
 
             <LinearLayout
+                android:id="@+id/linearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start"
-                android:layout_marginBottom="8dp"
                 android:gravity="start"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/storeItemBody"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView6">
 
                 <ImageView
                     android:id="@+id/coin_logo"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/coin_image_js" />
+                    android:src="@drawable/coin_image_js"
+                    tools:layout_editor_absoluteX="11dp"
+                    tools:layout_editor_absoluteY="89dp" />
 
                 <!-- 텍스트 뷰 -->
                 <TextView
@@ -76,7 +127,9 @@
                     android:text="@{String.valueOf(item.price)}"
                     android:textColor="@android:color/black" />
             </LinearLayout>
-        </FrameLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

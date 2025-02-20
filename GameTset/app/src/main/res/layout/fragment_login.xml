@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="40dp"
-            android:text="이메일 주소"
+            android:text="아이디"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_logo" />
@@ -134,16 +134,15 @@
 
         <ImageButton
             android:id="@+id/btnLogin"
-            android:layout_width="0dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="8dp"
             android:adjustViewBounds="true"
-            android:background="@drawable/login_loginbtn_sw"
-            android:text="로그인"
+            android:background="@drawable/login_loginbtn_selector"
             android:textSize="16sp"
             app:backgroundTint="@null"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_text_underbar2" />
 
         <TextView
@@ -153,7 +152,31 @@
             app:layout_constraintBottom_toBottomOf="@+id/btnLogin"
             app:layout_constraintEnd_toEndOf="@+id/btnLogin"
             app:layout_constraintStart_toStartOf="@+id/btnLogin"
+            app:layout_constraintTop_toTopOf="@+id/btnLogin" />
+
+        <ImageButton
+            android:id="@+id/btnSignup"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/login_loginbtn_selector"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            app:layout_constraintEnd_toStartOf="@+id/btnLogin"
+            app:layout_constraintHorizontal_bias="0.563"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_text_underbar2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="회원가입"
+            app:layout_constraintBottom_toBottomOf="@+id/btnSignup"
+            app:layout_constraintEnd_toEndOf="@+id/btnSignup"
+            app:layout_constraintStart_toStartOf="@+id/btnSignup"
+            app:layout_constraintTop_toTopOf="@+id/btnSignup" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint22"
@@ -165,12 +188,12 @@
             app:layout_constraintTop_toBottomOf="@+id/btnLogin">
 
             <TextView
-                android:id="@+id/btn_signup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="8dp"
                 android:text="회원가입"
+                android:visibility="gone"
                 app:layout_constraintEnd_toStartOf="@+id/imageView9"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_chainStyle="packed"
@@ -179,9 +202,10 @@
 
             <ImageView
                 android:id="@+id/imageView9"
-                android:layout_width="20dp"
-                android:layout_height="0dp"
-                android:background="@drawable/vertical_dashed_line"
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:visibility="gone"
+                android:background="@drawable/vertical_dotted_line_jw"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_signup"
                 app:layout_constraintEnd_toStartOf="@+id/textView6"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -194,6 +218,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:text="이메일 찾기"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView9"
                 app:layout_constraintEnd_toStartOf="@+id/imageView10"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -202,9 +227,10 @@
 
             <ImageView
                 android:id="@+id/imageView10"
-                android:layout_width="20dp"
-                android:layout_height="0dp"
-                android:background="@drawable/vertical_dashed_line"
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:visibility="gone"
+                android:background="@drawable/vertical_dotted_line_jw"
                 app:layout_constraintBottom_toBottomOf="@+id/textView6"
                 app:layout_constraintEnd_toStartOf="@+id/textView7"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -217,6 +243,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:text="비밀번호 찾기"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView10"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -226,78 +253,16 @@
             </TextView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:adjustViewBounds="true"
-            android:background="@drawable/login_loginbtn_sw"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraint22" />
-
-        <ImageView
-            android:id="@+id/imageView11"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@drawable/kakao"
-            app:layout_constraintBottom_toBottomOf="@+id/textView9"
-            app:layout_constraintEnd_toStartOf="@+id/textView9"
-            app:layout_constraintStart_toEndOf="@+id/imageButton"
-            app:layout_constraintTop_toTopOf="@+id/textView9" />
-
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="카카오 로그인"
-            app:layout_constraintBottom_toBottomOf="@+id/imageButton"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton"
-            app:layout_constraintStart_toEndOf="@+id/imageView11"
-            app:layout_constraintTop_toTopOf="@+id/imageButton" />
-
-        <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/login_loginbtn_sw"
-            app:layout_constraintBottom_toBottomOf="@+id/imageButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageButton"
-            app:layout_constraintTop_toTopOf="@+id/imageButton" />
-
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="구글 로그인"
-            app:layout_constraintBottom_toBottomOf="@+id/imageButton2"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton2"
-            app:layout_constraintStart_toEndOf="@+id/imageView13"
-            app:layout_constraintTop_toTopOf="@+id/imageButton2" />
-
-        <ImageView
-            android:id="@+id/imageView13"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@drawable/google"
-            app:layout_constraintBottom_toBottomOf="@+id/textView10"
-            app:layout_constraintEnd_toStartOf="@+id/textView10"
-            app:layout_constraintStart_toEndOf="@+id/imageButton2"
-            app:layout_constraintTop_toTopOf="@+id/textView10" />
-
         <ImageView
             android:id="@+id/login_text_underbar3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="72dp"
             android:background="@drawable/login_longunderbar_sw"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+            app:layout_constraintTop_toBottomOf="@+id/constraint22" />
 
         <TextView
             android:id="@+id/textView"
@@ -305,8 +270,10 @@
             android:layout_height="wrap_content"
             android:text="@string/underlined_text"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/imageButton"
-            app:layout_constraintTop_toBottomOf="@+id/login_text_underbar3"/>
+            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintHorizontal_bias="0.246"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_text_underbar3" />
 
         <TextView
             android:id="@+id/textView3"
@@ -330,9 +297,10 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="88dp"
             android:text="@string/underlined_text2"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/imageButton2"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_text_underbar3" />
 
         <TextView

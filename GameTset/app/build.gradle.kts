@@ -43,19 +43,24 @@ android {
     viewBinding {
         enable = true
     }
-    dataBinding{
+    dataBinding {
         enable = true
     }
 
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+    }
 
-
-    packagingOptions {
-        resources.excludes += "META-INF/spring.tooling"  // META-INF/spring.tooling 파일 제외
-        resources.excludes += "META-INF/spring.handlers"  // META-INF/spring.handlers 파일 제외
-        resources.excludes += "META-INF/spring.schemas"
-        resources.excludes += "META-INF/spring.license.txt"
-        resources.excludes += "META-INF/license.txt"
-        resources.excludes += "META-INF/notice.txt"
+    packaging {
+        resources {
+            excludes += "META-INF/spring.tooling"
+            excludes += "META-INF/spring.handlers"
+            excludes += "META-INF/spring.schemas"
+            excludes += "META-INF/spring.license.txt"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/notice.txt"
+        }
     }
 
 
@@ -69,6 +74,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.foundation.android)
+    implementation(libs.glide)
 
     // RecyclerView for displaying word list
     implementation("androidx.recyclerview:recyclerview:1.3.1")
@@ -76,6 +82,7 @@ dependencies {
     // Lifecycle and ViewModel for managing UI state
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
     // Kotlin Coroutines for async operations
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
@@ -124,4 +131,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
 
     implementation("androidx.fragment:fragment-ktx:1.3.6")
+
+    implementation("com.google.android.material:material:1.10.0")
+
+    // Lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
 }

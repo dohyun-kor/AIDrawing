@@ -1,6 +1,7 @@
 package com.example.gametset.room.ui.gameRoom
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -29,6 +30,7 @@ class DrawingView @JvmOverloads constructor(
 
     // 지우개 모드 활성화 여부
     var eraserEnabled = false
+
     // 지우개 모드에서 사용할 Paint 객체
     val erasePaint = Paint().apply {
         color = Color.WHITE  // 여기서 배경색과 같은 색을 설정
@@ -37,15 +39,19 @@ class DrawingView @JvmOverloads constructor(
         isAntiAlias = true
     }
 
+    var roomId: Int = -1
+
     // 현재 그리는 경로를 저장할 Path 객체
     private var path = Path()
+
     // 저장된 경로와 해당 경로의 Paint 객체를 저장할 리스트
     private val paths = mutableListOf<Pair<Path, Paint>>()
-    // WebSocket 객체 (MainActivity에서 전달받음)
+
+    // WebSocket 객체 (GameWebSocketManager에서 받아올 예정)
     private var webSocket: WebSocket? = null
 
     // WebSocket 객체를 설정하는 메소드
-    fun setWebSocket(socket: WebSocket) {
+    fun setWebSocket(socket: WebSocket?) {
         this.webSocket = socket
     }
 
@@ -62,6 +68,8 @@ class DrawingView @JvmOverloads constructor(
 
     // 터치 이벤트를 처리하는 메소드
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!isEnabled) return false  // 비활성화 상태면 터치 이벤트 무시
+
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 // 새로운 경로 생성 및 터치 위치로 이동
@@ -69,10 +77,11 @@ class DrawingView @JvmOverloads constructor(
                 path.moveTo(event.x, event.y)
 
                 // 새로운 Paint 객체 생성 및 경로와 Paint 객체를 리스트에 추가
-                val newPaint = if (eraserEnabled) erasePaint else Paint(drawPaint)
+                val newPaint = if (eraserEnabled) Paint(erasePaint) else Paint(drawPaint)
                 paths.add(Pair(path, newPaint))
                 sendDrawData(event.x, event.y, MOVE_MODE)
             }
+
             MotionEvent.ACTION_MOVE -> {
                 // 경로에 선 추가
                 path.lineTo(event.x, event.y)
@@ -93,8 +102,14 @@ class DrawingView @JvmOverloads constructor(
             put("event", "draw")
             put("x", scaledX)
             put("y", scaledY)
-            put("roomId", "roomId123")
-            put("color", String.format("#%06X", 0xFFFFFF and (if (eraserEnabled) erasePaint.color else drawPaint.color)))
+            put("roomId", roomId)
+            put(
+                "color",
+                String.format(
+                    "#%06X",
+                    0xFFFFFF and (if (eraserEnabled) erasePaint.color else drawPaint.color)
+                )
+            )
             put("mode", mode)
         }
 
@@ -114,14 +129,14 @@ class DrawingView @JvmOverloads constructor(
     }
 
     // 서버에서 받은 데이터로 그림을 그리는 메소드
-    fun drawFromServer(x: Float, y: Float, color: String, mode: Int) {
+    fun drawFromServer(x: Float, y: Float, color: String, mode: Int, stroke: Float) {
         val restoredX = x * width
         val restoredY = y * height
 
         val serverPaint = Paint().apply {
             this.color = Color.parseColor(color)
             this.style = Paint.Style.STROKE
-            this.strokeWidth = 10f
+            this.strokeWidth = stroke
             isAntiAlias = true
         }
 
@@ -142,12 +157,17 @@ class DrawingView @JvmOverloads constructor(
     // WebSocket을 통해 그림 지우기 명령을 전송하는 메소드
     fun sendClearDrawing() {
         val json = JSONObject().apply {
-            put("event", "clearDrawing")
-            put("roomId", "roomId123")
+            put("event", "cleardrawing")
+            put("roomId", roomId)
         }
-        Log.d(TAG, "sendClearDrawing: $json")
+        Log.d(TAG, "sendCleardrawing: $json")
         webSocket?.send(json.toString())
     }
+
+    fun passingRoomId(instanceRoomId: Int) {
+        roomId = instanceRoomId
+    }
+
 
     companion object {
         const val DRAW_MODE = 1

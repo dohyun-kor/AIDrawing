@@ -1,129 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/popup_background"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#8000">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="item"
+            type="com.example.gametset.room.data.model.dto.StoreDto" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="200dp"
-        android:layout_height="352dp"
-        android:layout_marginHorizontal="20dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        android:id="@+id/popup_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8000">
 
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/store_modal_box_js"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="200dp"
+            android:layout_height="352dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" >
 
-        <ImageView
-            android:id="@+id/itemModalImage"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/test2"
-            app:layout_constraintBottom_toTopOf="@+id/modal_coin_logo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            <ImageView
+                android:id="@+id/modalBody"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/store_modal_box_js"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/modal_coin_logo"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/store_modal_coin_logo_js"
-            app:layout_constraintBottom_toTopOf="@+id/itemDescription"
-            app:layout_constraintEnd_toStartOf="@+id/modal_item_price"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent" />
+            <TextView
+                android:id="@+id/modalName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{item.name}"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/itemModalImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/modalBody" />
 
-        <TextView
-            android:id="@+id/modal_item_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textSize="20sp"
-            android:text="1000"
-            app:layout_constraintBottom_toBottomOf="@+id/modal_coin_logo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/modal_coin_logo"
-            app:layout_constraintTop_toTopOf="@+id/modal_coin_logo" />
+            <ImageView
+                android:id="@+id/itemModalImage"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="16dp"
+                app:imageUrl="@{item.link}"
+                app:layout_constraintBottom_toTopOf="@+id/modal_coin_logo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/itemDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textAlignment="center"
-            android:textSize="15sp"
-            android:text="아이템입니다"
-            app:layout_constraintBottom_toTopOf="@+id/idUnderline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            <ImageView
+                android:id="@+id/modal_coin_logo"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/store_modal_coin_logo_js"
+                app:layout_constraintBottom_toTopOf="@+id/itemDescription"
+                app:layout_constraintEnd_toStartOf="@+id/modal_item_price"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageView
-            android:id="@+id/idUnderline"
-            android:layout_width="198dp"
-            android:layout_height="6dp"
-            android:layout_marginBottom="70dp"
-            android:background="@drawable/store_modal_line_js"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            <TextView
+                android:id="@+id/modal_item_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textSize="20sp"
+                android:text="@{`` + item.price}"
+                app:layout_constraintBottom_toBottomOf="@+id/modal_coin_logo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/modal_coin_logo"
+                app:layout_constraintTop_toTopOf="@+id/modal_coin_logo" />
 
-        <TextView
-            android:id="@+id/purchaseButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:background="@android:color/transparent"
-            android:text="구매"
-            android:textSize="25sp"
-            app:layout_constraintEnd_toStartOf="@id/cancelButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/idUnderline" />
+            <TextView
+                android:id="@+id/itemDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:text="@{item.description}"
+                app:layout_constraintBottom_toTopOf="@+id/idUnderline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageView
-            android:id="@+id/purchaseUnderline"
-            android:layout_width="50dp"
-            android:layout_height="4dp"
-            android:background="@drawable/store_modal_line_js"
-            app:layout_constraintTop_toBottomOf="@id/purchaseButton"
-            app:layout_constraintStart_toStartOf="@id/purchaseButton"
-            app:layout_constraintEnd_toEndOf="@id/purchaseButton"/>
+            <ImageView
+                android:id="@+id/idUnderline"
+                android:layout_width="198dp"
+                android:layout_height="6dp"
+                android:layout_marginBottom="70dp"
+                android:background="@drawable/store_modal_line_js"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/cancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@android:color/transparent"
-            android:text="취소"
-            android:textSize="25sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/purchaseButton"
-            app:layout_constraintTop_toBottomOf="@id/idUnderline" />
+            <TextView
+                android:id="@+id/purchaseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:background="@android:color/transparent"
+                android:text="구매"
+                android:textSize="25sp"
+                app:layout_constraintEnd_toStartOf="@id/cancelButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/idUnderline" />
 
-        <ImageView
-            android:id="@+id/cancelUnderline"
-            android:layout_width="50dp"
-            android:layout_height="4dp"
-            android:background="@drawable/store_modal_line_js"
-            app:layout_constraintTop_toBottomOf="@id/cancelButton"
-            app:layout_constraintStart_toStartOf="@id/cancelButton"
-            app:layout_constraintEnd_toEndOf="@id/cancelButton"/>
+            <ImageView
+                android:id="@+id/purchaseUnderline"
+                android:layout_width="50dp"
+                android:layout_height="4dp"
+                android:background="@drawable/store_modal_line_js"
+                app:layout_constraintTop_toBottomOf="@id/purchaseButton"
+                app:layout_constraintStart_toStartOf="@id/purchaseButton"
+                app:layout_constraintEnd_toEndOf="@id/purchaseButton"/>
+
+            <TextView
+                android:id="@+id/cancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@android:color/transparent"
+                android:text="취소"
+                android:textSize="25sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/purchaseButton"
+                app:layout_constraintTop_toBottomOf="@id/idUnderline" />
+
+            <ImageView
+                android:id="@+id/cancelUnderline"
+                android:layout_width="50dp"
+                android:layout_height="4dp"
+                android:background="@drawable/store_modal_line_js"
+                app:layout_constraintTop_toBottomOf="@id/cancelButton"
+                app:layout_constraintStart_toStartOf="@id/cancelButton"
+                app:layout_constraintEnd_toEndOf="@id/cancelButton"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

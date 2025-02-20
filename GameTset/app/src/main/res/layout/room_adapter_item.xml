@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <data>
+        <variable
+            name="room"
+            type="com.example.gametset.room.data.model.dto.OneRoomDto" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="15dp">
+
+        <ImageView
+            android:id="@+id/roomBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="@color/white"
+            android:src="@drawable/lobby_room_box_js"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/modeImage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="30dp"
+            android:src="@drawable/usermode"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/roomBox"
+            app:layout_constraintStart_toStartOf="@+id/roomBox"
+            app:layout_constraintTop_toTopOf="@+id/roomBox" />
+
+        <ImageView
+            android:id="@+id/roomStatus"
+            android:src="@drawable/greenlight"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="30dp"
+            app:layout_constraintBottom_toBottomOf="@+id/modeImage"
+            app:layout_constraintStart_toEndOf="@+id/modeImage"
+            app:layout_constraintTop_toTopOf="@+id/modeImage" />
+
+        <TextView
+            android:id="@+id/roomTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="@{room.roomName}"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/roomBox"
+            app:layout_constraintEnd_toStartOf="@+id/currentPlayers"
+            app:layout_constraintTop_toTopOf="@+id/roomBox" />
+
+        <TextView
+            android:id="@+id/currentPlayers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@{String.valueOf(room.nowPlayers)}"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/roomTitle"
+            app:layout_constraintEnd_toStartOf="@+id/divider"
+            app:layout_constraintTop_toTopOf="@+id/roomTitle"
+            app:layout_constraintVertical_bias="0.083" />
+
+        <TextView
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="/"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/roomTitle"
+            app:layout_constraintEnd_toStartOf="@+id/maxPlayers"
+            app:layout_constraintTop_toTopOf="@+id/roomTitle"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/maxPlayers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(room.maxPlayers)}"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/roomTitle"
+            app:layout_constraintEnd_toEndOf="@+id/roomBox"
+            app:layout_constraintHorizontal_bias="0.905"
+            app:layout_constraintStart_toStartOf="@+id/roomBox"
+            app:layout_constraintTop_toTopOf="@+id/roomTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

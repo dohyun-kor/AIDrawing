@@ -10,28 +10,38 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.gametset.R
 import com.example.gametset.databinding.ActivityMainBinding
 import com.example.gametset.room.base.ApplicationClass
 import com.example.gametset.room.data.model.dto.UserDto
-import com.example.gametset.room.ui.lobby.FriendModalFragment
+import com.example.gametset.room.ui.gameRoom.PlayGameFragment
 import com.example.gametset.room.ui.lobby.LobbyFragment
 import com.example.gametset.room.ui.login.LoginFragment
 import com.example.gametset.room.ui.lobby.MenuPopUp
+import com.example.gametset.room.ui.lobby.ProfileChangePopUpFragment
+import com.example.gametset.room.ui.lobby.RoomCreateModalFragment
 import com.example.gametset.room.ui.login.LoginFragmentViewModel
 import com.example.gametset.room.ui.login.SignupFragment
-import com.example.gametset.room.ui.myroom.MyroomFragment
+import com.example.gametset.room.ui.myroom.EditMyroomFragment
 import com.example.gametset.room.ui.store.StoreFragment
+import com.example.gametset.room.websocket.GameWebSocketManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import okhttp3.WebSocket
+import com.example.gametset.room.ui.myroom.ViewMyroomFragment
+import com.example.gametset.room.ui.myroom.FriendMyroomFragment_jw
+import android.media.MediaPlayer
+import android.os.Build
+import android.view.WindowInsets
+import android.view.WindowInsetsController
+import androidx.activity.OnBackPressedCallback
 
 private const val TAG = "MainActivity_싸피"
 
 // MainActivity 클래스 정의
 class MainActivity : AppCompatActivity() {
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
-
-    // 뷰 바인딩 객체
+    private lateinit var webSocketManager: GameWebSocketManager
     private lateinit var _binding: ActivityMainBinding
     val binding: ActivityMainBinding
         get() = _binding
@@ -51,31 +61,32 @@ class MainActivity : AppCompatActivity() {
     // 단어 목록
     private var currentColor = 0
 
-    var CurrentUser : UserDto? = null
+    // LoginViewModel을 일반 클래스로 초기화
+    private val loginViewModel = LoginFragmentViewModel()
+    public var isOpenMenu = false
 
-    private lateinit var loginViewModel: LoginFragmentViewModel
+    private var mediaPlayer: MediaPlayer? = null
+    private var isBackgroundMusicPlaying = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(_binding.root)
 
-        // ViewModel 초기화
-        loginViewModel = ViewModelProvider(this).get(LoginFragmentViewModel::class.java)
-        // 또는
-        // val loginViewModel: LoginFragmentViewModel by viewModels()
+        hideStatusBar() // 앱이 다시 포커스를 얻을 때 상태 바 숨기기
+        disableBackButton() // 뒤로 가기 버튼 막기
 
-        // Observer를 사용하여 데이터 변화를 감지하고 UI를 업데이트
-        loginViewModel.user.observe(this) { user ->
-            // user 데이터로 UI 업데이트
-            Log.d("MainActivity", "User Info: ${user}")
-        }
+        // 배경음악 초기화 및 재생
+        initBackgroundMusic()
 
         //로그인 된 상태인지 확인
         val user = ApplicationClass.sharedPreferencesUtil.getUser()
 
         //로그인 상태 확인. id가 있다면 로그인 된 상태
         if (user.id != "") {
+            mainActivityViewModel.setCurrentUser(ApplicationClass.sharedPreferencesUtil.getUser())
+            webSocketManager = GameWebSocketManager.getInstance()
+            webSocketManager.connect()
             openFragment(2)
         } else {
             // 가장 첫 화면은 홈 화면의 Fragment로 지정
@@ -106,9 +117,10 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navigation_page_3 -> {
-                    //마이페이지
-                    openFragment(4)
+                R.id.navigation_myroom -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frame_layout_main, ViewMyroomFragment())
+                        .commit()
                     true
                 }
 
@@ -116,9 +128,43 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        _binding.toolbar.toolBarMenuBtn.setOnClickListener {
-            openFragment(3)
+//        openFragment(8)
+
+
+            _binding.toolbar.userProfile.setOnClickListener{
+            openFragment(9)
         }
+        _binding.toolbar.toolBarMenuBtn.setOnClickListener {
+            if (!isOpenMenu) {
+                isOpenMenu = true
+                openFragment(3)
+            } else {
+                isOpenMenu = false
+                supportFragmentManager.popBackStack()
+            }
+        }
+
+        // LiveData 관찰 설정
+        mainActivityViewModel.userProfileData.observe(this) { user ->
+            // 닉네임 업데이트
+            _binding.toolbar.userNicknameTextView.text = user.nickname
+            _binding.toolbar.userPoint.text = user.point.toString()
+
+            // 프로필 이미지 업데이트
+            mainActivityViewModel.getOneItem(user.userProfileItemId) { storeDto ->
+                storeDto?.let { item ->
+                    Glide.with(this)
+                        .load(item.link)
+                        .placeholder(R.drawable.user_profile)
+                        .error(R.drawable.user_profile)
+                        .into(_binding.toolbar.userProfile)
+                }
+            }
+        }
+
+        // 초기 데이터 로드
+        val currentUserId = ApplicationClass.sharedPreferencesUtil.getUser().userId
+        mainActivityViewModel.userInfo(currentUserId)
 
     }
 
@@ -152,13 +198,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openFragment(index: Int) {
-        moveFragment(index, "", 0)
+        moveFragment(index)
     }
 
-    private fun moveFragment(index: Int, key: String, value: Int) {
+    private fun moveFragment(index: Int) {
         val transaction = supportFragmentManager.beginTransaction()
         when (index) {
-
             // 로그인
             0 -> {
                 transaction.replace(
@@ -198,7 +243,7 @@ class MainActivity : AppCompatActivity() {
             4 -> {
                 transaction.replace(
                     R.id.frame_layout_main,
-                    MyroomFragment()
+                    EditMyroomFragment()
                 )
                     .addToBackStack(null)
             }
@@ -209,13 +254,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             // 친구
-            6 -> {
-                transaction.add(
-                    R.id.frame_layout_main,
-                    FriendModalFragment()
-                )
-                    .addToBackStack(null)
-            }
+//            6 -> {
+//                transaction.add(
+//                    R.id.frame_layout_main,
+//                    FriendModalFragment()
+//                )
+//                    .addToBackStack(null)
+//            }
 
             //order로가기
 //            6 -> {
@@ -234,11 +279,32 @@ class MainActivity : AppCompatActivity() {
                 )
                     .addToBackStack(null)
             }
+
+            //playgame
+            8 -> {
+                transaction.replace(
+                    R.id.frame_layout_main,
+                    PlayGameFragment()
+                )
+                    .addToBackStack(null)
+            }
+            // userProfile
+            9 -> {
+                transaction.add(
+                    R.id.frame_layout_main,
+                    ProfileChangePopUpFragment()
+                )
+                    .addToBackStack(null)
+            }
+
         }
         transaction.commit()
     }
 
     public fun logout() {
+
+        GameWebSocketManager.getInstance().disconnect()
+
         //preference 지우기
         ApplicationClass.sharedPreferencesUtil.deleteUser()
         ApplicationClass.sharedPreferencesUtil.deleteUserCookie()
@@ -269,14 +335,118 @@ class MainActivity : AppCompatActivity() {
     // 앱 종료 시 WebSocket 연결 종료
     override fun onDestroy() {
         super.onDestroy()
+        mediaPlayer?.release()
+        mediaPlayer = null
         webSocket.close(1000, "App closed")
     }
 
-    companion object{
+    fun openFriendMyroom(friendId: Int) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frame_layout_main, FriendMyroomFragment_jw.newInstance(friendId))
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun initBackgroundMusic() {
+        mediaPlayer = MediaPlayer.create(this, R.raw.mainactivty)
+        mediaPlayer?.isLooping = true
+        playBackgroundMusic()
+    }
+
+    fun playBackgroundMusic() {
+        if (!isBackgroundMusicPlaying) {
+            mediaPlayer?.start()
+            isBackgroundMusicPlaying = true
+        }
+    }
+
+    fun pauseBackgroundMusic() {
+        if (isBackgroundMusicPlaying) {
+            mediaPlayer?.pause()
+            isBackgroundMusicPlaying = false
+        }
+    }
+
+    // 게임방 음악 관련 메서드
+    private var gameMediaPlayer: MediaPlayer? = null
+    private var isGameMusicPlaying = false
+
+    fun startGameMusic() {
+        // 메인 배경음악 중지
+        pauseBackgroundMusic()
+        
+        // 게임 음악 시작
+        if (gameMediaPlayer == null) {
+            gameMediaPlayer = MediaPlayer.create(this, R.raw.game_fragment)
+            gameMediaPlayer?.isLooping = true
+        }
+        gameMediaPlayer?.start()
+        isGameMusicPlaying = true
+    }
+
+    fun stopGameMusic() {
+        gameMediaPlayer?.stop()
+        gameMediaPlayer?.release()
+        gameMediaPlayer = null
+        isGameMusicPlaying = false
+        
+        // 메인 배경음악 다시 시작
+        playBackgroundMusic()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 앱이 백그라운드로 갈 때 음악 일시정지
+        pauseBackgroundMusic()
+        gameMediaPlayer?.pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        hideStatusBar() // 앱이 다시 포커스를 얻을 때 상태 바 숨기기
+        // 앱이 다시 포그라운드로 돌아올 때
+        if (gameMediaPlayer != null && isGameMusicPlaying) {
+            // 게임 음악이 재생 중이었다면 게임 음악 재생
+            gameMediaPlayer?.start()
+        } else {
+            // 아니면 배경 음악 재생
+            playBackgroundMusic()
+        }
+    }
+
+    private fun hideStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // API 30 이상
+            window.insetsController?.let {
+                it.hide(WindowInsets.Type.systemBars()) // 상태 바 & 네비게이션 바 숨기기
+                it.systemBarsBehavior =
+                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE // 스와이프하면 잠깐 보이게
+            }
+        } else {
+            // API 30 이하
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            or View.SYSTEM_UI_FLAG_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    )
+        }
+    }
+
+    // ✅ 뒤로 가기 버튼 막기 (API 30 이상 & 이하 모두 지원)
+    private fun disableBackButton() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 뒤로 가기 버튼 비활성화 (아무 동작도 하지 않음)
+            }
+        })
+    }
+
+    companion object {
         val SIGNUPPAGE = 0
         val LOGINPAGE = 1
         val LOBBYPAGE = 2
-        val MenuBar =3
+        val MenuBar = 3
         val MYROOMPAGE = 4
         val LOGOUT = 5
         val STOREPAGE = 6

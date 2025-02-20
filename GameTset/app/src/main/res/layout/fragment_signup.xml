@@ -185,7 +185,6 @@
             android:background="@null"
             android:fontFamily="@font/daehan"
             android:hint="닉네임을 입력하세요"
-            android:inputType="textVisiblePassword"
             android:textColorHint="#808080"
             app:layout_constraintEnd_toEndOf="@id/bodyBackground"
             app:layout_constraintHorizontal_bias="0.0"

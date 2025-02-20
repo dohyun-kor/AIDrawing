@@ -10,32 +10,38 @@
         android:id="@+id/lottieAnimation2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.177"
         app:layout_constraintStart_toStartOf="parent"
-        app:lottie_url="https://cdn.lottielab.com/l/28vutytsFVcknV.json?v=117d0104993457d0dbaf40ce&amp;w=1"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"/>
+        app:lottie_loop="true"
+        app:lottie_url="https://cdn.lottielab.com/l/28vutytsFVcknV.json?v=117d0104993457d0dbaf40ce&amp;w=1" />
 
     <ImageView
         android:id="@+id/lobbyLetters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.887"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lottieAnimation2"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/store_letter_logo_js" />
 
     <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="52dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@+id/store_item"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="@+id/store_item"
         app:layout_constraintTop_toBottomOf="@+id/lobbyLetters">
 
@@ -58,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="테스트1"
+                android:text="프로필"
                 android:textColor="@android:color/black"
                 android:textSize="20sp" />
         </FrameLayout>
@@ -82,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="테스트2"
+                android:text="액자"
                 android:textColor="@android:color/black"
                 android:textSize="20sp" />
         </FrameLayout>
@@ -90,8 +96,8 @@
 
     <ImageView
         android:id="@+id/store_body"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="389dp"
+        android:layout_height="501dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
@@ -100,28 +106,43 @@
         android:src="@drawable/store_body_js"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonContainer" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonContainer"
+        app:layout_constraintVertical_bias="0.191" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/store_item"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginBottom="15dp"
         android:clipToPadding="false"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="@id/store_body"
         app:layout_constraintEnd_toEndOf="@id/store_body"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/store_body"
-        app:layout_constraintTop_toTopOf="@id/store_body" />
+        app:layout_constraintTop_toTopOf="@id/store_body"
+        app:layout_constraintVertical_bias="1.0" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+
+    <ImageView
+        android:id="@+id/logindd"
+        android:layout_width="172dp"
+        android:layout_height="23dp"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/whitebox"
+        app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.577"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,189 +4,542 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/remainTime"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="01:00"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.example.gametset.room.ui.gameRoom.DrawingView
-        android:id="@+id/drawingView"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@+id/remainTime"
-        tools:layout_editor_absoluteX="16dp" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/drawBox"
+        android:id="@+id/play_game_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/wordRecyclerView"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/drawingView">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/pen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/baseline_border_color_24"
-            app:layout_constraintBottom_toTopOf="@+id/eraser"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/white"/>
-
-
-        <ImageButton
-            android:id="@+id/eraser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:id="@+id/backBtn"
+            android:layout_width="20dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:adjustViewBounds="true"
             android:background="@color/white"
-            android:src="@drawable/baseline_adb_24"
+            android:scaleType="fitXY"
+            android:src="@drawable/back_btn_sw"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pen" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/penColorRed"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="32dp"
-            android:background="@drawable/round_backgroud_border_black"
-            android:backgroundTint="@color/red"
-            app:layout_constraintBottom_toBottomOf="@+id/pen"
-            app:layout_constraintStart_toEndOf="@+id/pen"
-            app:layout_constraintTop_toTopOf="@+id/pen"/>
-
-        <ImageView
-            android:id="@+id/penColorOrange"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/round_backgroud_border_black"
-            android:backgroundTint="@color/orange"
-            app:layout_constraintBottom_toBottomOf="@+id/pen"
-            app:layout_constraintStart_toEndOf="@+id/penColorRed"
-            app:layout_constraintTop_toTopOf="@+id/pen" />
-        <ImageView
-            android:id="@+id/penColorYellow"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/round_backgroud_border_black"
-            android:backgroundTint="@color/yellow"
-            app:layout_constraintBottom_toBottomOf="@+id/pen"
-            app:layout_constraintStart_toEndOf="@+id/penColorOrange"
-            app:layout_constraintTop_toTopOf="@+id/pen" />
-        <ImageView
-            android:id="@+id/penColorGreen"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/round_backgroud_border_black"
-            android:backgroundTint="@color/green"
-            app:layout_constraintBottom_toBottomOf="@+id/pen"
-            app:layout_constraintStart_toEndOf="@+id/penColorYellow"
-            app:layout_constraintTop_toTopOf="@+id/pen" />
-        <ImageView
-            android:id="@+id/penColorBlue"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/round_backgroud_border_black"
-            android:backgroundTint="@color/blue"
-            app:layout_constraintBottom_toBottomOf="@+id/pen"
-            app:layout_constraintStart_toEndOf="@+id/penColorGreen"
-            app:layout_constraintTop_toTopOf="@+id/pen" />
-        <ImageView
-            android:id="@+id/penColorNavyBlue"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/round_backgroud_border_black"
-            android:backgroundTint="@color/navy_blue"
-            app:layout_constraintBottom_toBottomOf="@+id/pen"
-            app:layout_constraintStart_toEndOf="@+id/penColorBlue"
-            app:layout_constraintTop_toTopOf="@+id/pen" />
-        <ImageView
-            android:id="@+id/penColorPurple"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/round_backgroud_border_black"
-            android:backgroundTint="@color/purple"
-            app:layout_constraintBottom_toBottomOf="@+id/pen"
-            app:layout_constraintStart_toEndOf="@+id/penColorNavyBlue"
-            app:layout_constraintTop_toTopOf="@+id/pen" />
-        <ImageView
-            android:id="@+id/penColorBlack"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/round_backgroud_border_black"
-            android:backgroundTint="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/pen"
-            app:layout_constraintStart_toEndOf="@+id/penColorPurple"
-            app:layout_constraintTop_toTopOf="@+id/pen" />
-
-        <SeekBar
-            android:id="@+id/verticalSeekBar"
-            android:layout_width="200dp"
+        <TextView
+            android:id="@+id/gameRoomName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:max="50"
-            app:layout_constraintStart_toStartOf="@+id/eraser"
-            app:layout_constraintTop_toBottomOf="@+id/eraser" />
+            android:text="제목제목제목이야 나는"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/difficulty_label"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="4dp"-->
+<!--            android:text="난이도 : "-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/backBtn"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/difficulty_value"-->
+<!--            app:layout_constraintTop_toTopOf="@id/backBtn" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/difficulty_value"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:text="쉬움"-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/backBtn"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@id/backBtn" />-->
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/toolbar_line_sw"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/backBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/wordRecyclerView"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/answer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/drawBox" />
-
-    <Button
-        android:id="@+id/clearButton"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:text="Clear Canvas"
-        app:layout_constraintBottom_toBottomOf="@+id/drawingView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Send"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/play_game_toolbar">
 
-    <EditText
-        android:id="@+id/answer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="정답을 입력하세요."
-        app:layout_constraintBottom_toTopOf="@+id/startButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+<!--        <TextView-->
+<!--            android:id="@+id/remainTime"-->
+<!--            android:layout_width="388dp"-->
+<!--            android:layout_height="85dp"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textSize="20sp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.608"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
+        <FrameLayout
+            android:id="@+id/remainTimeFrame"
+            android:layout_width="388dp"
+            android:layout_height="85dp"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.608"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/modeName"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text=""-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/time_bar"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/dotted_line"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/remainTime" />-->
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/roomRemainTime"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text=""-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/time_bar"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/remainTime"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/dotted_line2"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/remainTime" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/roomRound"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text=""-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/time_bar"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/dotted_line2"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/dotted_line"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/remainTime" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/dotted_line"-->
+<!--            android:layout_width="2.5dp"-->
+<!--            android:layout_height="35dp"-->
+<!--            android:background="@drawable/vertical_dotted_line_jw"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/remainTime"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.33"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/remainTime"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/remainTime"-->
+<!--            app:layout_constraintVertical_bias="0.15" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/dotted_line2"-->
+<!--            android:layout_width="2.5dp"-->
+<!--            android:layout_height="35dp"-->
+<!--            android:background="@drawable/vertical_dotted_line_jw"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/remainTime"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.66"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/remainTime"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/remainTime"-->
+<!--            app:layout_constraintVertical_bias="0.15" />-->
+
+
+<!--        <ImageView-->
+<!--            android:id="@+id/time_bar"-->
+<!--            android:layout_width="375dp"-->
+<!--            android:layout_height="25dp"-->
+<!--            android:background="@drawable/time_bar_jw"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/remainTime"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.533"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/remainTime"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/remainTime"-->
+<!--            app:layout_constraintVertical_bias="0.9" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/time_bar_red"-->
+<!--            android:layout_width="300dp"-->
+<!--            android:layout_height="25dp"-->
+<!--            android:background="@drawable/time_bar_red_jw"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/remainTime"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.0"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/time_bar"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/remainTime"-->
+<!--            app:layout_constraintVertical_bias="0.9" />-->
+
+        <com.example.gametset.room.ui.gameRoom.DrawingView
+            android:id="@+id/drawingView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:background="#FFFFFF"
+            app:layout_constraintBottom_toTopOf="@+id/drawBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/remainTimeFrame" />
+
+        <ImageView
+            android:id="@+id/aiImageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:background="#FFFFFF"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/drawBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/remainTimeFrame" />
+
+        <TextView
+            android:id="@+id/aiDrawingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI가 그리는 중..."
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/drawBox"
+            app:layout_constraintStart_toStartOf="@+id/aiImageView"
+            app:layout_constraintEnd_toEndOf="@+id/aiImageView"/>
+
+        <FrameLayout
+            android:id="@+id/waitingFrame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/drawBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/remainTimeFrame"></FrameLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/drawBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/roomUserBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/drawingView"
+            app:layout_constraintVertical_bias="0.0">
+
+            <SeekBar
+                android:id="@+id/verticalSeekBar"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:max="50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/penColorBlack"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+
+                android:layout_marginTop="15dp"
+                android:background="@drawable/color_black"
+                android:foreground="@drawable/selected_color_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/penColorMint"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/verticalSeekBar" />
+
+            <ImageView
+                android:id="@+id/penColorMint"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/color_mint"
+                app:layout_constraintBottom_toBottomOf="@+id/penColorBlack"
+                app:layout_constraintEnd_toStartOf="@+id/penColorRed"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/penColorBlack"
+                app:layout_constraintTop_toTopOf="@+id/penColorBlack"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/penColorRed"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/color_red"
+                app:layout_constraintBottom_toBottomOf="@+id/penColorBlack"
+                app:layout_constraintEnd_toStartOf="@+id/penColorOrange"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/penColorMint"
+                app:layout_constraintTop_toTopOf="@+id/penColorBlack"
+                app:layout_constraintVertical_bias="0.505" />
+
+            <ImageView
+                android:id="@+id/penColorOrange"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/color_orange"
+                app:layout_constraintBottom_toBottomOf="@+id/penColorBlack"
+                app:layout_constraintEnd_toStartOf="@+id/penColorYellow"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/penColorRed"
+                app:layout_constraintTop_toTopOf="@+id/penColorBlack" />
+
+            <ImageView
+                android:id="@+id/penColorYellow"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/color_yellow"
+                app:layout_constraintBottom_toBottomOf="@+id/penColorBlack"
+                app:layout_constraintEnd_toStartOf="@+id/penColorGreen"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/penColorOrange"
+                app:layout_constraintTop_toTopOf="@+id/penColorBlack" />
+
+            <ImageView
+                android:id="@+id/penColorGreen"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/color_green"
+                app:layout_constraintBottom_toBottomOf="@+id/penColorBlack"
+                app:layout_constraintEnd_toStartOf="@+id/penColorBlue"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/penColorYellow"
+                app:layout_constraintTop_toTopOf="@+id/penColorBlack"
+                app:layout_constraintVertical_bias="0.505" />
+
+            <ImageView
+                android:id="@+id/penColorBlue"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/color_blue"
+                app:layout_constraintBottom_toBottomOf="@+id/penColorBlack"
+                app:layout_constraintEnd_toStartOf="@+id/penColorPurple"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/penColorGreen"
+                app:layout_constraintTop_toTopOf="@+id/penColorBlack" />
+
+            <ImageView
+                android:id="@+id/penColorPurple"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/color_pupple"
+                app:layout_constraintBottom_toBottomOf="@+id/penColorBlack"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/penColorBlue"
+                app:layout_constraintTop_toTopOf="@+id/penColorBlack" />
+
+            <ImageButton
+                android:id="@+id/pen"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:adjustViewBounds="true"
+                android:background="@color/green"
+                android:scaleType="fitXY"
+                android:src="@drawable/draw_pen"
+                app:layout_constraintBottom_toBottomOf="@+id/verticalSeekBar"
+                app:layout_constraintEnd_toStartOf="@+id/eraser"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/verticalSeekBar"
+                app:layout_constraintTop_toTopOf="@+id/verticalSeekBar" />
+
+            <ImageButton
+                android:id="@+id/eraser"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="15dp"
+                android:adjustViewBounds="true"
+                android:background="@color/white"
+                android:scaleType="fitXY"
+                android:src="@drawable/draw_eraser"
+                app:layout_constraintBottom_toBottomOf="@+id/pen"
+                app:layout_constraintEnd_toStartOf="@+id/clearButton"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/pen"
+                app:layout_constraintTop_toTopOf="@+id/pen" />
+
+            <ImageButton
+                android:id="@+id/clearButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/draw_clear"
+                app:layout_constraintBottom_toBottomOf="@+id/pen"
+                app:layout_constraintEnd_toStartOf="@+id/saveDrawingButton_jw"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/eraser"
+                app:layout_constraintTop_toTopOf="@+id/pen" />
+
+            <ImageButton
+                android:id="@+id/saveDrawingButton_jw"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="15dp"
+                android:adjustViewBounds="true"
+                android:background="@color/white"
+                android:contentDescription="Save drawing"
+                android:scaleType="fitXY"
+                android:src="@drawable/save_drawing_icon_jw"
+                app:layout_constraintBottom_toBottomOf="@+id/pen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/clearButton"
+                app:layout_constraintTop_toTopOf="@+id/pen" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/roomUserBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/wordRecyclerView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/drawBox">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:background="@drawable/round_backgroud_border_black"
+                android:gravity="center"
+                android:paddingVertical="8dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/ivRoomManager"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/room_manager"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginLeft="4dp"/>
+
+                <TextView
+                    android:id="@+id/userScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0pt"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/roomMyProfile" />
+
+                <ImageView
+                    android:id="@+id/roomMyProfile"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/user_profile"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/userScore" />
+
+                <TextView
+                    android:id="@+id/gameMyNickName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/hello_blank_fragment"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/roomMyProfile"
+                    app:layout_constraintStart_toStartOf="@+id/roomMyProfile"
+                    app:layout_constraintTop_toBottomOf="@+id/roomMyProfile" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/roomUserRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/constraintLayout"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <EditText
+            android:id="@+id/answer"
+            android:layout_width="391dp"
+            android:layout_height="47dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/chat_box_send_jw"
+            android:hint="정답을 입력하세요."
+            android:paddingStart="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.55"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/startButton"
+            android:layout_width="23dp"
+            android:layout_height="25dp"
+            android:background="@drawable/send_button_jw"
+            app:layout_constraintBottom_toBottomOf="@+id/answer"
+            app:layout_constraintEnd_toEndOf="@+id/answer"
+            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintStart_toStartOf="@+id/answer"
+            app:layout_constraintTop_toBottomOf="@+id/wordRecyclerView"
+            app:layout_constraintVertical_bias="0.65" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/wordRecyclerView"
+            android:layout_width="393dp"
+            android:layout_height="171dp"
+
+            android:layout_margin="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="17dp"
+            android:background="@drawable/chat_box"
+            android:padding="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/answer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

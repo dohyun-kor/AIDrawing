@@ -25,7 +25,7 @@ class SignupFragment : Fragment() {
 
     lateinit var mainActivity: MainActivity
 
-    private var checkedSignup = false
+    private var checkedSignup = true
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -204,11 +204,10 @@ class SignupFragment : Fragment() {
                     }
                 }
             }
-
-            binding.cancelButton.setOnClickListener {
-                // 취소 버튼 처리
-                parentFragmentManager.popBackStack()
-            }
+        }
+        binding.cancelButton.setOnClickListener {
+            // 취소 버튼 처리
+            parentFragmentManager.popBackStack()
         }
     }
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="64dp"
     android:layout_marginStart="-17dp"
     android:background="#FAFAFA"
     android:elevation="0dp"
@@ -15,33 +15,68 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/userNicknameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="알써그려"
-            android:textSize="16sp"
-            android:textStyle="bold"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/user_profile"
+            android:layout_width="40dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/userNicknameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:text="알써그려"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/user_profile"
+            app:layout_constraintStart_toEndOf="@+id/user_profile"
+            app:layout_constraintTop_toTopOf="@+id/user_profile"
+            app:layout_constraintVertical_bias="0.818" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/coinLogo"
+            android:layout_width="27dp"
+            android:layout_height="33dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/store_modal_coin_logo_js"
+            app:layout_constraintBottom_toBottomOf="@+id/userNicknameTextView"
+            app:layout_constraintEnd_toStartOf="@+id/userPoint"
+            app:layout_constraintTop_toTopOf="@+id/userPoint"
+            app:layout_constraintVertical_bias="0.75" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/userPoint"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="70dp"
+            android:text=""
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tool_bar_menu_btn"
+            app:layout_constraintEnd_toStartOf="@+id/tool_bar_menu_btn"
+            app:layout_constraintTop_toTopOf="@+id/tool_bar_menu_btn" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/tool_bar_menu_btn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="22dp"
+            android:layout_width="31dp"
+            android:layout_height="21dp"
+            android:layout_marginEnd="16dp"
             android:src="@drawable/toolbar_menu_sw"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-        <!--  여기에 새로운 ImageView 요소를 추가합니다  -->
+            app:layout_constraintTop_toTopOf="@+id/userNicknameTextView" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/toolbar_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="412dp"
+            android:layout_height="0dp"
             android:src="@drawable/toolbar_line_sw"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.appcompat.widget.Toolbar>
