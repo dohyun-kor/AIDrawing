@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GameTset</string>
+    <string name="app_name">니알아서그려라</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="underlined_text"><u>이용안내</u></string>
