@@ -35,7 +35,7 @@ AI를 활용하여 주제, 난이도 등을 기반으로 그림을 생성.
 
 
 
-## 🛠 기술스택 (Tech Stack) 조금 수정필요
+## 🛠 기술스택 (Tech Stack)
 - **Backend**: SpringBoot, SptingSecurity
 - **Frontend**: Android Studio(LadyB ug), Kotlin 1.9.21
 - **Database**: MySQL, Redis, S3
@@ -76,6 +76,7 @@ AI를 활용하여 주제, 난이도 등을 기반으로 그림을 생성.
 
 ![마이룸](/uploads/6278632509a7b062f31f130d7db852d8/마이룸.gif)
 
+- 유저모드에서 직접 그린 그림을 하단 저장 버튼을 통해 그림을 로컬 핸드폰에 저장장
 - 유저가 상점에서 구매한 액자를 바탕으로 직접 그린 그림을 전시
 - 유저 친구의 마이룸 방문 시 해당 유저의 마이룸 그림 감상
 - 유저의 그림 클릭 시 확대되어 화면에 표시시
@@ -91,6 +92,10 @@ AI를 활용하여 주제, 난이도 등을 기반으로 그림을 생성.
 ![swagger2](/uploads/62aeef9153ee118364f8b01f6ed10e10/swagger2.gif)
 
 ### API 명세서 (WebSocket)
+
+https://circular-iodine-d32.notion.site/API-5bc2dcde44fd4875a5411757f3a1b5af
+
+- WebScoket 관련 api 명세서는 노션 API 명세서 부분 메소드(Socket)으로 정의된 곳에 모두 정의해 두었습니다.
 
 ### 피그마 
 
