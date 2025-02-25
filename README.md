@@ -35,7 +35,7 @@ AI를 활용하여 주제, 난이도 등을 기반으로 그림을 생성.
 
 
 
-## 🛠 기술스택 (Tech Stack) 조금 수정필요
+## 🛠 기술스택 (Tech Stack)
 - **Backend**: SpringBoot, SptingSecurity
 - **Frontend**: Android Studio(LadyB ug), Kotlin 1.9.21
 - **Database**: MySQL, Redis, S3
@@ -44,21 +44,20 @@ AI를 활용하여 주제, 난이도 등을 기반으로 그림을 생성.
 
 ## 🗂️ 아키텍처 구성도
 
-![아키텍처구성도](/uploads/8391eb9804a1ff07997125d6b8a3c6b1/아키텍처구성도.png)
-
+![아키텍처구성도](images/아키텍처구성도.png)
 
 ## 💡 니 알아서 그려라 실행 화면
 
 ### 프로필 변경
 
-![프로필변경](/uploads/2b9d543659a5a2beddedccf814c42d51/프로필변경.gif)
+![프로필변경](images/프로필변경.gif)
 
 - 상점에서 프로필 이미지와 액자등을 구매가능
 - 프로필 닉네임과 프로필 이미지를 변경 가능합니다다
 
 ### 유저 모드
 
-![유저모드](/uploads/ad112655fcf0a344cc02d4eb7035e7db/유저모드.gif)
+![유저모드](images/유저모드.gif)
 
 - 매 라운드 마다 유저에게 턴을 제공
 - 턴인 유저는 단어를 선택 후 그림을 그림
@@ -67,15 +66,16 @@ AI를 활용하여 주제, 난이도 등을 기반으로 그림을 생성.
 
 ### AI 모드
 
-![AI](/uploads/7789a659cad39c8da35fd14ddf283ee0/AI.gif)
+![AI](images/AI.gif)
 
 - DALL-E api 요청 후 서버에서 보낸 image url을 통해 사진을 표시
 - 웹소켓을 통해 모든 유저가 정답을 맞추거나 시간이 지나면 정답 공개 후 다음 사진 요청
 
 ### 마이룸
 
-![마이룸](/uploads/6278632509a7b062f31f130d7db852d8/마이룸.gif)
-
+![마이룸](images/마이룸.gif
+)
+- 유저모드에서 직접 그린 그림을 하단 저장 버튼을 통해 그림을 로컬 핸드폰에 저장장
 - 유저가 상점에서 구매한 액자를 바탕으로 직접 그린 그림을 전시
 - 유저 친구의 마이룸 방문 시 해당 유저의 마이룸 그림 감상
 - 유저의 그림 클릭 시 확대되어 화면에 표시시
@@ -84,19 +84,22 @@ AI를 활용하여 주제, 난이도 등을 기반으로 그림을 생성.
 
 ### 💾 데이터베이스 모델링(ERD)
 
-![erd](/uploads/ce7fb96ff3e0c74f8b2cc1d78905c15d/erd.png)
+![erd](images/erd.png)
 
 ### API 명세서 
 
-![swagger2](/uploads/62aeef9153ee118364f8b01f6ed10e10/swagger2.gif)
+![swagger2](images/swagger2.gif)
 
 ### API 명세서 (WebSocket)
+
+https://circular-iodine-d32.notion.site/API-5bc2dcde44fd4875a5411757f3a1b5af
+
+- WebScoket 관련 api 명세서는 노션 API 명세서 부분 메소드(Socket)으로 정의된 곳에 모두 정의해 두었습니다.
 
 ### 피그마 
 
 
-![피그마](/uploads/aed5e45c2b7843126489085a24e34f2c/피그마.png)
-
+![피그마](images/피그마.png)
 
 
 
